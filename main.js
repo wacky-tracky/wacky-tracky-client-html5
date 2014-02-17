@@ -210,8 +210,6 @@ function TaskInputBox(label) {
 			label += ': ' 
 		}
 
-		console.log(new Error().stack);
-
 		this.domLabel.text(label);
 		this.domInput.width(this.dom.width() - this.domLabel.width() - 20);
 	};
