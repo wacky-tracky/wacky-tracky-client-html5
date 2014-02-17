@@ -1,4 +1,4 @@
-window.host = "http://localhost:8082/"
+window.host = "http://" + window.location.hostname + ":8082/"
 
 function Task(taskObject) {
 	var self = this;
@@ -42,7 +42,7 @@ function Task(taskObject) {
 
 	Task.prototype.del = function(i) {
 		$.ajax({
-			url: window.host + '/api/deleteTask',
+			url: window.host + '//deleteTask',
 			data: { id: this.fields.id }
 		});
 
@@ -60,7 +60,7 @@ function init() {
 	window.sidebar = new Sidebar();
 	$('body').append(window.sidebar.toDom());
 
-	requestLists();
+	window.sidebar.refreshLists();
 
 	window.content = new Content();
 	$('body').append(window.content.toDom());
@@ -107,7 +107,7 @@ function newTask(text) {
 	}
 
 	$.ajax({
-		url: window.host + '/api/createTask',
+		url: window.host + '//createTask',
 		success: renderTaskCreated,
 		data: data
 	});
@@ -175,7 +175,7 @@ function requestTasks(list) {
 	window.content.setList(list);
 
 	$.ajax({
-	url: window.host + 'api/listTasks',
+	url: window.host + '/listTasks',
 		data: { list: list.fields.id },
 		success: renderTasks,
 		error: generalError
@@ -271,13 +271,13 @@ function Sidebar() {
 		var title = window.prompt("List name?");
 
 		$.ajax({
-			url: window.host + 'api/createList',
+			url: window.host + '/createList',
 			data: {
 				title: title
-			}
+			},
+			success: this.refreshLists
 		});
 
-		requestLists();
 	}
 
 	Sidebar.prototype.addList = function(list) {
@@ -300,7 +300,18 @@ function Sidebar() {
 		});
 	};
 
+	Sidebar.prototype.refreshLists = function() {
+		$.ajax({
+			url: window.host + '/listLists',
+			success: this.renderLists
+		})
+	};
+
+	Sidebar.prototype.renderLists = function(lists) {
+		$(lists).each(function(index, list) {
+			self.addList(new List(list));
+		});
+	};
+
 	return this;
 }
-
-
