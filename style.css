@@ -117,9 +117,10 @@ li.list {
 	color: black;
 }
 
-.selected a, .selected {
+.selected a, .selected, .selected .task {
 	color: black;
 	font-weight: bold;
+	background-color: beige;
 }
 
 div#content {
