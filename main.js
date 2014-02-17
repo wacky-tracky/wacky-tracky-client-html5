@@ -86,6 +86,7 @@ function Content() {
 		this.list = list;
 		this.domListContainer.children().remove();
 		this.domListContainer.append(list.toDomContent());
+		this.domListContainer.append(new ListControls(list).toDom());
 
 		this.taskInput.enable();
 	};
@@ -180,6 +181,28 @@ function requestTasks(list) {
 		success: renderTasks,
 		error: generalError
 	});
+}
+
+function ListControls(list) {
+	this.list = list;
+
+	var self = this;
+
+	this.dom = $('<div class = "buttonToolbar listControls" />')
+	this.dom.model(this);
+	this.domLabel = this.dom.createAppend('<span />').text(this.list.fields.title);
+	this.domButtonDelete = this.dom.createAppend('<button />').text("Delete");
+	this.domButtonDelete.click(function (e) { self.del(); });
+
+	ListControls.prototype.del = function() {
+		this.list.del();
+	}
+
+	ListControls.prototype.toDom = function() {
+		return this.dom;
+	}
+
+	return this;
 }
 
 function List(jsonList) {

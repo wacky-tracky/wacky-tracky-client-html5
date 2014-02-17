@@ -200,3 +200,9 @@ button:hover {
 div.subTasks {
 	margin-left: 1em;
 }
+
+.listControls {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+}
