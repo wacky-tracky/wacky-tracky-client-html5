@@ -384,6 +384,10 @@ function Sidebar() {
 	Sidebar.prototype.createList = function() {
 		var title = window.prompt("List name?");
 
+		if (title == "" || title == null) {
+			return;
+		}
+
 		$.ajax({
 			url: window.host + '/createList',
 			data: {
