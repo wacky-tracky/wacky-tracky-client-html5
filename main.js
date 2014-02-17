@@ -7,14 +7,28 @@ function Task(taskObject) {
 
 	this.dom = $('<div class = "taskWrapper" />')
 	this.domTask = this.dom.createAppend('<div class = "task" />').text('Task: ' + this.fields.content);
-	this.domTask.dblclick(function() { self.setParentTask(); });
+	this.domTask.click(function() { self.setParentTask(); });
+	this.domTask.dblclick(function() { self.openEditDialog(); });
 	this.domTaskButtons = this.domTask.createAppend('<div class = "taskButtons" />');
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
+	this.domEditDialog = null;
 
 	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
 
 	this.subtasks = [];
+
+	Task.prototype.openEditDialog = function() {
+		this.domEditDialog = $('<div class = "editDialog" />');
+		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
+
+		this.dom.append(this.domEditDialog);
+	};
+
+	Task.prototype.closeEditDialog = function() {
+		this.dom.children('.editDialog').remove();
+		this.domEditDialog = null;
+	}
 
 	Task.prototype.addSubtask = function(t) {
 		t.parent = this;
@@ -27,16 +41,18 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.setParentTask = function() {
-		if (window.parentTask !== null) {
-			window.parentTask.deselect();
+		if (window.selectItem !== null) {
+			window.selectItem.deselect();
 		}
 
-		window.parentTask = this;
+		window.selectItem = this;
 		this.dom.addClass('selected');
 	};
 
 	Task.prototype.deselect = function() {
-		window.parentTask = null;
+		this.closeEditDialog();
+
+		window.selectItem = null;
 		this.dom.removeClass('selected');
 	};
 
@@ -55,7 +71,7 @@ function Task(taskObject) {
 }
 
 function init() {
-	window.parentTask = null;
+	window.selectItem = null;
 
 	window.sidebar = new Sidebar();
 	$('body').append(window.sidebar.toDom());
@@ -81,7 +97,7 @@ function Content() {
 	};
 
 	Content.prototype.setList = function(list) {
-		window.parentTask = null;
+		window.selectItem = null;
 
 		this.list = list;
 		this.domListContainer.children().remove();
@@ -99,11 +115,11 @@ function newTask(text) {
 
 	data = { content: text };
 	
-	if (window.parentTask === null) {
+	if (window.selectItem === null) {
 		data.parentId = window.content.list.fields.id;
 		data.parentType = 'list';
 	} else {
-		data.parentId = window.parentTask.fields.id;
+		data.parentId = window.selectItem.fields.id;
 		data.parentType = 'task';
 	}
 

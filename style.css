@@ -206,3 +206,18 @@ div.subTasks {
 	right: 0;
 	bottom: 0;
 }
+
+.editDialog {
+	width: 95%;
+	margin: auto;
+	margin-top: -0.5em;
+	margin-bottom: 1em;
+	font-size: small;
+	background-color: #333;
+	color: white;
+	border-radius: 0 0 0.5em 0.5em;
+	box-shadow: 0 0 4px lightgray;
+	-moz-user-select: none;
+	user-select: none;
+	padding: 0.5em;
+}
