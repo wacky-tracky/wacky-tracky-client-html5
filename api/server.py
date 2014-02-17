@@ -61,6 +61,10 @@ class Api(object):
 			})
 
 		return self.outputJson(ret);
+
+	@cherrypy.expose
+	def deleteTask(self, *path, **args):
+		self.wrapper.deleteTask(int(args['id']))
 	
 
 def CORS():
