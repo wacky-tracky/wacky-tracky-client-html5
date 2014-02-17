@@ -9,15 +9,37 @@ function Task(taskObject) {
 	this.domTask = this.dom.createAppend('<div class = "task" />').text('Task: ' + this.fields.content);
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
-	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>');
+	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
 	this.domTaskButtons = this.domTask.createAppend('<div class = "taskButtons" />');
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
 	this.domEditDialog = null;
 
+	if (this.fields.hasChildren) {
+		this.domButtonExpand.removeAttr('disabled');
+	}
+
 	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
 
 	this.subtasks = [];
+
+	Task.prototype.refreshSubtasks = function() {
+		this.domSubtasks.children().remove();
+		$.ajax({
+			url: window.host + '/listTasks',
+			data: { task: this.fields.id },
+			success: this.renderSubtasks
+		})
+	};
+
+	Task.prototype.renderSubtasks = function(subtasks) {
+		$(subtasks).each(function(i, t) {
+			t = new Task(t);
+
+			// TODO Change this to "this" or "self"
+			window.selectedItem.addSubtask(t);
+		});
+	};
 
 	Task.prototype.openEditDialog = function() {
 		this.domEditDialog = $('<div class = "editDialog" />');

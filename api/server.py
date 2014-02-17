@@ -52,7 +52,10 @@ class Api(object):
 
 	@cherrypy.expose
 	def listTasks(self, *path, **args):
-		items = self.wrapper.getItemsFromList(int(args['list']))
+		if "task" in args:
+			items = self.wrapper.getSubItems(int(args['task']))
+		else:
+			items = self.wrapper.getItemsFromList(int(args['list']))
 
 		ret = []
 		for row in items: 
@@ -60,7 +63,8 @@ class Api(object):
 
 			ret.append({
 				"id": singleItem.id,
-				"content": singleItem['content']
+				"content": singleItem['content'],
+				"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING)) > 0)
 			})
 
 		return self.outputJson(ret);

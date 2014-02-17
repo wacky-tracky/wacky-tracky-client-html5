@@ -27,10 +27,15 @@ class Wrapper:
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}})", params = [["listId", listId], ["content", content]])
 
 	def createSubItem(self, itemId, content):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}})", params = [["itemId", listId], ["content", content]]);
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}})", params = [["itemId", itemId], ["content", content]]);
 
 	def getItemsFromList(self, listId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List)-[]->(i:Item) WHERE id(l) = {listId} RETURN i ORDER BY i.content ", params = [["listId", listId]]);
+
+		return results
+
+	def getSubItems(self, parentId):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (p:Item)-[]->(i:Item) WHERE id(p) = {parentId} RETURN i ", params = [["parentId", parentId]]);
 
 		return results
 

@@ -117,7 +117,7 @@ li.list {
 	color: black;
 }
 
-.selected a, .selected > div.task , .selected .task {
+.selected a, .selected > div.task {
 	color: black;
 	font-weight: bold;
 	background-color: beige;
@@ -188,9 +188,12 @@ button {
 	margin: .2em;
 }
 
+button.expand {
+	float: left;
+}
+
 button:disabled {
 	background-color: #bbb;
-	float: left;
 }
 
 button:not([disabled]):hover {
