@@ -4,6 +4,8 @@ import cherrypy
 import wrapper
 import json
 
+from py2neo.neo4j import Direction
+
 jsonContentType = [('Content-Type', 'application/json')]
 
 class Api(object):
@@ -29,7 +31,8 @@ class Api(object):
 
 			ret.append({
 				"id": singleList.id,
-				"title": singleList['title']
+				"title": singleList['title'],
+				"count": len(singleList.get_related_nodes(Direction.OUTGOING))
 			})
 
 		return self.outputJson(ret)

@@ -235,8 +235,12 @@ function List(jsonList) {
 
 	var self = this;
 
-	this.updateTaskCount = function() {
-		this.domSidebarTitleSuffix.text(this.tasks.length);
+	this.updateTaskCount = function(newCount = -1) {
+		if (newCount == -1) {
+			newCount = this.tasks.length;
+		}
+
+		this.domSidebarTitleSuffix.text(newCount);
 	};
 
 	this.domSidebarTitle.click(function(e) {
@@ -284,7 +288,7 @@ function List(jsonList) {
 		this.tasks.length = 0;
 	};
 
-	this.updateTaskCount();
+	this.updateTaskCount(this.fields.count);
 
 	return this;
 }
@@ -347,6 +351,8 @@ function Sidebar() {
 	};
 
 	Sidebar.prototype.renderLists = function(lists) {
+		self.clear();
+
 		$(lists).each(function(index, list) {
 			self.addList(new List(list));
 		});
