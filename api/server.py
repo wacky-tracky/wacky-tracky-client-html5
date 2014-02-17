@@ -12,6 +12,13 @@ class Api(object):
 	wrapper = wrapper.Wrapper()
 
 	@cherrypy.expose
+	def tag(self, *path, **args):
+		if self.wrapper.hasItemGotTag(int(args['item']), int(args['tag'])):
+			self.wrapper.untag(int(args['item']), int(args['tag']));
+		else:
+			self.wrapper.tag(int(args['item']), int(args['tag']));
+
+	@cherrypy.expose
 	def default(self, *args, **kwargs):
 		return "Index"
 
@@ -19,6 +26,26 @@ class Api(object):
 		cherrypy.response.headers['Content-Type'] = 'application/json'
 
 		return json.dumps(structure);
+
+	@cherrypy.expose
+	def createTag(self, *path, **args):
+		self.wrapper.createTag(args['title'])
+
+	@cherrypy.expose
+	def listTags(self, *path, **args):
+		tags = self.wrapper.getTags();
+
+		ret = []
+
+		for row in tags:
+			singleTag = row[0]
+
+			ret.append({
+				"id": singleTag.id,
+				"title": singleTag['title']
+			});
+
+		return self.outputJson(ret);
 
 	@cherrypy.expose
 	def listLists(self, *path, **args):
@@ -53,10 +80,23 @@ class Api(object):
 
 			return self.outputJson(self.normalizeItem(item));
 
+
+	def getItemTags(self, singleItem):
+		ret = []
+
+		for tag in singleItem.get_related_nodes(Direction.EITHER, "tagged"):
+			ret.append({
+				"id": tag.id,
+				"title": tag['title']
+			});
+
+		return ret;
+
 	def normalizeItem(self, singleItem):
 		return {
-			"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING)) > 0),
+			"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING, 'owns')) > 0),
 			"content": singleItem['content'],
+			"tags": self.getItemTags(singleItem),
 			"id": singleItem.id
 		}
 
@@ -85,7 +125,6 @@ class Api(object):
 	
 
 def CORS():
-	print "before finalize"
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
 
 api = Api();

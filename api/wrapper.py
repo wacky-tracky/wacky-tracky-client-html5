@@ -23,6 +23,14 @@ class Wrapper:
 
 		return results;
 
+	def getTags(self):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User)-[]->(t:Tag) WHERE u.username = {username} RETURN t ", params = [["username", self.username]]);
+
+		return results;
+
+	def createTag(self, title):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERe u.username = {username} CREATE (u)-[:owns]->(t:Tag {title: {title}}) ", params = [["username", self.username], ["title", title]]);
+
 	def createListItem(self, listId, content):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}}) RETURN i", params = [["listId", listId], ["content", content]])
 
@@ -44,7 +52,18 @@ class Wrapper:
 		return results
 
 	def deleteTask(self, itemId):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() DELETE i,r ", params = [["itemId", itemId]])
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() OPTIONAL MATCH (i)-[linkTagged:tagged]->(tag:Tag) DELETE i,r, linkTagged, tag", params = [["itemId", itemId]])
 
 	def deleteList(self, itemId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} OPTIONAL MATCH (l)<-[userLink]-() DELETE l, userLink", params = [["listId", itemId]]);
+
+	def tag(self, itemId, tagId):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item), (t:Tag) WHERE id(i) = {itemId} AND id(t) = {tagId} CREATE UNIQUE (i)-[:tagged]->(t) ", params = [["tagId", tagId], ["itemId", itemId]]);
+
+	def untag(self, itemId, tagId):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item)-[link:tagged]->(t:Tag) WHERE id(i) = {itemId} AND id(t) = {tagId} DELETE link ", params = [["itemId", itemId], ["tagId", tagId]]);
+
+	def hasItemGotTag(self, itemId, tagId):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item)-[r]->(t:Tag) WHERE id(i) = {itemId} AND id(t) = {tagId} RETURN r", params = [["itemId", itemId], ["tagId", tagId]]);
+
+		return len(results) > 0

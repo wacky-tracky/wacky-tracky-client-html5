@@ -53,6 +53,10 @@ div.task:hover {
 	background-color: lightskyblue;
 }
 
+div.task button {
+	margin-top: 0;
+}
+
 .taskButtons {
 	float: right;
 }
@@ -237,4 +241,29 @@ div.subTasks {
 
 .itemIinput input {
 	display: inline-block;
+}
+
+.tag {
+	float: right;
+}
+
+.tag.selected {
+	background-color: limegreen;
+}
+
+ul.tags {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	margin-top: 1em;
+}
+
+ul.tags li {
+	border: 1px solid #bbb;
+	margin: 6px;
+	padding: 2px;
+}
+
+ul.tags li:hover {
+	background-color: beige;
 }

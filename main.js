@@ -1,5 +1,18 @@
 window.host = "http://" + window.location.hostname + ":8082/"
 
+function Tag(tagObject) {
+	this.obj = tagObject;
+
+	var self = this;
+
+	this.domButtonSet = $('<button>').text(this.obj.title);
+	this.domSidebar = $('<li>').text(this.obj.title);
+
+	Tag.prototype.toDomSidebar = function() {
+		return this.domSidebar;
+	};
+}
+
 function Task(taskObject) {
 	var self = this;
 	this.parent = null;
@@ -43,10 +56,46 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.openEditDialog = function() {
+		this.closeEditDialog();
+
 		this.domEditDialog = $('<div class = "editDialog" />');
 		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
 
-		this.dom.append(this.domEditDialog);
+		this.dom.append(this.domEditDialog).fadeIn();
+		this.domEditDialog.slideDown();
+	};
+
+	Task.prototype.addTagButtons = function() {
+		var self = this;
+
+		$(window.sidebar.tags).each(function(i, tag) {
+			button = self.domTask.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title)
+			button.click(function() {
+				self.tagItem(tag);
+			});
+		});
+	};
+
+	Task.prototype.tagItem = function(tag) {
+		$.ajax({
+			url: window.host + 'tag',
+			data: {
+				item: this.fields.id,
+				tag: tag.obj.id
+			},
+		});
+
+		this.toggleTag(tag.obj.id);
+	};
+
+	Task.prototype.toggleTag = function(id) {
+		tag = this.domTask.children('.tag' + id)
+		
+		if (tag.hasClass('selected')) {
+			tag.removeClass('selected');
+		} else {
+			tag.addClass('selected');
+		}
 	};
 
 	Task.prototype.closeEditDialog = function() {
@@ -109,6 +158,12 @@ function Task(taskObject) {
 		window.toDelete = null;
 	};
 
+	this.addTagButtons();
+	$(this.fields.tags).each(function(i, tag) {
+		self.toggleTag(tag.id);
+	});
+
+
 	return this;
 }
 
@@ -119,6 +174,7 @@ function init() {
 	$('body').append(window.sidebar.toDom());
 
 	window.sidebar.refreshLists();
+	window.sidebar.refreshTags();
 
 	window.content = new Content();
 	$('body').append(window.content.toDom());
@@ -220,6 +276,7 @@ function TaskInputBox(label) {
 
 	return this;
 }
+
 
 $.fn.createAppend = function(constructor) {
 	var childElement = $(constructor);
@@ -377,9 +434,28 @@ function Sidebar() {
 	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidebarResized});
 	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
-	this.domButtonNewList = this.dom.createAppend('<button>New...</button>').click(function() { self.createList(); });
+	this.domTags = this.dom.createAppend('<ul class = "tags" />');
+	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
+	this.domButtonNewTag = this.dom.createAppend('<button>New Tag</button>').click(function() { self.createTag(); });
 
 	this.lists = [];
+	this.tags = [];
+
+	Sidebar.prototype.createTag = function() {
+		var title = window.prompt("Tag name?");
+
+		if (title == "" || title == null) {
+			return;
+		}
+
+		$.ajax({
+			url: window.host + '/createTag',
+			data: {
+				title: title
+			},
+			success: this.refreshTags
+		});
+	};
 
 	Sidebar.prototype.createList = function() {
 		var title = window.prompt("List name?");
@@ -401,6 +477,11 @@ function Sidebar() {
 	Sidebar.prototype.addList = function(list) {
 		this.domLists.append(list.toDomSidebar());
 		this.lists.push(list);
+	};
+
+	Sidebar.prototype.addTag = function(tag) {
+		this.domTags.append(tag.toDomSidebar());
+		this.tags.push(tag);
 	};
 
 	Sidebar.prototype.toDom = function() {
@@ -425,6 +506,19 @@ function Sidebar() {
 		})
 	};
 
+	Sidebar.prototype.refreshTags = function() {
+		$.ajax({
+			url: window.host + 'listTags',
+			success: this.renderTags
+		});
+	};
+
+	Sidebar.prototype.renderTags = function(tags) {
+		$(tags).each(function(index, tag) {
+			self.addTag(new Tag(tag));
+		});
+	};
+
 	Sidebar.prototype.renderLists = function(lists) {
 		self.clear();
 
@@ -444,6 +538,12 @@ $(document).keyup(function(e) {
 	if (e.keyCode == 27) {
 		if (window.selectedItem != null) {
 			window.selectedItem.deselect();
+		}
+	}
+
+	if (e.keyCode == 46) {
+		if (window.selectedItem != null) {
+			window.selectedItem.del();
 		}
 	}
 });
