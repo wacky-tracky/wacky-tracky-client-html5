@@ -153,6 +153,10 @@ function Content() {
 }
 
 function newTask(text) {
+	if (text == null || text == "") {
+		return;
+	};
+
 	$('input#task').val('');
 
 	data = { content: text }
