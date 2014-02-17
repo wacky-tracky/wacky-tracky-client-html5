@@ -24,10 +24,14 @@ class Wrapper:
 		return results;
 
 	def createListItem(self, listId, content):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}})", params = [["listId", listId], ["content", content]])
+		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}}) RETURN i", params = [["listId", listId], ["content", content]])
+
+		return results
 
 	def createSubItem(self, itemId, content):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}})", params = [["itemId", itemId], ["content", content]]);
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}}) RETURN i", params = [["itemId", itemId], ["content", content]]);
+
+		return results
 
 	def getItemsFromList(self, listId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List)-[]->(i:Item) WHERE id(l) = {listId} RETURN i ORDER BY i.content ", params = [["listId", listId]]);
@@ -41,3 +45,6 @@ class Wrapper:
 
 	def deleteTask(self, itemId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() DELETE i,r ", params = [["itemId", itemId]])
+
+	def deleteList(self, itemId):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} OPTIONAL MATCH (l)<-[userLink]-() DELETE l, userLink", params = [["listId", itemId]]);

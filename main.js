@@ -86,7 +86,7 @@ function Task(taskObject) {
 	Task.prototype.del = function(i) {
 		$.ajax({
 			url: window.host + '//deleteTask',
-			data: { id: this.fields.id }
+			data: { id: this.fields.id },
 		});
 
 		this.dom.remove();
@@ -151,14 +151,14 @@ function newTask(text) {
 	}
 
 	$.ajax({
-		url: window.host + '//createTask',
+		url: window.host + 'createTask',
 		success: renderTaskCreated,
 		data: data
 	});
 }
 
 function renderTaskCreated(task) {
-	window.content.list.add(task);
+	window.selectedItem.addSubtask(new Task(task));
 }
 
 function TaskInputBox(label) {
@@ -323,6 +323,14 @@ function List(jsonList) {
 	List.prototype.clear = function() {
 		this.domList.children().remove();
 		this.tasks.length = 0;
+	};
+
+	List.prototype.del = function() {
+		$.ajax({
+			url: window.host + 'deleteList',
+			data: { id: this.fields.id },
+			success: window.sidebar.refreshLists()
+		})
 	};
 
 	this.updateTaskCount(this.fields.count);

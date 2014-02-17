@@ -44,11 +44,21 @@ class Api(object):
 	@cherrypy.expose
 	def createTask(self, *path, **args):
 		if (args['parentType'] == "list"):
-			self.wrapper.createListItem(int(args['parentId']), args['content'])
+			createdItems = self.wrapper.createListItem(int(args['parentId']), args['content'])
 		else:
-			self.wrapper.createSubItem(int(args['parentId']), args['content'])
+			createdItems = self.wrapper.createSubItem(int(args['parentId']), args['content'])
 
-		return "{'message': 'created'}"
+		for row in createdItems:
+			item = row[0]
+
+			return self.outputJson(self.normalizeItem(item));
+
+	def normalizeItem(self, singleItem):
+		return {
+			"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING)) > 0),
+			"content": singleItem['content'],
+			"id": singleItem.id
+		}
 
 	@cherrypy.expose
 	def listTasks(self, *path, **args):
@@ -61,17 +71,17 @@ class Api(object):
 		for row in items: 
 			singleItem = row[0]
 
-			ret.append({
-				"id": singleItem.id,
-				"content": singleItem['content'],
-				"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING)) > 0)
-			})
+			ret.append(self.normalizeItem(singleItem))
 
 		return self.outputJson(ret);
 
 	@cherrypy.expose
 	def deleteTask(self, *path, **args):
 		self.wrapper.deleteTask(int(args['id']))
+
+	@cherrypy.expose
+	def deleteList(self, *path, **args):
+		self.wrapper.deleteList(int(args['id']));
 	
 
 def CORS():
