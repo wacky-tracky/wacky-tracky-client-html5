@@ -277,11 +277,15 @@ function List(jsonList) {
 	};
 
 	this.domSidebarTitle.click(function(e) {
-		requestTasks(self);
+		self.select();
+	});
+
+	List.prototype.select = function() {
+		requestTasks(this);
 
 		window.sidebar.deselectAll();
-		self.domSidebar.addClass('selected');
-	});
+		this.domSidebar.addClass('selected');
+	};
 
 	List.prototype.toDomSidebar = function () {
 		return this.domSidebar;
@@ -389,6 +393,10 @@ function Sidebar() {
 		$(lists).each(function(index, list) {
 			self.addList(new List(list));
 		});
+
+		if (self.lists.length > 0) {
+			self.lists[0].select();
+		}
 	};
 
 	return this;
