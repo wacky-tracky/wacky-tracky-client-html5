@@ -375,7 +375,7 @@ function Sidebar() {
 	this.dom = $('<div id = "sidebar" />');
 	this.dom.model(this);
 	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidebarResized});
-	this.domTitle = this.dom.createAppend('<h2>WackyTracky</h2>');
+	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
 	this.domButtonNewList = this.dom.createAppend('<button>New...</button>').click(function() { self.createList(); });
 

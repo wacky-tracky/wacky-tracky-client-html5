@@ -29,7 +29,7 @@ class Wrapper:
 		return results
 
 	def createSubItem(self, itemId, content):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}}) RETURN i", params = [["itemId", itemId], ["content", content]]);
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} CREATE i-[:owns]->(ni:Item {content: {content}}) RETURN ni", params = [["itemId", itemId], ["content", content]]);
 
 		return results
 
