@@ -117,7 +117,7 @@ li.list {
 	color: black;
 }
 
-.selected a, .selected, .selected .task {
+.selected a, .selected > div.task , .selected .task {
 	color: black;
 	font-weight: bold;
 	background-color: beige;
@@ -188,7 +188,12 @@ button {
 	margin: .2em;
 }
 
-button:hover {
+button:disabled {
+	background-color: #bbb;
+	float: left;
+}
+
+button:not([disabled]):hover {
 	background-color: #fff;
 	border-color: #ccc;
 	cursor: pointer;
@@ -221,4 +226,12 @@ div.subTasks {
 	-moz-user-select: none;
 	user-select: none;
 	padding: 0.5em;
+}
+
+.itemInput span {
+	display: inline-block;
+}
+
+.itemIinput input {
+	display: inline-block;
 }

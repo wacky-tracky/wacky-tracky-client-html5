@@ -7,8 +7,9 @@ function Task(taskObject) {
 
 	this.dom = $('<div class = "taskWrapper" />')
 	this.domTask = this.dom.createAppend('<div class = "task" />').text('Task: ' + this.fields.content);
-	this.domTask.click(function() { self.setParentTask(); });
+	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
+	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>');
 	this.domTaskButtons = this.domTask.createAppend('<div class = "taskButtons" />');
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
@@ -40,20 +41,24 @@ function Task(taskObject) {
 		return this.dom;
 	};
 
-	Task.prototype.setParentTask = function() {
-		if (window.selectItem !== null) {
-			window.selectItem.deselect();
+	Task.prototype.select = function() {
+		if (window.selectedItem !== null) {
+			window.selectedItem.deselect();
 		}
 
-		window.selectItem = this;
+		window.content.taskInput.setLabel(this.fields.content);
+
+		window.selectedItem = this;
 		this.dom.addClass('selected');
 	};
 
 	Task.prototype.deselect = function() {
 		this.closeEditDialog();
 
-		window.selectItem = null;
+		window.selectedItem = null;
 		this.dom.removeClass('selected');
+
+		window.content.taskInput.setLabel('');
 	};
 
 	Task.prototype.del = function(i) {
@@ -71,7 +76,7 @@ function Task(taskObject) {
 }
 
 function init() {
-	window.selectItem = null;
+	window.selectedItem = null;
 
 	window.sidebar = new Sidebar();
 	$('body').append(window.sidebar.toDom());
@@ -97,7 +102,7 @@ function Content() {
 	};
 
 	Content.prototype.setList = function(list) {
-		window.selectItem = null;
+		window.selectedItem = null;
 
 		this.list = list;
 		this.domListContainer.children().remove();
@@ -115,11 +120,11 @@ function newTask(text) {
 
 	data = { content: text };
 	
-	if (window.selectItem === null) {
+	if (window.selectedItem === null) {
 		data.parentId = window.content.list.fields.id;
 		data.parentType = 'list';
 	} else {
-		data.parentId = window.selectItem.fields.id;
+		data.parentId = window.selectedItem.fields.id;
 		data.parentType = 'task';
 	}
 
@@ -137,7 +142,8 @@ function renderTaskCreated(task) {
 function TaskInputBox(label) {
 	this.label = null;
 
-	this.dom = $('<div />');
+	this.dom = $('<div class = "itemInput" />');
+	this.domLabel = this.dom.createAppend('<span />');
 	this.domInput = this.dom.createAppend('<input id = "task" value = "" />');
 	this.domInput.attr('disabled', 'disabled');
 	this.domInput.model(this);
@@ -156,6 +162,11 @@ function TaskInputBox(label) {
 	TaskInputBox.prototype.enable = function() {
 		this.domInput.removeAttr('disabled');
 		this.domInput.focus();
+	};
+	
+	TaskInputBox.prototype.setLabel = function(lbl) {
+		this.domLabel.text(lbl + ': ');
+		this.domInput.width(this.dom.width() - this.domLabel.width() - 20);
 	};
 
 	return this;
@@ -235,8 +246,8 @@ function List(jsonList) {
 
 	var self = this;
 
-	this.updateTaskCount = function(newCount = -1) {
-		if (newCount == -1) {
+	this.updateTaskCount = function(newCount) {
+		if (newCount == null) {
 			newCount = this.tasks.length;
 		}
 
@@ -360,3 +371,11 @@ function Sidebar() {
 
 	return this;
 }
+
+$(document).keyup(function(e) {
+	if (e.keyCode == 27) {
+		if (window.selectedItem != null) {
+			window.selectedItem.deselect();
+		}
+	}
+});
