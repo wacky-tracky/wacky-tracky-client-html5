@@ -6,9 +6,9 @@ body {
 }
 
 h2 {
-
 	font-family: "Overpass", sans-serif;
 }
+
 body, input, button {
 	font-family: sans-serif;
 }
@@ -107,10 +107,11 @@ li.list {
 }
 
 .listTitle {
+	font-family: "Overpass", sans-serif;
+	font-size: 12pt;
 	display: block;
 	text-decoration: none;
 	padding: .4em;
-	font-weight: bold;
 	color: 000;;	
 	text-shadow: 1px 1px #ccc;
 	border-bottom: 1px dashed #ccc;
