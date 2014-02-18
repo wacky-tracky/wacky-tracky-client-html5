@@ -19,7 +19,7 @@ function Task(taskObject) {
 	this.fields = taskObject;
 
 	this.dom = $('<div class = "taskWrapper" />')
-	this.domTask = this.dom.createAppend('<div class = "task" />').text('Task: ' + this.fields.content);
+	this.domTask = this.dom.createAppend('<div class = "task" />').text(this.fields.content);
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
 	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
