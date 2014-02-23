@@ -74,8 +74,8 @@ class Wrapper:
 		for row in results:
 			user = row[0]
 
-			return {
-				"username": user['username']
-			}
+			return [{
+				"username": user['username'],
+			}, user['password']]
 
 		return None
