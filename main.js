@@ -166,7 +166,15 @@ function Task(taskObject) {
 	return this;
 }
 
+function showLogin() {
+	window.sidebar.remove();
+
+	$.ajax(
+	}
+}
+
 function init() {
+	showLogin();
 	window.selectedItem = null;
 
 	window.sidebar = new Sidebar();
