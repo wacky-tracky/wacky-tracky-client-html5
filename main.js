@@ -1,14 +1,14 @@
-window.host = "http://" + window.location.hostname + ":8082/"
+window.host = "http://" + window.location.hostname + ":8082/";
 
 function Tag(tagObject) {
 	this.obj = tagObject;
 
 	var self = this;
 
-	this.domSidebar = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
+	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
 
-	Tag.prototype.toDomSidebar = function() {
-		return this.domSidebar;
+	Tag.prototype.toDomSidePanel = function() {
+		return this.domSidePanel;
 	};
 }
 
@@ -17,7 +17,7 @@ function Task(taskObject) {
 	this.parent = null;
 	this.fields = taskObject;
 
-	this.dom = $('<div class = "taskWrapper" />')
+	this.dom = $('<div class = "taskWrapper" />');
 	this.domTask = this.dom.createAppend('<div class = "task" />').text(this.fields.content);
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
@@ -42,7 +42,7 @@ function Task(taskObject) {
 			url: window.host + '/listTasks',
 			data: { task: this.fields.id },
 			success: this.renderSubtasks
-		})
+		});
 	};
 
 	Task.prototype.renderSubtasks = function(subtasks) {
@@ -67,8 +67,8 @@ function Task(taskObject) {
 	Task.prototype.addTagButtons = function() {
 		var self = this;
 
-		$(window.sidebar.tags).each(function(i, tag) {
-			button = self.domTask.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title)
+		$(window.sidepanel.tags).each(function(i, tag) {
+			button = self.domTask.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title);
 			button.click(function() {
 				self.tagItem(tag);
 			});
@@ -81,14 +81,14 @@ function Task(taskObject) {
 			data: {
 				item: this.fields.id,
 				tag: tag.obj.id
-			},
+			}
 		});
 
 		this.toggleTag(tag.obj.id);
 	};
 
 	Task.prototype.toggleTag = function(id) {
-		tag = this.domTask.children('.tag' + id)
+		tag = this.domTask.children('.tag' + id);
 		
 		if (tag.hasClass('selected')) {
 			tag.removeClass('selected');
@@ -100,7 +100,7 @@ function Task(taskObject) {
 	Task.prototype.closeEditDialog = function() {
 		this.dom.children('.editDialog').remove();
 		this.domEditDialog = null;
-	}
+	};
 
 	Task.prototype.addSubtask = function(t) {
 		t.parent = this;
@@ -167,26 +167,91 @@ function Task(taskObject) {
 }
 
 function showLogin() {
-	window.sidebar.remove();
+	$('body').css('display', 'block');
 
-	$.ajax(
+	console.log(window.sidepanel);
+	if (typeof(window.sidepanel) != "undefined") {
+		window.sidepanel.remove();
+	}
+
+	if (typeof(window.loginForm) == "undefined") {
+		window.loginForm = $('<div id = "loginForm" />');
+		usernameRow = window.loginForm.createAppend('<p />');
+		usernameRow.createAppend('<span>Username</span>');
+		usernameInput = usernameRow.createAppend('<input id = "username" />');
+
+		passwordRow = window.loginForm.createAppend('<p />');
+		passwordRow.createAppend('<span>Password</span>');
+		passwordInput = passwordRow.createAppend('<input id = "password" />');
+		passwordInput.onEnter(function() {
+			tryLogin(usernameInput.val(), passwordInput.val());	
+		});
+	}
+
+	if ($('body').children('#loginForm').length === 0) {
+		$('body').append(window.loginForm);
 	}
 }
 
-function init() {
-	showLogin();
-	window.selectedItem = null;
+function hideLogin() {
+	$('body').css('display', 'table');
 
-	window.sidebar = new Sidebar();
-	$('body').append(window.sidebar.toDom());
+	$('body').children('#loginForm').remove();
+}
 
-	window.sidebar.refreshLists();
-	window.sidebar.refreshTags();
+function tryLogin(username, password) {
+	$.ajax({
+		url: window.host + 'authenticate',
+		error: loginFail,
+		success: loginSuccess,
+		data: {
+			username: username,
+			password: password
+		}
+	});
+}
+
+function loginFail(res, dat) {
+	message = "Login failure";
+
+	if (typeof(res.responseJSON) !== "undefined") {
+		message += ": " + res.responseJSON.message;
+	}
+
+	generalError(null, message);
+}
+
+function loginSuccess() {
+	hideLogin();
+	
+	window.sidepanel = new SidePanel();
+	$('body').append(window.sidepanel.toDom());
+
+	window.sidepanel.refreshLists();
+	window.sidepanel.refreshTags();
 
 	window.content = new Content();
 	$('body').append(window.content.toDom());
 
-	sidebarResized();
+	sidepanelResized();
+}
+
+function initSuccess() {
+	showLogin();
+}
+
+function initFailure() {
+	generalError(null, "Could not init. Is the server running?");
+}
+
+function init() {
+	window.selectedItem = null;
+
+	$.ajax({
+		url: window.host + 'init',
+		error: initFailure,
+		success: initSuccess
+	});
 }
 
 function Content() {
@@ -216,13 +281,13 @@ function Content() {
 }
 
 function newTask(text) {
-	if (text == null || text == "") {
+	if ($.isEmptyObject(text)) {
 		return;
-	};
+	}
 
 	$('input#task').val('');
 
-	data = { content: text }
+	data = { content: text };
 
 	if (window.selectedItem === null) {
 		data.parentId = window.content.list.fields.id;
@@ -240,7 +305,7 @@ function newTask(text) {
 }
 
 function renderTaskCreated(task) {
-	if (window.selectedItem == null) {
+	if (window.selectedItem === null) {
 		window.content.list.add(new Task(task));
 	} else {
 		window.selectedItem.addSubtask(new Task(task));
@@ -273,8 +338,8 @@ function TaskInputBox(label) {
 	};
 	
 	TaskInputBox.prototype.setLabel = function(label) {
-		if (label != '') {
-			label += ': ' 
+		if (!$.isEmptyObject(label)) {
+			label += ': ';
 		}
 
 		this.domLabel.text(label);
@@ -284,6 +349,13 @@ function TaskInputBox(label) {
 	return this;
 }
 
+$.fn.onEnter = function(callback) {
+	this.keyup(function(e) {
+		if (e.keyCode == 13) {
+			callback();
+		}
+	});
+};
 
 $.fn.createAppend = function(constructor) {
 	var childElement = $(constructor);
@@ -329,7 +401,7 @@ function ListControls(list) {
 
 	var self = this;
 
-	this.dom = $('<div class = "buttonToolbar listControls" />')
+	this.dom = $('<div class = "buttonToolbar listControls" />');
 	this.dom.model(this);
 	this.domLabel = this.dom.createAppend('<span />').text(this.list.fields.title);
 	this.domButtonDelete = this.dom.createAppend('<button />').text("Delete");
@@ -337,11 +409,11 @@ function ListControls(list) {
 
 	ListControls.prototype.del = function() {
 		this.list.del();
-	}
+	};
 
 	ListControls.prototype.toDom = function() {
 		return this.dom;
-	}
+	};
 
 	return this;
 }
@@ -349,10 +421,10 @@ function ListControls(list) {
 function List(jsonList) {
 	this.fields = jsonList;
 
-	this.domSidebar = $('<li class = "list" />');
-	this.domSidebar.model(this);
-	this.domSidebarTitle = this.domSidebar.createAppend('<a href = "#" class = "listTitle" />').text(this.fields.title);
-	this.domSidebarTitleSuffix = this.domSidebarTitle.createAppend('<span class = "subtle" />');
+	this.domSidePanel = $('<li class = "list" />');
+	this.domSidePanel.model(this);
+	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />').text(this.fields.title);
+	this.domSidePanelTitleSuffix = this.domSidePanelTitle.createAppend('<span class = "subtle" />');
 
 	this.domList = $('<ul id = "taskList" />');
 
@@ -361,26 +433,26 @@ function List(jsonList) {
 	var self = this;
 
 	this.updateTaskCount = function(newCount) {
-		if (newCount == null) {
+		if (newCount === null) {
 			newCount = this.tasks.length;
 		}
 
-		this.domSidebarTitleSuffix.text(newCount);
+		this.domSidePanelTitleSuffix.text(newCount);
 	};
 
-	this.domSidebarTitle.click(function(e) {
+	this.domSidePanelTitle.click(function(e) {
 		self.select();
 	});
 
 	List.prototype.select = function() {
 		requestTasks(this);
 
-		window.sidebar.deselectAll();
-		this.domSidebar.addClass('selected');
+		window.sidepanel.deselectAll();
+		this.domSidePanel.addClass('selected');
 	};
 
-	List.prototype.toDomSidebar = function () {
-		return this.domSidebar;
+	List.prototype.toDomSidePanel = function () {
+		return this.domSidePanel;
 	}; 
 
 	List.prototype.toDomContent = function() {
@@ -407,7 +479,7 @@ function List(jsonList) {
 	};
 
 	List.prototype.deselect = function() {
-		this.domSidebar.removeClass('selected');
+		this.domSidePanel.removeClass('selected');
 	};
 
 	List.prototype.clear = function() {
@@ -419,8 +491,8 @@ function List(jsonList) {
 		$.ajax({
 			url: window.host + 'deleteList',
 			data: { id: this.fields.id },
-			success: window.sidebar.refreshLists()
-		})
+			success: window.sidepanel.refreshLists()
+		});
 	};
 
 	this.updateTaskCount(this.fields.count);
@@ -428,17 +500,17 @@ function List(jsonList) {
 	return this;
 }
 
-function sidebarResized() {
-	window.content.dom.css('left', window.sidebar.dom.css('width'));
+function sidepanelResized() {
+	window.content.dom.css('left', window.sidepanel.dom.css('width'));
 	window.content.dom.css('right', $('body').css('width'));
 }
 
-function Sidebar() {
+function SidePanel() {
 	var self = this;
 
-	this.dom = $('<div id = "sidebar" />');
+	this.dom = $('<div id = "sidepanel" />');
 	this.dom.model(this);
-	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidebarResized});
+	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidepanelResized});
 	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
 	this.domTags = this.dom.createAppend('<ul class = "tags" />');
@@ -448,10 +520,10 @@ function Sidebar() {
 	this.lists = [];
 	this.tags = [];
 
-	Sidebar.prototype.createTag = function() {
+	SidePanel.prototype.createTag = function() {
 		var title = window.prompt("Tag name?");
 
-		if (title == "" || title == null) {
+		if ($.isEmtpyObject(title)) {
 			return;
 		}
 
@@ -464,10 +536,10 @@ function Sidebar() {
 		});
 	};
 
-	Sidebar.prototype.createList = function() {
+	SidePanel.prototype.createList = function() {
 		var title = window.prompt("List name?");
 
-		if (title == "" || title == null) {
+		if ($.isEmptyObject(title)) {
 			return;
 		}
 
@@ -479,59 +551,59 @@ function Sidebar() {
 			success: this.refreshLists
 		});
 
-	}
+	};
 
-	Sidebar.prototype.addList = function(list) {
-		this.domLists.append(list.toDomSidebar());
+	SidePanel.prototype.addList = function(list) {
+		this.domLists.append(list.toDomSidePanel());
 		this.lists.push(list);
 	};
 
-	Sidebar.prototype.addTag = function(tag) {
-		this.domTags.append(tag.toDomSidebar());
+	SidePanel.prototype.addTag = function(tag) {
+		this.domTags.append(tag.toDomSidePanel());
 		this.tags.push(tag);
 	};
 
-	Sidebar.prototype.toDom = function() {
+	SidePanel.prototype.toDom = function() {
 		return this.dom;
 	};
 
-	Sidebar.prototype.clear = function() {
+	SidePanel.prototype.clear = function() {
 		this.domLists.children().remove();
 		this.lists.length = 0;
-	}
+	};
 
-	Sidebar.prototype.deselectAll = function() {
+	SidePanel.prototype.deselectAll = function() {
 		$(this.lists).each(function(index, list) {
 			list.deselect();
 		});
 	};
 
-	Sidebar.prototype.refreshLists = function() {
+	SidePanel.prototype.refreshLists = function() {
 		$.ajax({
 			url: window.host + '/listLists',
 			success: this.renderLists
-		})
+		});
 	};
 
-	Sidebar.prototype.refreshTags = function() {
+	SidePanel.prototype.refreshTags = function() {
 		$.ajax({
 			url: window.host + 'listTags',
 			success: this.renderTags
 		});
 	};
 
-	Sidebar.prototype.renderTags = function(tags) {
-		ret = ""
+	SidePanel.prototype.renderTags = function(tags) {
+		ret = "";
 
 		$(tags).each(function(index, tag) {
-			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: #' + getNextTagColor() + ' }' + "\n"
+			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: #' + getNextTagColor() + ' }' + "\n";
 			self.addTag(new Tag(tag));
 		});
 
 		$('body').append($('<style type = "text/css">' + ret + '</style>'));
 	};
 
-	Sidebar.prototype.renderLists = function(lists) {
+	SidePanel.prototype.renderLists = function(lists) {
 		self.clear();
 
 		$(lists).each(function(index, list) {
@@ -560,18 +632,19 @@ function getNextTagColor() {
 		case 4: return "F9AD81";
 		case 5: return "8882BE";
 		case 6: return "F49AC2";
+		default: return "000000";
 	}
 }
 
 $(document).keyup(function(e) {
 	if (e.keyCode == 27) {
-		if (window.selectedItem != null) {
+		if (window.selectedItem !== null) {
 			window.selectedItem.deselect();
 		}
 	}
 
 	if (e.keyCode == 46) {
-		if (window.selectedItem != null) {
+		if (window.selectedItem !== null) {
 			window.selectedItem.del();
 		}
 	}

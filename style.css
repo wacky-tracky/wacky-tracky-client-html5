@@ -1,5 +1,5 @@
 body {
-	background-color: white;
+	background-color: gray;
 	display: table;
 	padding: 0;
 	margin: 0;
@@ -81,7 +81,7 @@ div.period table {
 	background-color: white;
 }
 
-div#sidebar {
+div#sidepanel {
 	background-color: #fff;
 	box-shadow: 0 0 6px #aaa;
 	border-right: 2px solid darkblue;
@@ -92,7 +92,7 @@ div#sidebar {
 	height: 100%;
 }
 
-div#sidebar h2 {
+div#sidepanel h2 {
 }
 
 ul.lists {
@@ -267,4 +267,14 @@ ul.tags li {
 
 ul.tags li:hover {
 	background-color: beige;
+}
+
+div#loginForm {
+	margin: auto;
+	margin-top: 10em;
+	padding: 1em;
+	border: 1px solid black;
+	box-shadow: 4px lightgray;
+	background-color: white;
+	width: 350px;
 }

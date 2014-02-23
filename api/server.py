@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 import cherrypy
-from cherrypy.lib.sessions import Session
+from cherrypy._cperror import HTTPError
+#from cherrypy.lib.sessions import Session
 import wrapper
 import json
 
@@ -19,9 +20,9 @@ class Api(object):
 		else:
 			self.wrapper.tag(int(args['item']), int(args['tag']));
 
-	@cherrypy.expose
-	def default(self, *args, **kwargs):
-		return "Index"
+#	@cherrypy.expose
+#	def default(self, *args, **kwargs):
+#		return "Index"
 
 	def outputJson(self, structure):
 		cherrypy.response.headers['Content-Type'] = 'application/json'
@@ -124,11 +125,26 @@ class Api(object):
 	def deleteList(self, *path, **args):
 		self.wrapper.deleteList(int(args['id']));
 
+	def outputJsonError(self, code, msg):
+		cherrypy.response.status = code;
+
+		return self.outputJson({
+			"type": "Error",
+			"message": msg
+		})
 
 	@cherrypy.expose
 	def authenticate(self, *path, **args):
-		print Session.id
-		pass	
+		user = api.wrapper.getUser();
+
+		if (user == None):
+			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
+		else:
+			return self.outputJson(user);
+
+	@cherrypy.expose
+	def init(self, *path, **args):
+		return "Hi"
 
 def CORS():
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
@@ -136,15 +152,15 @@ def CORS():
 api = Api();
 api.wrapper.username = "auser"
 
-print cherrypy.session.id
+#print cherrypy.session.id
 
 cherrypy.config.update({
 	'server.socket_host': '0.0.0.0',
 	'server.socket_port': 8082,
-	'tools.sessions.on': True,
-	'tools.sessions.storage_type': 'file',
-	'tools.sessions.storage_path': './sessions',
-	'tools.sessions.timeout': 60,
+#	'tools.sessions.on': True,
+#	'tools.sessions.storage_type': 'file',
+#	'tools.sessions.storage_path': './sessions',
+#	'tools.sessions.timeout': 60,
 	'tools.CORS.on': True
 });
 cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS);

@@ -67,3 +67,15 @@ class Wrapper:
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item)-[r]->(t:Tag) WHERE id(i) = {itemId} AND id(t) = {tagId} RETURN r", params = [["itemId", itemId], ["tagId", tagId]]);
 
 		return len(results) > 0
+
+	def getUser(self):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} RETURN u LIMIT 1", params = [["username", self.username]]);
+
+		for row in results:
+			user = row[0]
+
+			return {
+				"username": user['username']
+			}
+
+		return None
