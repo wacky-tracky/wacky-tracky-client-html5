@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import cherrypy
+from cherrypy.lib.sessions import Session
 import wrapper
 import json
 
@@ -122,7 +123,12 @@ class Api(object):
 	@cherrypy.expose
 	def deleteList(self, *path, **args):
 		self.wrapper.deleteList(int(args['id']));
-	
+
+
+	@cherrypy.expose
+	def authenticate(self, *path, **args):
+		print Session.id
+		pass	
 
 def CORS():
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
@@ -130,9 +136,15 @@ def CORS():
 api = Api();
 api.wrapper.username = "auser"
 
+print cherrypy.session.id
+
 cherrypy.config.update({
 	'server.socket_host': '0.0.0.0',
 	'server.socket_port': 8082,
+	'tools.sessions.on': True,
+	'tools.sessions.storage_type': 'file',
+	'tools.sessions.storage_path': './sessions',
+	'tools.sessions.timeout': 60,
 	'tools.CORS.on': True
 });
 cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS);
