@@ -84,13 +84,12 @@ class Wrapper:
 
 		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} RETURN u LIMIT 1", params = [["username", username]]);
 
-		for row in results:
-			user = row[0]
+		if len(results) == 0:
+			return [None, None]
+		else: 
+			for row in results:
+				user = row[0]
 
-			print user
-
-			return [{
-				"username": user['username'],
-			}, user['password']]
-
-		return [None, None]
+				return [{
+					"username": user['username'],
+				}, user['password']]
