@@ -157,7 +157,7 @@ class Api(object):
 		try:
 			wallpapers = []
 			
-			for wallpaper in os.listdir("wallpapers"):
+			for wallpaper in os.listdir("../wallpapers"):
 				if wallpaper.endswith(".png") or wallpaper.endswith(".jpg"):
 					wallpapers.append(wallpaper)
 		except Exception as e:
