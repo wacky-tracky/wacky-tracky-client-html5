@@ -9,6 +9,11 @@ h2 {
 	font-family: "Overpass", sans-serif;
 }
 
+#loginForm h2 {
+	margin: 0;
+	padding: 0;
+}
+
 body, input, button {
 	font-family: sans-serif;
 }
@@ -276,13 +281,15 @@ ul.tags li:hover {
 }
 
 div#loginForm {
-	margin: auto;
-	margin-top: 10em;
+	position: absolute;
+	left: 1em;
+	top: 10em;
 	padding: 1em;
 	border: 1px solid black;
 	box-shadow: 4px lightgray;
-	background-color: white;
+	background-color: rgba(255,255,255,.7);
 	width: 350px;
+	border-radius: .4em;
 }
 
 label {
