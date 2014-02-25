@@ -2,7 +2,7 @@
 
 import cherrypy
 from cherrypy._cperror import HTTPError
-#from cherrypy.lib.sessions import Session
+from cherrypy.lib import sessions
 import wrapper
 import json
 import random
@@ -137,12 +137,19 @@ class Api(object):
 
 	@cherrypy.expose
 	def authenticate(self, *path, **args):
-		user = api.wrapper.getUser();
+		user, password = api.wrapper.getUser();
 
-		if (user == None):
+		if user == None:
 			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
-		else:
-			return self.outputJson(user);
+
+		print password
+		print args['password']
+		
+		if args['password'] != password:
+			return self.outputJsonError(403, "Password is incorrect.")
+
+		cherrypy.session['user'] = user
+		return self.outputJson(user);
 
 	def randomWallpaper(self):
 		wallpapers = []
@@ -163,26 +170,29 @@ class Api(object):
 
 	@cherrypy.expose
 	def init(self, *path, **args):
+		session = cherrypy.session
+		session['guest'] = True;
+		session.save();
+
 		return self.outputJson({
 			"wallpaper": self.randomWallpaper()
 		});
-
+		
 def CORS():
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
 
 api = Api();
 api.wrapper.username = "auser"
 
-#print cherrypy.session.id
-
 cherrypy.config.update({
 	'server.socket_host': '0.0.0.0',
 	'server.socket_port': 8082,
-#	'tools.sessions.on': True,
-#	'tools.sessions.storage_type': 'file',
-#	'tools.sessions.storage_path': './sessions',
-#	'tools.sessions.timeout': 60,
-	'tools.CORS.on': True
+	'tools.sessions.on': True,
+	'tools.sessions.storage_type': 'file',
+	'tools.sessions.storage_path': './sessions',
+	'tools.sessions.timeout': 60,
+	'tools.CORS.on': True,
+	'sessionFilter.cookie_domain': 'technowax.net:8080',
 });
-cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS);
+cherrypy.tools.CORS = cherrypy.Tool('before_handler', CORS);
 cherrypy.quickstart(api)

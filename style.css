@@ -207,6 +207,12 @@ button:not([disabled]):hover {
 	cursor: pointer;
 }
 
+button.refresh {
+	background-image: url('refresh.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
 .task button {
 	padding: 0;
 }

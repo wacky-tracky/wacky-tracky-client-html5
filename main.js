@@ -196,7 +196,7 @@ function showLogin() {
 
 		passwordRow = window.loginForm.createAppend('<p />');
 		passwordRow.createAppend('<label for = "password">Password</label>');
-		passwordInput = passwordRow.createAppend('<input id = "password" />');
+		passwordInput = passwordRow.createAppend('<input id = "password" type = "password" />');
 		passwordInput.onEnter(function() {
 			tryLogin(usernameInput.val(), passwordInput.val());	
 		});
@@ -214,13 +214,15 @@ function hideLogin() {
 }
 
 function tryLogin(username, password) {
+	hashedPassword = CryptoJS.SHA3(password, { outputLength: 512 }).toString();
+
 	$.ajax({
 		url: window.host + 'authenticate',
 		error: loginFail,
 		success: loginSuccess,
 		data: {
 			username: username,
-			password: password
+			password: hashedPassword,
 		}
 	});
 }
@@ -545,6 +547,7 @@ function SidePanel() {
 	this.domTags = this.dom.createAppend('<ul class = "tags" />');
 	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
 	this.domButtonNewTag = this.dom.createAppend('<button>New Tag</button>').click(function() { self.createTag(); });
+	this.domButtonRefresh = this.dom.createAppend('<button class = "refresh" />').html('&nbsp;').click(function() { self.refreshLists(); });
 
 	this.lists = [];
 	this.tags = [];
