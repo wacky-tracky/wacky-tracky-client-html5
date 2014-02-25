@@ -7,9 +7,20 @@ function Tag(tagObject) {
 
 	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
 
+	this.domDialog = $('<p>dialog</p>');
+
 	Tag.prototype.toDomSidePanel = function() {
 		return this.domSidePanel;
 	};
+
+	Tag.prototype.showDialog = function() {
+		console.log("yo");
+		$(self.domDialog).dialog({
+			title: 'Tag Options'
+		});	
+	};
+
+	this.domSidePanel.rightClick(self.showDialog);
 }
 
 function Task(taskObject) {
@@ -176,12 +187,15 @@ function showLogin() {
 
 	if (typeof(window.loginForm) == "undefined") {
 		window.loginForm = $('<div id = "loginForm" />');
+
+		window.loginForm.createAppend('<h2 />').text('wacky-tracky');
+
 		usernameRow = window.loginForm.createAppend('<p />');
-		usernameRow.createAppend('<span>Username</span>');
+		usernameRow.createAppend('<label for = "username">Username</label>');
 		usernameInput = usernameRow.createAppend('<input id = "username" />');
 
 		passwordRow = window.loginForm.createAppend('<p />');
-		passwordRow.createAppend('<span>Password</span>');
+		passwordRow.createAppend('<label for = "password">Password</label>');
 		passwordInput = passwordRow.createAppend('<input id = "password" />');
 		passwordInput.onEnter(function() {
 			tryLogin(usernameInput.val(), passwordInput.val());	
@@ -236,7 +250,13 @@ function loginSuccess() {
 	sidepanelResized();
 }
 
-function initSuccess() {
+function initSuccess(res) {
+	if (res.wallpaper !== null) {
+		img = "url(wallpapers/" + res.wallpaper + ")";
+		console.log(img);
+		$('body').css('background-image', img);
+	}
+
 	showLogin();
 }
 
@@ -348,6 +368,15 @@ function TaskInputBox(label) {
 
 	return this;
 }
+
+$.fn.rightClick = function(callback) {
+	$(this).on("contextmenu", function(e) {
+		if (e.which == 3) {
+			callback();
+			e.preventDefault();
+		}
+	});
+};
 
 $.fn.onEnter = function(callback) {
 	this.keyup(function(e) {

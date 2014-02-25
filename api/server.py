@@ -5,6 +5,8 @@ from cherrypy._cperror import HTTPError
 #from cherrypy.lib.sessions import Session
 import wrapper
 import json
+import random
+import os
 
 from py2neo.neo4j import Direction
 
@@ -142,9 +144,28 @@ class Api(object):
 		else:
 			return self.outputJson(user);
 
+	def randomWallpaper(self):
+		wallpapers = []
+
+		try:
+			wallpapers = []
+			
+			for wallpaper in os.listdir("wallpapers"):
+				if wallpaper.endswith(".png"):
+					wallpapers.append(wallpaper)
+		except Exception as e:
+			print e
+
+		if len(wallpapers) == 0:
+			return None
+		else:
+			return random.choice(wallpapers);
+
 	@cherrypy.expose
 	def init(self, *path, **args):
-		return "Hi"
+		return self.outputJson({
+			"wallpaper": self.randomWallpaper()
+		});
 
 def CORS():
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"

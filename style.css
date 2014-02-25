@@ -278,3 +278,8 @@ div#loginForm {
 	background-color: white;
 	width: 350px;
 }
+
+label {
+	min-width: 8em;
+	display: inline-block;
+}
