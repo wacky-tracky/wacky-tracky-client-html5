@@ -226,7 +226,7 @@ function LoginForm() {
 			return;
 		}
 
-		if ($('#emailRow').css('display') == 'block') {
+		if (this.isRegistrationShown()) {
 			$('#emailRow').css('display', 'none');
 			$('button#register').text('Register');
 			$('button#forgotPassword').removeAttr('disabled');
@@ -237,6 +237,19 @@ function LoginForm() {
 			$('button#forgotPassword').attr('disabled', 'disabled');
 			$('button#login').text('Register');
 		}
+	};
+
+	LoginForm.prototype.isRegistrationShown = function() {
+		return $('#emailRow').css('display') == 'block';
+	}
+
+	LoginForm.prototype.hideRegistration = function() {
+		if (this.isRegistrationShown()) {
+			this.toggleRegistration();
+		}
+
+		$('input#password').focus();
+		$('button#login').effect('highlight');
 	};
 
 	LoginForm.prototype.show = function() {
@@ -252,13 +265,15 @@ function LoginForm() {
 	};
 
 	LoginForm.prototype.hide = function() {
-		this.loginForm.css('display', 'block');
+		this.loginForm.css('display', 'none');
+		$('body').css('display', 'table');
 	};
 
-	return this.loginForm;
+	return this;
 }
 
 function registerSuccess() {
+	window.loginForm.hideRegistration();
 }
 
 function tryRegister(username, password, email) {
