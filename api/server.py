@@ -137,6 +137,7 @@ class Api(object):
 
 	@cherrypy.expose
 	def authenticate(self, *path, **args):
+		api.wrapper.username = args['username']
 		user, password = api.wrapper.getUser();
 
 		if user == None:
@@ -150,6 +151,19 @@ class Api(object):
 
 		cherrypy.session['user'] = user
 		return self.outputJson(user);
+
+	@cherrypy.expose
+	def register(self, *path, **args):
+		try:
+			if len(args['username']) < 4:
+				raise Exception("Username must be at least 4 characters long.")
+
+			if len(args['password']) < 6:
+				raise Exception("Password must be at least 6 character long.");
+
+			user, password = api.wrapper.register(args['username'], args['password'], args['email'])
+		except Exception as e:
+			return self.outputJsonError(403, str(e))
 
 	def randomWallpaper(self):
 		wallpapers = []
@@ -170,10 +184,6 @@ class Api(object):
 
 	@cherrypy.expose
 	def init(self, *path, **args):
-		session = cherrypy.session
-		session['guest'] = True;
-		session.save();
-
 		return self.outputJson({
 			"wallpaper": self.randomWallpaper()
 		});
@@ -181,8 +191,16 @@ class Api(object):
 def CORS():
 	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
 
+def reqinit():
+	session = cherrypy.session
+	session['active'] = True # weird
+
+	if "username" in session:
+		api.username = session['username']
+
+	session.save();
+
 api = Api();
-api.wrapper.username = "auser"
 
 cherrypy.config.update({
 	'server.socket_host': '0.0.0.0',
@@ -192,7 +210,11 @@ cherrypy.config.update({
 	'tools.sessions.storage_path': './sessions',
 	'tools.sessions.timeout': 60,
 	'tools.CORS.on': True,
+	'tools.reqinit.on': True,
 	'sessionFilter.cookie_domain': 'technowax.net:8080',
 });
+
 cherrypy.tools.CORS = cherrypy.Tool('before_handler', CORS);
+cherrypy.tools.reqinit = cherrypy.Tool('before_handler', reqinit);
+
 cherrypy.quickstart(api)

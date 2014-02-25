@@ -177,44 +177,112 @@ function Task(taskObject) {
 	return this;
 }
 
-function showLogin() {
-	$('body').css('display', 'block');
+function LoginForm() {
+	var self = this;
 
-	console.log(window.sidepanel);
-	if (typeof(window.sidepanel) != "undefined") {
-		window.sidepanel.remove();
-	}
+	this.loginForm = $('<div id = "loginForm" />');
+	$('body').append(this.loginForm);
 
-	if (typeof(window.loginForm) == "undefined") {
-		window.loginForm = $('<div id = "loginForm" />');
+	this.loginForm.createAppend('<h2 />').text('wacky-tracky');
 
-		window.loginForm.createAppend('<h2 />').text('wacky-tracky');
+	usernameRow = this.loginForm.createAppend('<p />');
+	usernameRow.createAppend('<label for = "username">Username</label>');
+	usernameInput = usernameRow.createAppend('<input id = "username" />');
 
-		usernameRow = window.loginForm.createAppend('<p />');
-		usernameRow.createAppend('<label for = "username">Username</label>');
-		usernameInput = usernameRow.createAppend('<input id = "username" />');
+	passwordRow = this.loginForm.createAppend('<p />');
+	passwordRow.createAppend('<label for = "password">Password</label>');
+	passwordInput = passwordRow.createAppend('<input id = "password" type = "password" />');
+	passwordInput.onEnter(function() {
+		tryLogin(usernameInput.val(), passwordInput.val());	
+	});
 
-		passwordRow = window.loginForm.createAppend('<p />');
-		passwordRow.createAppend('<label for = "password">Password</label>');
-		passwordInput = passwordRow.createAppend('<input id = "password" type = "password" />');
-		passwordInput.onEnter(function() {
-			tryLogin(usernameInput.val(), passwordInput.val());	
-		});
-	}
+	emailRow = this.loginForm.createAppend('<p id = "emailRow" />');
+	emailRow.createAppend('<label for = "email">Email</label>');
+	emailInput = emailRow.createAppend('<input type = "email" />');
+	emailInput.onEnter(function() {
+		tryRegister(usernameInput.val(), passwordInput.val(), emailInput.val());
+	});
+	emailRow.css('display', 'none');
 
-	if ($('body').children('#loginForm').length === 0) {
-		$('body').append(window.loginForm);
-	}
+	actionsRow = this.loginForm.createAppend('<p id = "loginButtons" />');
+	actionRegister = actionsRow.createAppend('<button id = "register">Register</button>');
+	actionRegister.click(function() { self.toggleRegistration(); });
+	actionForgotPassword = actionsRow.createAppend('<button id = "forgotPassword">Forgot password</button>');
+	actionForgotPassword.click(function() { window.alert("Aww. Not much I can do about that."); });
+	actionsRow.createAppend('<button id = "login">Login</button>').click(function() { 
+		if (emailRow.css('display') !== 'block') {
+			tryLogin(usernameInput.val(), passwordInput.val(), emailInput.val()); 
+		} else {
+			tryRegister(usernameInput.val(), passwordInput.val(), emailInput.val());
+		}
+	});
+
+	LoginForm.prototype.isShown = function() {
+		return $('body').children('#loginForm').length > 0;
+	};
+
+	LoginForm.prototype.toggleRegistration = function() {
+		if (!this.isShown()) {
+			return;
+		}
+
+		if ($('#emailRow').css('display') == 'block') {
+			$('#emailRow').css('display', 'none');
+			$('button#register').text('Register');
+			$('button#forgotPassword').removeAttr('disabled');
+			$('button#login').text('Login');
+		} else {
+			$('#emailRow').fadeIn();
+			$('button#register').text('Cancel');
+			$('button#forgotPassword').attr('disabled', 'disabled');
+			$('button#login').text('Register');
+		}
+	};
+
+	LoginForm.prototype.show = function() {
+		$('body').css('display', 'block');
+
+		if (typeof(window.sidepanel) != "undefined") {
+			window.sidepanel.remove();
+		}
+
+		if (!this.isShown()) {
+			this.loginForm.css('display', 'block');
+		}
+	};
+
+	LoginForm.prototype.hide = function() {
+		this.loginForm.css('display', 'block');
+	};
+
+	return this.loginForm;
 }
 
-function hideLogin() {
-	$('body').css('display', 'table');
+function registerSuccess() {
+}
 
-	$('body').children('#loginForm').remove();
+function tryRegister(username, password, email) {
+	hashedPassword = CryptoJS.SHA3(password).toString();
+
+	$.ajax({
+		url: window.host + 'register',
+		error: registerFail,
+		success: registerSuccess,
+		data: {
+			username: username,
+			password: hashedPassword,
+			email: email,
+		}
+	});
+}
+
+function registerFail(req, dat) {
+	generalErrorJson("Register fail. ", req)
 }
 
 function tryLogin(username, password) {
-	hashedPassword = CryptoJS.SHA3(password, { outputLength: 512 }).toString();
+	hashedPassword = CryptoJS.SHA3(password).toString();
+	console.log(password);
 
 	$.ajax({
 		url: window.host + 'authenticate',
@@ -227,18 +295,27 @@ function tryLogin(username, password) {
 	});
 }
 
-function loginFail(res, dat) {
-	message = "Login failure";
+function generalErrorJson(msg, res) {
+	msg = "General JSON Error.";
+
+	console.log(res);
 
 	if (typeof(res.responseJSON) !== "undefined") {
-		message += ": " + res.responseJSON.message;
+		msg += ": " + res.responseJSON.message;
 	}
 
-	generalError(null, message);
+	generalError(msg);
+}
+
+function loginFail(res, dat) {
+	generalErrorJson("Login Failure. ", res);
+
 }
 
 function loginSuccess() {
-	hideLogin();
+	hideAllErrors();
+
+	window.loginForm.hide();
 	
 	window.sidepanel = new SidePanel();
 	$('body').append(window.sidepanel.toDom());
@@ -259,11 +336,12 @@ function initSuccess(res) {
 		$('body').css('background-image', img);
 	}
 
-	showLogin();
+	window.loginForm = new LoginForm();
+	window.loginForm.show();
 }
 
 function initFailure() {
-	generalError(null, "Could not init. Is the server running?");
+	generalError("Could not init. Is the server running?");
 }
 
 function init() {
@@ -408,12 +486,16 @@ function renderTasks(list) {
 	window.content.list.addAll(list);
 }
 
-function generalError(msg, errorText) {
-	console.log("error", msg, errorText);
+function generalError(errorText) {
+	console.log("error", errorText);
 	console.log(new Error().stack);
 	$('body').createAppend($('<div class = "notification">').text('Error: ' + errorText)).click(function() {
 		this.remove();	
 	});
+}
+
+function hideAllErrors() {
+	$('body').children('.notification').remove();
 }
 
 function requestTasks(list) {

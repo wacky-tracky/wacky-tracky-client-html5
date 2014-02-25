@@ -139,7 +139,7 @@ div#content {
 	padding-left: 1em;
 	padding-right: 1em;
 	left: 200;
-	background-color: #efefef;
+	background-color: rgba(239, 239, 239, 0.7);
 	z-index: -2;
 	height: 100%;
 }
@@ -230,6 +230,11 @@ div.subTasks {
 	position: fixed;
 	right: 0;
 	bottom: 0;
+	padding: 1em;
+}
+
+#loginButtons {
+	text-align: right;
 }
 
 .editDialog {
@@ -288,8 +293,11 @@ div#loginForm {
 	border: 1px solid black;
 	box-shadow: 4px lightgray;
 	background-color: rgba(255,255,255,.7);
-	width: 350px;
 	border-radius: .4em;
+}
+
+div#loginForm p:last-child {
+	margin-bottom: 0;
 }
 
 label {
