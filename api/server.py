@@ -143,9 +143,6 @@ class Api(object):
 		if user == None:
 			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
 
-		print password
-		print args['password']
-		
 		if args['password'] != password:
 			return self.outputJsonError(403, "Password is incorrect.")
 
@@ -161,7 +158,7 @@ class Api(object):
 			if len(args['password']) < 6:
 				raise Exception("Password must be at least 6 character long.");
 
-			user, password = api.wrapper.register(args['username'], args['password'], args['email'])
+			api.wrapper.register(args['username'], args['password'], args['email'])
 		except Exception as e:
 			return self.outputJsonError(403, str(e))
 
