@@ -1,5 +1,24 @@
 window.host = "http://" + window.location.hostname + ":8082/";
 
+function ajaxRequest(params) {
+	if ($.isEmptyObject(params.error)) {
+		params.error = generalError
+	}
+
+	$.ajax({
+		url: window.host + params.url,
+		error: params.error,
+		success: params.success,
+		data: params.data,
+		dataType: 'json',
+		type: 'GET',
+		xhrFields: {
+			withCredentials: true,
+		},
+		crossDomain: true
+	});
+}
+
 function Tag(tagObject) {
 	this.obj = tagObject;
 
@@ -8,17 +27,22 @@ function Tag(tagObject) {
 	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<p>dialog</p>');
+	this.domInputTitle = this.domDialog.createAppend('<input />').text(this.obj.title);
 
 	Tag.prototype.toDomSidePanel = function() {
 		return this.domSidePanel;
 	};
 
 	Tag.prototype.showDialog = function() {
-		console.log("yo");
 		$(self.domDialog).dialog({
-			title: 'Tag Options'
+			title: 'Tag Options',
+			close: self.requestUpdate
 		});	
 	};
+
+	Tag.prototype.requestUpdate = function() {
+		console.log(this.domInputTitle.val());
+	}
 
 	this.domSidePanel.rightClick(self.showDialog);
 }
@@ -49,9 +73,11 @@ function Task(taskObject) {
 
 	Task.prototype.refreshSubtasks = function() {
 		this.domSubtasks.children().remove();
-		$.ajax({
-			url: window.host + '/listTasks',
-			data: { task: this.fields.id },
+		ajaxRequest({
+			url: '/listTasks',
+			data: { 
+				task: this.fields.id 
+			},
 			success: this.renderSubtasks
 		});
 	};
@@ -87,8 +113,8 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.tagItem = function(tag) {
-		$.ajax({
-			url: window.host + 'tag',
+		ajaxRequest({
+			url: '/tag',
 			data: {
 				item: this.fields.id,
 				tag: tag.obj.id
@@ -154,7 +180,7 @@ function Task(taskObject) {
 
 		window.toDelete = this;
 
-		$.ajax({
+		ajaxRequest({
 			url: window.host + '//deleteTask',
 			data: { id: this.fields.id },
 			success: this.renderDelete
@@ -279,7 +305,7 @@ function registerSuccess() {
 function tryRegister(username, password, email) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
 
-	$.ajax({
+	ajaxRequest({
 		url: window.host + 'register',
 		error: registerFail,
 		success: registerSuccess,
@@ -299,7 +325,7 @@ function tryLogin(username, password) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
 	console.log(password);
 
-	$.ajax({
+	ajaxRequest({
 		url: window.host + 'authenticate',
 		error: loginFail,
 		success: loginSuccess,
@@ -347,25 +373,35 @@ function loginSuccess() {
 function initSuccess(res) {
 	if (res.wallpaper !== null) {
 		img = "url(wallpapers/" + res.wallpaper + ")";
-		console.log(img);
 		$('body').css('background-image', img);
 	}
 
 	window.loginForm = new LoginForm();
-	window.loginForm.show();
+
+	if (res.username !== null) {
+		loginSuccess();
+	} else {
+		window.loginForm.show();
+	}
 }
 
-function initFailure() {
+function initFailure(a, b, c) {
 	generalError("Could not init. Is the server running?");
 }
 
 function init() {
 	window.selectedItem = null;
 
-	$.ajax({
+	ajaxRequest({
 		url: window.host + 'init',
 		error: initFailure,
-		success: initSuccess
+		success: initSuccess,
+		dataType: 'json',
+		type: 'GET',
+		xhrFields: {
+			withCredentials: true,
+		},
+		crossDomain: true
 	});
 }
 
@@ -412,7 +448,7 @@ function newTask(text) {
 		data.parentType = 'task';
 	}
 
-	$.ajax({
+	ajaxRequest({
 		url: window.host + 'createTask',
 		success: renderTaskCreated,
 		data: data
@@ -516,8 +552,8 @@ function hideAllErrors() {
 function requestTasks(list) {
 	window.content.setList(list);
 
-	$.ajax({
-	url: window.host + '/listTasks',
+	ajaxRequest({
+		url: window.host + '/listTasks',
 		data: { list: list.fields.id },
 		success: renderTasks,
 		error: generalError
@@ -616,7 +652,7 @@ function List(jsonList) {
 	};
 
 	List.prototype.del = function() {	
-		$.ajax({
+		ajaxRequest({
 			url: window.host + 'deleteList',
 			data: { id: this.fields.id },
 			success: window.sidepanel.refreshLists()
@@ -652,11 +688,11 @@ function SidePanel() {
 	SidePanel.prototype.createTag = function() {
 		var title = window.prompt("Tag name?");
 
-		if ($.isEmtpyObject(title)) {
+		if ($.isEmptyObject(title)) {
 			return;
 		}
 
-		$.ajax({
+		ajaxRequest({
 			url: window.host + '/createTag',
 			data: {
 				title: title
@@ -672,7 +708,7 @@ function SidePanel() {
 			return;
 		}
 
-		$.ajax({
+		ajaxRequest({
 			url: window.host + '/createList',
 			data: {
 				title: title
@@ -708,14 +744,20 @@ function SidePanel() {
 	};
 
 	SidePanel.prototype.refreshLists = function() {
-		$.ajax({
+		ajaxRequest({
 			url: window.host + '/listLists',
-			success: this.renderLists
+			success: this.renderLists,
+			dataType: 'json',
+			type: 'GET',
+			xhrFields: {
+				withCredentials: true,
+			},
+			crossDomain: true
 		});
 	};
 
 	SidePanel.prototype.refreshTags = function() {
-		$.ajax({
+		ajaxRequest({
 			url: window.host + 'listTags',
 			success: this.renderTags
 		});

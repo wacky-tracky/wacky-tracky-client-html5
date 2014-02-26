@@ -10,7 +10,7 @@ import os
 
 from py2neo.neo4j import Direction
 
-jsonContentType = [('Content-Type', 'application/json')]
+JSON_OK = { "message": "ok"}
 
 class Api(object):
 	wrapper = wrapper.Wrapper()
@@ -33,11 +33,13 @@ class Api(object):
 
 	@cherrypy.expose
 	def createTag(self, *path, **args):
-		self.wrapper.createTag(args['title'])
+		self.wrapper.createTag(self.getUsername(), args['title'])
+
+		return self.outputJson(JSON_OK);
 
 	@cherrypy.expose
 	def listTags(self, *path, **args):
-		tags = self.wrapper.getTags();
+		tags = self.wrapper.getTags(self.getUsername());
 
 		ret = []
 
@@ -53,7 +55,7 @@ class Api(object):
 
 	@cherrypy.expose
 	def listLists(self, *path, **args):
-		lists = self.wrapper.getLists();
+		lists = self.wrapper.getLists(self.getUsername());
 
 		ret = []
 
@@ -70,7 +72,9 @@ class Api(object):
 
 	@cherrypy.expose
 	def createList(self, *path, **args):
-		self.wrapper.createList(args["title"]);
+		self.wrapper.createList(self.getUsername(), args["title"]);
+
+		return self.outputJson(JSON_OK);
 
 	@cherrypy.expose
 	def createTask(self, *path, **args):
@@ -127,6 +131,8 @@ class Api(object):
 	def deleteList(self, *path, **args):
 		self.wrapper.deleteList(int(args['id']));
 
+		return self.outputJson(JSON_OK);
+
 	def outputJsonError(self, code, msg):
 		cherrypy.response.status = code;
 
@@ -134,20 +140,6 @@ class Api(object):
 			"type": "Error",
 			"message": msg
 		})
-
-	@cherrypy.expose
-	def authenticate(self, *path, **args):
-		api.wrapper.username = args['username']
-		user, password = api.wrapper.getUser();
-
-		if user == None:
-			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
-
-		if args['password'] != password:
-			return self.outputJsonError(403, "Password is incorrect.")
-
-		cherrypy.session['user'] = user
-		return self.outputJson(user);
 
 	@cherrypy.expose
 	def register(self, *path, **args):
@@ -181,21 +173,62 @@ class Api(object):
 
 	@cherrypy.expose
 	def init(self, *path, **args):
+		username = None
+
+		if "username" not in cherrypy.session:
+			cherrypy.session['username'] = None
+			cherrypy.session.save();
+		else:
+			username = cherrypy.session['username']
+
 		return self.outputJson({
-			"wallpaper": self.randomWallpaper()
+			"wallpaper": self.randomWallpaper(),
+			"id": cherrypy.session.id,
+			"username": username
 		});
+
+	def isLoggedIn(self):
+		if "username" in cherrypy.session:
+			if cherrypy.session['username'] != None:
+				return True
+
+		return False
+
+	def checkLoggedIn(self):
+		if not self.isLoggedIn():
+			raise cherrypy.HTTPError(403, "Login required.")
+	
+	def getUsername(self):
+		self.checkLoggedIn();
+
+		return cherrypy.session['username']
+
+	@cherrypy.expose
+	def authenticate(self, *path, **args):
+		user, password = api.wrapper.getUser(args['username']);
+
+		if user == None:
+			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
+
+		if args['password'] != password:
+			return self.outputJsonError(403, "Password is incorrect.")
+
+		cherrypy.session.regenerate();
+		cherrypy.session['username'] = user['username'];
+		cherrypy.session.save();
+
+		return self.outputJson(user);
+
+	@cherrypy.expose
+	def logout(self, *path, **args):
+		cherrypy.session['username'] = None
+		cherrypy.session.regenerate();
+
+		return self.outputJson({"message": "Logged out!"})
 		
 def CORS():
-	cherrypy.response.headers['Access-Control-Allow-Origin'] = "*"
-
-def reqinit():
-	session = cherrypy.session
-	session['active'] = True # weird
-
-	if "username" in session:
-		api.username = session['username']
-
-	session.save();
+	cherrypy.response.headers['Access-Control-Allow-Origin'] = "http://www2.teratan.net"
+	cherrypy.response.headers['Access-Control-Allow-Credentials'] = "true"
 
 api = Api();
 
@@ -207,11 +240,9 @@ cherrypy.config.update({
 	'tools.sessions.storage_path': './sessions',
 	'tools.sessions.timeout': 60,
 	'tools.CORS.on': True,
-	'tools.reqinit.on': True,
 	'sessionFilter.cookie_domain': 'technowax.net:8080',
 });
 
 cherrypy.tools.CORS = cherrypy.Tool('before_handler', CORS);
-cherrypy.tools.reqinit = cherrypy.Tool('before_handler', reqinit);
 
 cherrypy.quickstart(api)

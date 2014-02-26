@@ -5,31 +5,30 @@ from py2neo import neo4j, cypher
 class Wrapper:
 	def __init__(self):
 		self.graphdb = neo4j.GraphDatabaseService()
-		self.username = None
 
-	def createUser(self):
-		results, metadata = cypher.execute(self.graphdb, "CREATE (u:User {username: {username}})", params = [["username", self.username]])
+	def createUser(self, username):
+		results, metadata = cypher.execute(self.graphdb, "CREATE (u:User {username: {username}})", params = [["username", username]])
 
 	def getUsers(self):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) RETURN u");
 
 		return results;
 
-	def createList(self, title):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} CREATE (u)-[:owns]->(l:List {title: {title}})", params = [["title", title], ["username", self.username]]);
+	def createList(self, username, title):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} CREATE (u)-[:owns]->(l:List {title: {title}})", params = [["title", title], ["username", username]]);
 
-	def getLists(self):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User)-[]->(l:List) WHERE u.username = {username} RETURN l ORDER BY l.title", params = [["username", self.username]]);
-
-		return results;
-
-	def getTags(self):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User)-[]->(t:Tag) WHERE u.username = {username} RETURN t ", params = [["username", self.username]]);
+	def getLists(self, username):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User)-[]->(l:List) WHERE u.username = {username} RETURN l ORDER BY l.title", params = [["username", username]]);
 
 		return results;
 
-	def createTag(self, title):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERe u.username = {username} CREATE (u)-[:owns]->(t:Tag {title: {title}}) ", params = [["username", self.username], ["title", title]]);
+	def getTags(self, username):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User)-[]->(t:Tag) WHERE u.username = {username} RETURN t ", params = [["username", username]]);
+
+		return results;
+
+	def createTag(self, title, username):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERe u.username = {username} CREATE (u)-[:owns]->(t:Tag {title: {title}}) ", params = [["username", username], ["title", title]]);
 
 	def createListItem(self, listId, content):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}}) RETURN i", params = [["listId", listId], ["content", content]])
@@ -80,7 +79,7 @@ class Wrapper:
 
 	def getUser(self, username = None):
 		if username == None:
-			username = self.username
+			username = username
 
 		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} RETURN u LIMIT 1", params = [["username", username]]);
 
