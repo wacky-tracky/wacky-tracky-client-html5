@@ -1,5 +1,6 @@
 body {
 	background-color: gray;
+	background-attachment: fixed;
 	display: table;
 	padding: 0;
 	margin: 0;
@@ -134,7 +135,8 @@ li.list {
 }
 
 div#content {
-	position: absolute;
+	position: fixed;
+	overflow: auto;
 	padding-top: .4em;
 	padding-left: 1em;
 	padding-right: 1em;
