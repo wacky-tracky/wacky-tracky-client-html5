@@ -655,7 +655,7 @@ function List(jsonList) {
 		ajaxRequest({
 			url: window.host + 'deleteList',
 			data: { id: this.fields.id },
-			success: window.sidepanel.refreshLists()
+			success: window.sidepanel.refreshLists
 		});
 	};
 
@@ -746,7 +746,7 @@ function SidePanel() {
 	SidePanel.prototype.refreshLists = function() {
 		ajaxRequest({
 			url: window.host + '/listLists',
-			success: this.renderLists,
+			success: self.renderLists,
 			dataType: 'json',
 			type: 'GET',
 			xhrFields: {
