@@ -34,17 +34,19 @@ function Tag(tagObject) {
 	};
 
 	Tag.prototype.showDialog = function() {
+		self.domInputTitle.val(self.obj.title);
 		$(self.domDialog).dialog({
 			title: 'Tag Options',
-			close: self.requestUpdate
+			beforeClose: self.requestUpdate
 		});	
 	};
 
-	Tag.prototype.requestUpdate = function() {
-		console.log(this.domInputTitle.val());
+	Tag.prototype.requestUpdate = function(e) {
+		console.log(self.obj.title);
+		console.log(self.domInputTitle.val());
 	}
 
-	this.domSidePanel.rightClick(self.showDialog);
+	this.domSidePanel.rightClick(this.showDialog);
 }
 
 function Task(taskObject) {
@@ -57,10 +59,13 @@ function Task(taskObject) {
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
 	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
-	this.domTaskButtons = this.domTask.createAppend('<div class = "taskButtons" />');
+	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
+	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
+	this.domButtonDueDate = this.domTaskButtons.createAppend('<span />');
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
 	this.domButtonDelete.css('display', 'none');
+	
 	this.domEditDialog = null;
 
 	if (this.fields.hasChildren) {
@@ -91,12 +96,25 @@ function Task(taskObject) {
 		});
 	};
 
+	Task.prototype.setDueDate = function(newDate) {
+		if (newDate == null) {
+			newDate = self.fields.dueDate;
+		}
+
+		if (newDate == null) {
+			newDate = "now!";
+		}
+
+		self.domButtonDueDate.text('Due: ' + newDate);
+		console.log(self.fields.content, newDate);
+	};
+
 	Task.prototype.openEditDialog = function() {
 		this.closeEditDialog();
 
 		this.domEditDialog = $('<div class = "editDialog" />');
 		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
-
+	
 		this.dom.append(this.domEditDialog).fadeIn();
 		this.domEditDialog.slideDown();
 	};
@@ -105,7 +123,7 @@ function Task(taskObject) {
 		var self = this;
 
 		$(window.sidepanel.tags).each(function(i, tag) {
-			button = self.domTask.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title);
+			button = self.domTaskControls.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title);
 			button.click(function() {
 				self.tagItem(tag);
 			});
@@ -125,7 +143,7 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.toggleTag = function(id) {
-		tag = this.domTask.children('.tag' + id);
+		tag = this.domTaskControls.children('.tag' + id);
 		
 		if (tag.hasClass('selected')) {
 			tag.removeClass('selected');
@@ -158,11 +176,33 @@ function Task(taskObject) {
 			window.selectedItem.deselect();
 		}
 
-		this.domButtonDelete.css('display', 'block');
+		this.domButtonDelete.css('display', 'inline-block');
+		this.domButtonDueDate.replaceWith('<input />').text(this.fields.dueDate);
+//		this.domButtonDueDate.datepicker();
 		window.content.taskInput.setLabel(this.fields.content);
 
 		window.selectedItem = this;
 		this.dom.addClass('selected');
+	};
+
+	Task.prototype.rename = function() {
+		if (this.domTask.children('.renamer').length > 0) {
+			this.domTask.children('.renamer').focus();
+		} else {
+			renamer = $('<input class = "renamer" />');
+			renamer.val(this.fields.content);
+			renamer.onEnter(function() {
+				self.renameTo($(this).val());
+				$(this).remove();
+			});
+
+			this.domTask.append(renamer)
+			renamer.focus();
+		}
+	};
+
+	Task.prototype.renameTo = function(newContent) {
+//		console.log(self.fields.content, "->", newContent);
 	};
 
 	Task.prototype.deselect = function() {
@@ -172,7 +212,11 @@ function Task(taskObject) {
 		this.dom.removeClass('selected');
 
 		this.domButtonDelete.css('display', 'none');
+		this.domButtonDueDate.replaceWith('<span class = "dueDate" />').text('Due: ' + this.fields.dueDate)
+
 		window.content.taskInput.setLabel('');
+
+		this.domTask.children('.renamer').remove();
 	};
 
 	Task.prototype.del = function(i) {
@@ -194,11 +238,11 @@ function Task(taskObject) {
 		window.toDelete = null;
 	};
 
+	this.setDueDate();
 	this.addTagButtons();
 	$(this.fields.tags).each(function(i, tag) {
 		self.toggleTag(tag.id);
 	});
-
 
 	return this;
 }
@@ -767,7 +811,7 @@ function SidePanel() {
 		ret = "";
 
 		$(tags).each(function(index, tag) {
-			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: #' + getNextTagColor() + ' }' + "\n";
+			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: #' + getNextTagColor() + ' !important }' + "\n";
 			self.addTag(new Tag(tag));
 		});
 
@@ -817,6 +861,12 @@ $(document).keyup(function(e) {
 	if (e.keyCode == 46) {
 		if (window.selectedItem !== null) {
 			window.selectedItem.del();
+		}
+	}
+
+	if (e.keyCode == 113) {
+		if (window.selectedItem !== null) {
+			window.selectedItem.rename();
 		}
 	}
 });

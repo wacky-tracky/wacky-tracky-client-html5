@@ -53,6 +53,9 @@ class Wrapper:
 	def deleteTask(self, itemId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() OPTIONAL MATCH (i)-[linkTagged:tagged]->(tag:Tag) DELETE i,r, linkTagged, tag", params = [["itemId", itemId]])
 
+	def setDueDate(self, itemId, dueDate):
+		results, metadata = cypher.execute(self.graphdb, "MTACH (i:Item) WHERE id(i) = {itemId} SET i.dueDate = {duedate} ", params = [["itemId", itemId],["dueDate", dueDate]]);
+
 	def deleteList(self, itemId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} OPTIONAL MATCH (l)<-[userLink]-() DELETE l, userLink", params = [["listId", itemId]]);
 

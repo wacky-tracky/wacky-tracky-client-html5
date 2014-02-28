@@ -22,6 +22,14 @@ class Api(object):
 		else:
 			self.wrapper.tag(int(args['item']), int(args['tag']));
 
+		return self.outputJson(JSON_OK);
+
+	@cherrypy.expose
+	def setDueDate(self, *path, **args):
+		self.wrapper.setDueDate(int(args['item']), args['duedate'])
+
+		return self.outputJson(JSON_OK);
+
 #	@cherrypy.expose
 #	def default(self, *args, **kwargs):
 #		return "Index"
@@ -126,6 +134,8 @@ class Api(object):
 	@cherrypy.expose
 	def deleteTask(self, *path, **args):
 		self.wrapper.deleteTask(int(args['id']))
+
+		return self.outputJson(JSON_OK);
 
 	@cherrypy.expose
 	def deleteList(self, *path, **args):
