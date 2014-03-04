@@ -100,6 +100,8 @@ div#sidepanel {
 	top: 0;
 	width: 200px;
 	height: 100%;
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 div#sidepanel h2 {
