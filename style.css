@@ -102,6 +102,11 @@ div#sidepanel {
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: scroll;
+	direction: rtl;
+}
+
+div#sidepanel * {
+	direction: ltr;
 }
 
 div#sidepanel h2 {
