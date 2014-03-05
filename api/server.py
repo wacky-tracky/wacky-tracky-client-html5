@@ -56,7 +56,8 @@ class Api(object):
 
 			ret.append({
 				"id": singleTag.id,
-				"title": singleTag['title']
+				"title": singleTag['title'],
+				"shortTitle": singleTag['shortTitle']
 			});
 
 		return self.outputJson(ret);
@@ -212,6 +213,12 @@ class Api(object):
 		self.checkLoggedIn();
 
 		return cherrypy.session['username']
+
+	@cherrypy.expose
+	def updateTag(self, *path, **args):
+		updatedTag = self.wrapper.updateTag(int(args['id']), args['newTitle'], args['shortTitle'])
+
+		return self.outputJson(updatedTag)
 
 	@cherrypy.expose
 	def authenticate(self, *path, **args):

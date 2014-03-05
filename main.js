@@ -20,33 +20,46 @@ function ajaxRequest(params) {
 }
 
 function Tag(tagObject) {
-	this.obj = tagObject;
-
 	var self = this;
+
+	this.obj = tagObject;
 
 	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<p>dialog</p>');
 	this.domInputTitle = this.domDialog.createAppend('<input />').text(this.obj.title);
+	this.domInputShortTitle = this.domDialog.createAppend('<input />').text(this.obj.shortTitle);
 
 	Tag.prototype.toDomSidePanel = function() {
 		return this.domSidePanel;
 	};
 
+	Tag.prototype.requestUpdate = function() {
+		ajaxRequest({
+			url: "/updateTag",
+			data: {
+				id: window.tag.obj.id,
+				newTitle: window.tag.domInputTitle.val(),
+				shortTitle: window.tag.domInputShortTitle.val()
+			}
+		});
+	};
+
 	Tag.prototype.showDialog = function() {
+		window.tag = self;
+
 		self.domInputTitle.val(self.obj.title);
+		self.domInputShortTitle.val(self.obj.shortTitle);
+
 		$(self.domDialog).dialog({
-			title: 'Tag Options',
-			beforeClose: self.requestUpdate
+			title: 'Tag Options for ' + self.obj.title,
+			close: self.requestUpdate
 		});	
 	};
 
-	Tag.prototype.requestUpdate = function(e) {
-		console.log(self.obj.title);
-		console.log(self.domInputTitle.val());
-	}
+	this.domSidePanel.rightClick(self.showDialog);
 
-	this.domSidePanel.rightClick(this.showDialog);
+	return this;
 }
 
 function Task(taskObject) {
@@ -106,7 +119,6 @@ function Task(taskObject) {
 		}
 
 		self.domButtonDueDate.text('Due: ' + newDate);
-		console.log(self.fields.content, newDate);
 	};
 
 	Task.prototype.openEditDialog = function() {
@@ -123,7 +135,7 @@ function Task(taskObject) {
 		var self = this;
 
 		$(window.sidepanel.tags).each(function(i, tag) {
-			button = self.domTaskControls.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.title);
+			button = self.domTaskControls.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.shortTitle);
 			button.click(function() {
 				self.tagItem(tag);
 			});
@@ -167,24 +179,6 @@ function Task(taskObject) {
 		return this.dom;
 	};
 
-	Task.prototype.select = function() {
-		if (window.selectedItem == this || window.toDelete == this) {
-			return;
-		}
-
-		if (window.selectedItem !== null) {
-			window.selectedItem.deselect();
-		}
-
-		this.domButtonDelete.css('display', 'inline-block');
-		this.domButtonDueDate.replaceWith('<input />').text(this.fields.dueDate);
-//		this.domButtonDueDate.datepicker();
-		window.content.taskInput.setLabel(this.fields.content);
-
-		window.selectedItem = this;
-		this.dom.addClass('selected');
-	};
-
 	Task.prototype.rename = function() {
 		if (this.domTask.children('.renamer').length > 0) {
 			this.domTask.children('.renamer').focus();
@@ -205,6 +199,23 @@ function Task(taskObject) {
 //		console.log(self.fields.content, "->", newContent);
 	};
 
+	Task.prototype.select = function() {
+		if (window.selectedItem == this || window.toDelete == this) {
+			return;
+		}
+
+		if (window.selectedItem !== null) {
+			window.selectedItem.deselect();
+		}
+
+		this.domButtonDelete.css('display', 'inline-block');
+//		this.domButtonDueDate.datepicker();
+		window.content.taskInput.setLabel(this.fields.content);
+
+		window.selectedItem = this;
+		this.dom.addClass('selected');
+	};
+
 	Task.prototype.deselect = function() {
 		this.closeEditDialog();
 
@@ -212,7 +223,6 @@ function Task(taskObject) {
 		this.dom.removeClass('selected');
 
 		this.domButtonDelete.css('display', 'none');
-		this.domButtonDueDate.replaceWith('<span class = "dueDate" />').text('Due: ' + this.fields.dueDate)
 
 		window.content.taskInput.setLabel('');
 
@@ -367,7 +377,6 @@ function registerFail(req, dat) {
 
 function tryLogin(username, password) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
-	console.log(password);
 
 	ajaxRequest({
 		url: window.host + 'authenticate',
@@ -559,6 +568,12 @@ $.fn.onEnter = function(callback) {
 			callback();
 		}
 	});
+};
+
+$.fn.replaceWithRet = function(newEl) {
+	this.replaceWith(newEl);
+
+	return $(newEl);
 };
 
 $.fn.createAppend = function(constructor) {
