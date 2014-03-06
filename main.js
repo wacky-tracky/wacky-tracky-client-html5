@@ -724,7 +724,7 @@ function List(jsonList) {
 }
 
 function sidepanelResized() {
-	window.content.dom.css('left', window.sidepanel.dom.css('width'));
+	window.content.dom.css('left', window.sidepanel.dom.width());
 	window.content.dom.css('right', $('body').css('width'));
 }
 
@@ -831,6 +831,7 @@ function SidePanel() {
 		});
 
 		$('body').append($('<style type = "text/css">' + ret + '</style>'));
+		sidepanelResized();
 	};
 
 	SidePanel.prototype.renderLists = function(lists) {
@@ -839,6 +840,8 @@ function SidePanel() {
 		$(lists).each(function(index, list) {
 			self.addList(new List(list));
 		});
+
+		sidepanelResized();
 
 		if (self.lists.length > 0) {
 			self.lists[0].select();
