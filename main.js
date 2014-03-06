@@ -532,6 +532,14 @@ function TaskInputBox(label) {
 		}
 	});
 
+	this.domInput.focus(function() {
+		$(this).val('');
+	});
+
+	this.domInput.blur(function() {
+		$(this).val(self.label);
+	});
+
 	TaskInputBox.prototype.toDom = function() {
 		return this.dom;
 	};
@@ -542,12 +550,13 @@ function TaskInputBox(label) {
 	};
 	
 	TaskInputBox.prototype.setLabel = function(label) {
-		if (!$.isEmptyObject(label)) {
-			label += ': ';
+		if ($.isEmptyObject(label)) {
+			this.label = "";
+		} else {
+			this.label = "Click to add subtask of: " + label;
 		}
 
-		this.domLabel.text(label);
-		this.domInput.width(this.dom.width() - this.domLabel.width() - 20);
+		this.domInput.val(this.label);
 	};
 
 	return this;
