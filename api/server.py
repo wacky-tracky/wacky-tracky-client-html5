@@ -26,7 +26,7 @@ class Api(object):
 
 	@cherrypy.expose
 	def setDueDate(self, *path, **args):
-		self.wrapper.setDueDate(int(args['item']), args['duedate'])
+		self.wrapper.setDueDate(int(args['item']), args['dueDate'])
 
 		return self.outputJson(JSON_OK);
 
@@ -114,6 +114,7 @@ class Api(object):
 			"hasChildren": (len(singleItem.get_related_nodes(Direction.OUTGOING, 'owns')) > 0),
 			"content": singleItem['content'],
 			"tags": self.getItemTags(singleItem),
+			"dueDate": singleItem['dueDate'],
 			"id": singleItem.id
 		}
 

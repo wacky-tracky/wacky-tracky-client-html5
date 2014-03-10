@@ -340,3 +340,14 @@ span.ui-button-text {
 div.task div.controls {
 	float: right;
 }
+
+div.task:not(.selected) input {
+	background-color: #fff;
+	text-align: right;
+	border: 0;
+	border-bottom: 0;
+}
+
+div.taskWrapper.selected div.task input.hasDatePicker {
+	border-bottom: 1px dashed gray;
+}

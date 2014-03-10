@@ -74,7 +74,7 @@ function Task(taskObject) {
 	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
 	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
-	this.domButtonDueDate = this.domTaskButtons.createAppend('<span />');
+	this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
 	this.domButtonDelete.css('display', 'none');
@@ -111,14 +111,15 @@ function Task(taskObject) {
 
 	Task.prototype.setDueDate = function(newDate) {
 		if (newDate == null) {
+			console.log(self.fields.dueDate);
 			newDate = self.fields.dueDate;
 		}
 
 		if (newDate == null) {
-			newDate = "now!";
+			newDate = "";
 		}
 
-		self.domButtonDueDate.text('Due: ' + newDate);
+		self.domButtonDueDate.text(newDate);
 	};
 
 	Task.prototype.openEditDialog = function() {
@@ -209,11 +210,24 @@ function Task(taskObject) {
 		}
 
 		this.domButtonDelete.css('display', 'inline-block');
-//		this.domButtonDueDate.datepicker();
+		this.domButtonDueDate.model(this);
+		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate});
+		this.domButtonDueDate.removeAttr('disabled');
+
 		window.content.taskInput.setLabel(this.fields.content);
 
 		window.selectedItem = this;
 		this.dom.addClass('selected');
+	};
+
+	Task.prototype.requestUpdateDueDate = function(newDate) {
+		ajaxRequest({
+			url: 'setDueDate',
+			data: {
+				"item": window.selectedItem.fields.id,
+				"dueDate": newDate
+			}
+		});
 	};
 
 	Task.prototype.deselect = function() {
@@ -221,6 +235,8 @@ function Task(taskObject) {
 
 		window.selectedItem = null;
 		this.dom.removeClass('selected');
+
+		this.domButtonDueDate.attr('disabled', 'disabled');
 
 		this.domButtonDelete.css('display', 'none');
 
@@ -562,6 +578,14 @@ function TaskInputBox(label) {
 	return this;
 }
 
+$.fn.disable = function() {
+	return $(this).attr('disabled', 'disabled');
+}
+
+$.fn.enable = function() {
+	return $(this).removeAttr('disabled');
+}
+
 $.fn.rightClick = function(callback) {
 	$(this).on("contextmenu", function(e) {
 		if (e.which == 3) {
@@ -607,6 +631,11 @@ function renderTasks(list) {
 
 function generalError(errorText) {
 	console.log("error", errorText);
+
+	if (typeof(errorText) == "object") {
+		errorText = errorText.toString()
+	}
+
 	console.log(new Error().stack);
 	$('body').createAppend($('<div class = "notification">').text('Error: ' + errorText)).click(function() {
 		this.remove();	

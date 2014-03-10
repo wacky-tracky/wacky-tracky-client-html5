@@ -54,7 +54,7 @@ class Wrapper:
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() OPTIONAL MATCH (i)-[linkTagged:tagged]->(tag:Tag) DELETE i,r, linkTagged, tag", params = [["itemId", itemId]])
 
 	def setDueDate(self, itemId, dueDate):
-		results, metadata = cypher.execute(self.graphdb, "MTACH (i:Item) WHERE id(i) = {itemId} SET i.dueDate = {duedate} ", params = [["itemId", itemId],["dueDate", dueDate]]);
+		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} SET i.dueDate = {dueDate} ", params = [["itemId", itemId],["dueDate", dueDate]]);
 
 	def updateTag(self, itemId, title, shortTitle):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (t:Tag) WHERE id(t) = {itemId} SET t.title = {title}, t.shortTitle = {shortTitle} RETURN t", params = [["itemId", itemId], ["title", title], ["shortTitle", shortTitle]]);
