@@ -377,6 +377,8 @@ ul.dropDownMenu {
 
 li.menuItem {
 	padding: 4px;
+	font-family: sans-serif;
+	font-size: 80%;
 }
 
 li.menuItem:hover {
