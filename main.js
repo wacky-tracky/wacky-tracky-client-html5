@@ -263,7 +263,9 @@ function Task(taskObject) {
 		}
 
 		if (window.selectedItem !== null) {
-			window.selectedItem.deselect();
+			if (!window.selectedItem.deselect()) {
+				return;
+			}
 		}
 
 		this.domButtonDelete.css('display', 'inline-block');
@@ -289,7 +291,8 @@ function Task(taskObject) {
 
 	Task.prototype.deselect = function() {
 		if (window.selectedItem.isBeingRenamed) {
-			return;
+			window.selectedItem.domTask.children('.renamer').focus().effect('highlight');
+			return false;
 		}
 
 		this.closeEditDialog();
