@@ -235,6 +235,7 @@ function Task(taskObject) {
 		} else {
 			var self = this;
 			
+			this.isBeingRenamed = true;
 			this.domTaskContent.text('');
 
 			renamer = $('<input class = "renamer" />');
@@ -250,7 +251,9 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.renameTo = function(newContent) {
+		this.isBeingRenamed = false;
 		console.log(this.fields.content, "->", newContent);
+		this.fields.content = newContent;
 		this.domTaskContent.text(newContent);
 	};
 
@@ -300,6 +303,10 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.del = function(i) {
+		if (window.selectedItem.isBeingRenamed) {
+			return;
+		}
+
 		window.selectedItem.deselect();
 
 		window.toDelete = this;
