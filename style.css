@@ -4,6 +4,7 @@ body {
 	display: table;
 	padding: 0;
 	margin: 0;
+	font-family: sans-serif;
 }
 
 h2 {
@@ -350,4 +351,31 @@ div.task:not(.selected) input {
 
 div.taskWrapper.selected div.task input.hasDatePicker {
 	border-bottom: 1px dashed gray;
+}
+
+ul.dropDownMenu {
+	border: 2px solid darkblue;
+	display: none;
+	background-color: white;
+	list-style: none;
+	font-size: 12pt;
+	color: black;
+	margin: 0;
+	padding: 0;
+	margin-left: .4em;
+	font-weight: normal;
+	display: block;
+	position: absolute;
+	left: 0;
+	right: 0;
+	width: 240px;
+	cursor: pointer;
+}
+
+li.menuItem {
+	padding: 4px;
+}
+
+li.menuItem:hover {
+	background-color: beige;
 }

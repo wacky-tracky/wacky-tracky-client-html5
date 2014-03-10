@@ -1,5 +1,54 @@
 window.host = "http://" + window.location.hostname + ":8082/";
 
+function DropDownMenu() {
+	var self = this;
+
+	this.domItems = $('<ul class = "dropDownMenu" style = "display: none" />');
+	this.owner = null;
+
+	DropDownMenu.prototype.addItem = function(text, callback) {
+		this.domItems.createAppend('<li class = "menuItem" />').text(text).click(function() {
+			self.hide();
+			callback();	
+		});
+	};
+
+	DropDownMenu.prototype.addTo = function(element) {
+		$('body').after(this.domItems);
+		this.domItems.position({
+			of: element,
+			my: 'right-5 top+20',
+			at: 'right bottom',
+		});
+		element.css('cursor', 'pointer');
+
+		element.click(function(e) {
+			if (self.isShown()) {
+				self.hide();
+			} else {
+				self.show();
+			}
+		}).children().click(function() { return false});
+	};
+
+	DropDownMenu.prototype.isShown = function() {
+		return self.domItems.css('display') != "none";
+	};
+
+	DropDownMenu.prototype.show = function() {
+		self.domItems.show();
+
+		window.currentDropDownMenu = self;
+	};
+
+	DropDownMenu.prototype.hide = function() {
+		self.domItems.hide();
+		window.currentDropDownMenu = null;
+	};
+
+	return this;
+}
+
 function ajaxRequest(params) {
 	if ($.isEmptyObject(params.error)) {
 		params.error = generalError
@@ -111,7 +160,6 @@ function Task(taskObject) {
 
 	Task.prototype.setDueDate = function(newDate) {
 		if (newDate == null) {
-			console.log(self.fields.dueDate);
 			newDate = self.fields.dueDate;
 		}
 
@@ -119,7 +167,7 @@ function Task(taskObject) {
 			newDate = "";
 		}
 
-		self.domButtonDueDate.text(newDate);
+		self.domButtonDueDate.val(newDate);
 	};
 
 	Task.prototype.openEditDialog = function() {
@@ -799,6 +847,14 @@ function sidepanelResized() {
 	window.content.dom.css('right', $('body').css('width'));
 }
 
+function logoutRequest() {
+	console.log("logout");	
+}
+
+function changePassword() {
+	window.alert("cant do that yet");
+}
+
 function SidePanel() {
 	var self = this;
 
@@ -811,6 +867,11 @@ function SidePanel() {
 	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
 	this.domButtonNewTag = this.dom.createAppend('<button>New Tag</button>').click(function() { self.createTag(); });
 	this.domButtonRefresh = this.dom.createAppend('<button class = "refresh" />').html('&nbsp;').click(function() { self.refreshLists(); });
+
+	menuUser = new DropDownMenu();
+	menuUser.addItem('Change password', changePassword);
+	menuUser.addItem('Logout', logoutRequest);
+	menuUser.addTo(this.domTitle);
 
 	this.lists = [];
 	this.tags = [];
@@ -962,4 +1023,11 @@ $(document).keyup(function(e) {
 			window.content.list.prevSelect();
 		}
 	}
+
+	if (window.currentDropDownMenu != null) {
+		if (e.keyCode == 27) {
+			window.currentDropDownMenu.hide();
+		}
+	}
+
 });
