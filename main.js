@@ -419,17 +419,11 @@ function LoginForm() {
 	LoginForm.prototype.show = function() {
 		$('body').css('display', 'block');
 
-		if (typeof(window.sidepanel) != "undefined") {
-			window.sidepanel.remove();
-		}
-
-		if (!this.isShown()) {
-			this.loginForm.css('display', 'block');
-		}
+		this.loginForm.show();
 	};
 
 	LoginForm.prototype.hide = function() {
-		this.loginForm.css('display', 'none');
+		this.loginForm.hide();
 		$('body').css('display', 'table');
 	};
 
@@ -438,6 +432,7 @@ function LoginForm() {
 
 function registerSuccess() {
 	window.loginForm.hideRegistration();
+	window.content.remove();
 }
 
 function tryRegister(username, password, email) {
@@ -563,6 +558,14 @@ function Content() {
 		this.domListContainer.append(new ListControls(list).toDom());
 
 		this.taskInput.enable();
+	};
+
+	Content.prototype.hide = function() {
+		this.dom.hide();
+	};
+
+	Content.prototype.show = function() {
+		this.dom.show();
 	};
 
 	return this;
@@ -907,7 +910,14 @@ function sidepanelResized() {
 }
 
 function logoutRequest() {
-	console.log("logout");	
+	ajaxRequest({
+		url: "logout",
+		success: logoutSuccess
+	});
+}
+
+function logoutSuccess() {
+	location.reload();
 }
 
 function changePassword() {
@@ -1037,6 +1047,10 @@ function SidePanel() {
 		if (self.lists.length > 0) {
 			self.lists[0].select();
 		}
+	};
+
+	SidePanel.prototype.hide = function() {
+		this.dom.hide();
 	};
 
 	return this;
