@@ -288,6 +288,10 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.deselect = function() {
+		if (window.selectedItem.isBeingRenamed) {
+			return;
+		}
+
 		this.closeEditDialog();
 
 		window.selectedItem = null;
