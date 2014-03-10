@@ -117,9 +117,10 @@ function Task(taskObject) {
 	this.fields = taskObject;
 
 	this.dom = $('<div class = "taskWrapper" />');
-	this.domTask = this.dom.createAppend('<div class = "task" />').text(this.fields.content);
+	this.domTask = this.dom.createAppend('<div class = "task" />');
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
+	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
 	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
 	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
@@ -232,11 +233,15 @@ function Task(taskObject) {
 		if (this.domTask.children('.renamer').length > 0) {
 			this.domTask.children('.renamer').focus();
 		} else {
+			var self = this;
+			
+			this.domTaskContent.text('');
+
 			renamer = $('<input class = "renamer" />');
 			renamer.val(this.fields.content);
-			renamer.onEnter(function() {
-				self.renameTo($(this).val());
-				$(this).remove();
+			renamer.onEnter(function(el) {
+				self.renameTo(el.val());
+				el.remove();
 			});
 
 			this.domTask.append(renamer)
@@ -245,7 +250,8 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.renameTo = function(newContent) {
-//		console.log(self.fields.content, "->", newContent);
+		console.log(this.fields.content, "->", newContent);
+		this.domTaskContent.text(newContent);
 	};
 
 	Task.prototype.select = function() {
@@ -644,9 +650,11 @@ $.fn.rightClick = function(callback) {
 };
 
 $.fn.onEnter = function(callback) {
+	el = this;
+
 	this.keyup(function(e) {
 		if (e.keyCode == 13) {
-			callback();
+			callback($(el));
 		}
 	});
 };
