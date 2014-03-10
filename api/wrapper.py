@@ -27,8 +27,8 @@ class Wrapper:
 
 		return results;
 
-	def createTag(self, title, username):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERe u.username = {username} CREATE (u)-[:owns]->(t:Tag {title: {title}}) ", params = [["username", username], ["title", title]]);
+	def createTag(self, username, title):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (u:User) WHERE u.username = {username} CREATE (u)-[:owns]->(t:Tag {title: {title}}) ", params = [["username", username], ["title", title]]);
 
 	def createListItem(self, listId, content):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} CREATE (l)-[:owns]->(i:Item {content: {content}}) RETURN i", params = [["listId", listId], ["content", content]])

@@ -233,7 +233,7 @@ class Api(object):
 		user, password = api.wrapper.getUser(args['username']);
 
 		if user == None:
-			return self.outputJsonError(403, "User not found: " + api.wrapper.username)
+			return self.outputJsonError(403, "User not found: " + args['username'])
 
 		if args['password'] != password:
 			return self.outputJsonError(403, "Password is incorrect.")
@@ -252,7 +252,7 @@ class Api(object):
 		return self.outputJson({"message": "Logged out!"})
 		
 def CORS():
-	cherrypy.response.headers['Access-Control-Allow-Origin'] = "http://www2.teratan.net"
+	cherrypy.response.headers['Access-Control-Allow-Origin'] = "http://wacky-tracky.teratan.net"
 	cherrypy.response.headers['Access-Control-Allow-Credentials'] = "true"
 
 api = Api();
@@ -265,7 +265,6 @@ cherrypy.config.update({
 	'tools.sessions.storage_path': './sessions',
 	'tools.sessions.timeout': 60,
 	'tools.CORS.on': True,
-	'sessionFilter.cookie_domain': 'technowax.net:8080',
 });
 
 cherrypy.tools.CORS = cherrypy.Tool('before_handler', CORS);

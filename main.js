@@ -431,6 +431,7 @@ function LoginForm() {
 }
 
 function registerSuccess() {
+	console.log("reg suc");
 	window.loginForm.hideRegistration();
 	window.content.remove();
 }
@@ -702,15 +703,21 @@ function renderTasks(list) {
 	window.content.list.addAll(list);
 }
 
-function generalError(errorText) {
-	console.log("error", errorText);
+function generalError(error) {
+	console.log("error", error);
 
-	if (typeof(errorText) == "object") {
-		errorText = errorText.toString()
+	if (error.status == 500) {
+		error = "Internal Server Error.";
+	}
+
+	if (typeof(error.responseJSON.message) != "undefined") {
+		error = error.responseJSON.message
+	} else if (typeof(error) == "object") {
+		error = error.toString()
 	}
 
 	console.log(new Error().stack);
-	$('body').createAppend($('<div class = "notification">').text('Error: ' + errorText)).click(function() {
+	$('body').createAppend($('<div class = "notification">').text('Error: ' + error)).click(function() {
 		this.remove();	
 	});
 }

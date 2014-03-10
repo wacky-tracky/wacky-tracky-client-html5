@@ -121,6 +121,7 @@ ul.lists {
 
 li.list {
 	list-style: none;
+	color: black !important;
 }
 
 .listTitle {
