@@ -342,11 +342,14 @@ div.task div.controls {
 	float: right;
 }
 
-div.task:not(.selected) input {
-	background-color: #fff;
-	text-align: right;
+div.task input {
+	background-color: transparent;
 	border: 0;
 	border-bottom: 0;
+}
+
+div.taskButtons input {
+	text-align: right;
 }
 
 div.taskWrapper.selected div.task input.hasDatePicker {
@@ -378,4 +381,8 @@ li.menuItem {
 
 li.menuItem:hover {
 	background-color: beige;
+}
+
+input.renamer {
+	width: 50%;
 }
