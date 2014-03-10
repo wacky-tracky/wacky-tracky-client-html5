@@ -721,7 +721,10 @@ function requestTasks(list) {
 
 	ajaxRequest({
 		url: window.host + '/listTasks',
-		data: { list: list.fields.id },
+		data: { 
+			list: list.fields.id,
+			sort: list.fields.sort,
+		},
 		success: renderTasks,
 		error: generalError
 	});
@@ -738,12 +741,19 @@ function ListControls(list) {
 	this.domButtonDelete = this.dom.createAppend('<button />').text("Delete");
 	this.domButtonDelete.click(function (e) { self.del(); });
 
+	this.domButtonSettings = this.dom.createAppend('<button />').text('Settings');
+	this.domButtonSettings.click(function (e) { self.showSettings(); });
+
 	ListControls.prototype.del = function() {
 		this.list.del();
 	};
 
 	ListControls.prototype.toDom = function() {
 		return this.dom;
+	};
+
+	ListControls.prototype.showSettings = function() {
+		this.list.openDialog();
 	};
 
 	return this;
@@ -757,11 +767,38 @@ function List(jsonList) {
 	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />').text(this.fields.title);
 	this.domSidePanelTitleSuffix = this.domSidePanelTitle.createAppend('<span class = "subtle" />');
 
+	this.domDialog = $('<p>dialog</p>');
+	this.domInputTitle = this.domDialog.createAppend('<p>title</p>').createAppend('<input />').text(this.fields.title);
+	this.domInputSort = this.domDialog.createAppend('<p>sort</p>').createAppend('<select />');
+	this.domInputSort.createAppend('<option value = "title">Title</option>');
+	this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
+
 	this.domList = $('<ul id = "taskList" />');
 
 	this.tasks = [];
 
 	var self = this;
+
+	List.prototype.openDialog = function() {
+		var self = this;
+
+		this.domInputTitle.val(this.fields.title);
+		this.domInputSort.val(this.fields.sort);
+
+		this.domDialog.dialog({
+			title: "List options",
+			close: function() {
+				ajaxRequest({
+					url: 'listUpdate',
+					data: {
+						list: self.fields.id,
+						title: self.domInputTitle.val(),
+						sort: self.domInputSort.val()
+					}
+				});
+			}
+		});
+	};
 
 	this.updateTaskCount = function(newCount) {
 		if (newCount === null) {

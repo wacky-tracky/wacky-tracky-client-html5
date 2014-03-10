@@ -40,8 +40,13 @@ class Wrapper:
 
 		return results
 
-	def getItemsFromList(self, listId):
-		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List)-[]->(i:Item) WHERE id(l) = {listId} RETURN i ORDER BY i.content ", params = [["listId", listId]]);
+	def getItemsFromList(self, listId, sort = None):
+		if sort not in [ "content", "dueDate" ]:
+			sort = "content"
+
+		print "Sorting by ", sort
+
+		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List)-[]->(i:Item) WHERE id(l) = {listId} RETURN i ORDER BY i." + sort, params = [["listId", listId]]);
 
 		return results
 
@@ -52,6 +57,9 @@ class Wrapper:
 
 	def deleteTask(self, itemId):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} OPTIONAL MATCH (i)<-[r]-() OPTIONAL MATCH (i)-[linkTagged:tagged]->(tag:Tag) DELETE i,r, linkTagged, tag", params = [["itemId", itemId]])
+
+	def updateList(self, listId, title, sort):
+		results, metadata = cypher.execute(self.graphdb, "MATCH (l:List) WHERE id(l) = {listId} SET l.title = {title}, l.sort = {sort} ", params = [["listId", listId], ["title", title], ["sort", sort]]);
 
 	def setDueDate(self, itemId, dueDate):
 		results, metadata = cypher.execute(self.graphdb, "MATCH (i:Item) WHERE id(i) = {itemId} SET i.dueDate = {dueDate} ", params = [["itemId", itemId],["dueDate", dueDate]]);

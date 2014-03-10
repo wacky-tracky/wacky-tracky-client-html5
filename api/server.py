@@ -25,6 +25,12 @@ class Api(object):
 		return self.outputJson(JSON_OK);
 
 	@cherrypy.expose
+	def listUpdate(self, *path, **args):
+		self.wrapper.updateList(int(args['list']), args['title'], args['sort'])
+
+		return self.outputJson(JSON_OK);
+
+	@cherrypy.expose
 	def setDueDate(self, *path, **args):
 		self.wrapper.setDueDate(int(args['item']), args['dueDate'])
 
@@ -74,6 +80,7 @@ class Api(object):
 			ret.append({
 				"id": singleList.id,
 				"title": singleList['title'],
+				"sort": singleList['sort'],
 				"count": len(singleList.get_related_nodes(Direction.OUTGOING))
 			})
 
@@ -123,7 +130,7 @@ class Api(object):
 		if "task" in args:
 			items = self.wrapper.getSubItems(int(args['task']))
 		else:
-			items = self.wrapper.getItemsFromList(int(args['list']))
+			items = self.wrapper.getItemsFromList(int(args['list']), args['sort'])
 
 		ret = []
 		for row in items: 
