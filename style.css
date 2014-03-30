@@ -391,3 +391,7 @@ li.menuItem:hover {
 input.renamer {
 	width: 50%;
 }
+
+a, a:visited {
+	color: black;
+}
