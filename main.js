@@ -704,19 +704,19 @@ function renderTasks(list) {
 }
 
 function generalError(error) {
-	console.log("error", error);
+	console.log("generalError() = ", error);
+	console.log("generalError() stack: ", new Error().stack);
 
 	if (error.status == 500) {
 		error = "Internal Server Error.";
-	}
-
-	if (typeof(error.responseJSON.message) != "undefined") {
+	} else if (error.statusText == "error") {
+		error = "Critical, unspecified client side error."
+	} else if (typeof(error.responseJSON) != "undefined" && typeof(error.responseJSON.message) != "undefined") {
 		error = error.responseJSON.message
 	} else if (typeof(error) == "object") {
 		error = error.toString()
 	}
 
-	console.log(new Error().stack);
 	$('body').createAppend($('<div class = "notification">').text('Error: ' + error)).click(function() {
 		this.remove();	
 	});
