@@ -374,8 +374,9 @@ ul.dropDownMenu {
 	position: absolute;
 	left: 0;
 	right: 0;
-	width: 240px;
+	width: 219px;
 	cursor: pointer;
+	top: 2em;
 }
 
 li.menuItem {
@@ -398,6 +399,10 @@ a, a:visited {
 
 .dropdown {
 	color: gray;
+	font-size: 80%;
+	text-align: right;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 h2:hover .dropdown {
