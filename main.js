@@ -28,7 +28,8 @@ function DropDownMenu() {
 			} else {
 				self.show();
 			}
-		}).children().click(function() { return false});
+		});
+		//.children().click(function() { return false});
 	};
 
 	DropDownMenu.prototype.isShown = function() {
@@ -505,7 +506,7 @@ function loginSuccess() {
 
 function initSuccess(res) {
 	if (res.wallpaper !== null) {
-		img = "url(wallpapers/" + res.wallpaper + ")";
+		img = "url(/wallpapers/" + res.wallpaper + ")";
 		$('body').css('background-image', img);
 	}
 
@@ -937,12 +938,14 @@ function SidePanel() {
 	this.dom = $('<div id = "sidepanel" />');
 	this.dom.model(this);
 	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidepanelResized});
-	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
+	this.domTitle = this.dom.createAppend('<h2>wacky-tracky <span class = "dropdown">&#x25bc;</span></h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
 	this.domTags = this.dom.createAppend('<ul class = "tags" />');
 	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
 	this.domButtonNewTag = this.dom.createAppend('<button>New Tag</button>').click(function() { self.createTag(); });
-	this.domButtonRefresh = this.dom.createAppend('<button class = "refresh" />').html('&nbsp;').click(function() { self.refreshLists(); });
+	this.domButtonRefresh = this.dom.createAppend('<button class = "refresh" />').html('&nbsp;').click(function() { self.refreshLists(); })
+	this.domButtonRaiseIssue = this.dom.createAppend('<button id = "raiseIssue">Issue!</button>').click(function() { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") });
+	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
 	menuUser = new DropDownMenu();
 	menuUser.addItem('Change password', changePassword);

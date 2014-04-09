@@ -395,3 +395,11 @@ input.renamer {
 a, a:visited {
 	color: black;
 }
+
+.dropdown {
+	color: gray;
+}
+
+h2:hover .dropdown {
+	color: black;
+}
