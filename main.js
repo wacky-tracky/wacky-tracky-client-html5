@@ -432,7 +432,8 @@ function LoginForm() {
 }
 
 function registerSuccess() {
-	console.log("reg suc");
+	notification('good', 'Thanks for registering, you can now login!');
+
 	window.loginForm.hideRegistration();
 	window.content.remove();
 }
@@ -718,9 +719,14 @@ function generalError(error) {
 		error = error.toString()
 	}
 
-	$('body').createAppend($('<div class = "notification">').text('Error: ' + error)).click(function() {
+	notification('error', 'Error: ' + error);
+}
+
+function notification(cls, text) {
+	$('body').createAppend($('<div class = "notification ' + cls + '">').text(text)).click(function() {
 		this.remove();	
 	});
+	console.log(text);
 }
 
 function hideAllErrors() {
