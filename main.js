@@ -717,9 +717,9 @@ function List(jsonList) {
 	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />').text(this.fields.title);
 	this.domSidePanelTitleSuffix = this.domSidePanelTitle.createAppend('<span class = "subtle" />');
 
-	this.domDialog = $('<p>dialog</p>');
-	this.domInputTitle = this.domDialog.createAppend('<p>title</p>').createAppend('<input />').text(this.fields.title);
-	this.domInputSort = this.domDialog.createAppend('<p>sort</p>').createAppend('<select />');
+	this.domDialog = $('<p><small>Note: your changes will be automatically saved when you close this dialog.</small></p>');
+	this.domInputTitle = this.domDialog.createAppend('<p>Title:</p>').createAppend('<input />').text(this.fields.title);
+	this.domInputSort = this.domDialog.createAppend('<p>Sort:</p>').createAppend('<select />');
 	this.domInputSort.createAppend('<option value = "title">Title</option>');
 	this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
 
