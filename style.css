@@ -341,10 +341,22 @@ label {
 	display: inline-block;
 }
 
-// jquery dialog close button
-.ui-dialog .ui-dialog-titlebar-close {
-	height: 10px !important;
-	width: 10px !important;
+.ui-dialog-titlebar-close {
+	float: right;
+}
+
+.ui-dialog-content {
+	padding-left: .6em;
+	padding-top: .2em;
+}
+
+.ui-dialog-titlebar {
+	background-color: beige;
+	border-bottom: 1px solid black;
+	padding-top: .2em;
+	padding-bottom: .2em;
+	padding-left: .4em;
+	cursor: pointer;
 }
 
 span.ui-button-text {
@@ -369,8 +381,48 @@ div.taskWrapper.selected div.task input.hasDatePicker {
 	border-bottom: 1px dashed gray;
 }
 
-ul.dropDownMenu {
+ul.dropDownMenu, .ui-datepicker, .ui-dialog {
 	border: 2px solid darkblue;
+	background-color: white;
+}
+
+.ui-datepicker-next {
+	float: right;
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+	font-size: small;
+}
+
+.ui-datepicker-year, .ui-datepicker-month {
+	text-align: center;
+	display: block;
+	margin: 0;
+	padding: 0;
+}
+
+.ui-datepicker-month {
+	font-weight: bold;
+}
+
+.ui-datepicker-year {
+	margin-top: -1em;
+	font-size: small;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+}
+
+a.ui-state-hover {
+	background-color: lightskyblue;
+	cursor: pointer;
+}
+
+ul.dropDownMenu {
 	display: none;
 	background-color: white;
 	list-style: none;
@@ -394,7 +446,7 @@ li.menuItem {
 }
 
 li.menuItem:hover {
-	background-color: beige;
+	background-color: lightskyblue;
 }
 
 input.renamer {
