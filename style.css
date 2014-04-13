@@ -357,6 +357,7 @@ label {
 	padding-bottom: .2em;
 	padding-left: .4em;
 	cursor: pointer;
+	font-weight: bold;
 }
 
 span.ui-button-text {
