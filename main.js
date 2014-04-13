@@ -79,8 +79,7 @@ function Task(taskObject) {
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
 	this.domButtonDelete.css('display', 'none');
-	this.domButtonTags = this.domTaskButtons.createAppend('<button>tag</button>');
-	this.domButtonTags.css('display', 'none');
+	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 
 	this.menuTags = new Menu();
 	this.menuTags.dropDown = true;
@@ -163,16 +162,22 @@ function Task(taskObject) {
 			}
 		});
 
-		this.toggleTag(tag.obj.id);
+		this.toggleTag(tag.obj);
 	};
 
-	Task.prototype.toggleTag = function(id) {
-		tag = this.domTaskControls.children('.tag' + id);
+	Task.prototype.toggleTag = function(tag) {
+		tagEl = this.menuTags.domItems.children('.tag' + tag.id);
 		
-		if (tag.hasClass('selected')) {
-			tag.removeClass('selected');
+		console.log(tag);
+
+		if (tagEl.hasClass('selected')) {
+			tagEl.removeClass('selected');
+
+			this.domButtonTags.children('.tag' + tag.id).remove();
 		} else {
-			tag.addClass('selected');
+			tagEl.addClass('selected');
+
+			this.domButtonTags.createAppend('<span class = "tag selected tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
 		}
 	};
 
@@ -214,7 +219,6 @@ function Task(taskObject) {
 
 	Task.prototype.renameTo = function(newContent) {
 		this.isBeingRenamed = false;
-		console.log(this.fields.content, "->", newContent);
 		this.fields.content = newContent;
 		this.domTaskContent.text(newContent);
 	};
@@ -265,7 +269,10 @@ function Task(taskObject) {
 		this.domButtonDueDate.attr('disabled', 'disabled');
 
 		this.domButtonDelete.css('display', 'none');
-		this.domButtonTags.css('display', 'none');
+
+		if (!this.hasTags()) {
+			this.domButtonTags.css('display', 'none');
+		}
 
 		window.content.taskInput.setLabel('');
 
@@ -295,11 +302,19 @@ function Task(taskObject) {
 		window.toDelete = null;
 	};
 
+	Task.prototype.hasTags = function() {
+		return this.fields.tags.length;
+	};
+
 	this.setDueDate();
 	this.addTagButtons();
 	$(this.fields.tags).each(function(i, tag) {
-		self.toggleTag(tag.id);
+		self.toggleTag(tag);
 	});
+
+	if (!this.hasTags()) {
+		this.domButtonTags.css('display', 'none');
+	}
 
 	return this;
 }
@@ -435,8 +450,6 @@ function tryLogin(username, password) {
 
 function generalErrorJson(msg, res) {
 	msg = "General JSON Error.";
-
-	console.log(res);
 
 	if (typeof(res.responseJSON) !== "undefined") {
 		msg += ": " + res.responseJSON.message;
@@ -639,7 +652,6 @@ function notification(cls, text) {
 	$('body').createAppend($('<div class = "notification ' + cls + '">').text(text)).click(function() {
 		this.remove();	
 	});
-	console.log(text);
 }
 
 function hideAllErrors() {
