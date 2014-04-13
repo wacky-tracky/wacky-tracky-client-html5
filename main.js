@@ -664,7 +664,7 @@ function ListControls(list) {
 
 	this.domButtonMore = this.dom.createAppend('<button />').text('^');
 	
-	this.menuMore = new DropDownMenu();
+	this.menuMore = new Menu();
 	this.menuMore.dropDown = true;
 	this.menuMore.addItem('Download', null);
 	this.menuMore.addTo(this.domButtonMore);
@@ -861,7 +861,7 @@ function SidePanel() {
 	this.domButtonRaiseIssue = this.dom.createAppend('<button id = "raiseIssue">Issue!</button>').click(function() { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") });
 	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
-	menuUser = new DropDownMenu();
+	menuUser = new Menu();
 	menuUser.addItem('Change password', changePassword);
 	menuUser.addItem('Logout', logoutRequest);
 	menuUser.addTo(this.domTitle);
@@ -1021,9 +1021,9 @@ $(document).keyup(function(e) {
 		}
 	}
 
-	if (window.currentDropDownMenu != null) {
+	if (window.currentMenu != null) {
 		if (e.keyCode == 27) {
-			window.currentDropDownMenu.hide();
+			window.currentMenu.hide();
 		}
 	}
 

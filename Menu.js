@@ -3,21 +3,21 @@ function Point() {
 	this.y = 0;
 }
 
-function DropDownMenu() {
+function Menu() {
 	var self = this;
 
 	this.domItems = $('<ul class = "dropDownMenu" style = "display: none" />');
 	this.owner = null;
 	this.dropDown = false;
 
-	DropDownMenu.prototype.addItem = function(text, callback) {
+	Menu.prototype.addItem = function(text, callback) {
 		this.domItems.createAppend('<li class = "menuItem" />').text(text).click(function() {
 			self.hide();
 			callback();	
 		});
 	};
 
-	DropDownMenu.prototype.addTo = function(owner) {
+	Menu.prototype.addTo = function(owner) {
 		this.setOwner(owner);
 
 		$('body').after(this.domItems);
@@ -36,7 +36,7 @@ function DropDownMenu() {
 		//.children().click(function() { return false});
 	};
 
-	DropDownMenu.prototype.setOwner = function(owner) {
+	Menu.prototype.setOwner = function(owner) {
 		this.owner = owner;
 
 		if (owner.attr('id') != '') {
@@ -44,7 +44,7 @@ function DropDownMenu() {
 		}
 	}
 
-	DropDownMenu.prototype.addAsRightClick = function(owner) {
+	Menu.prototype.addAsRightClick = function(owner) {
 		this.setOwner(owner);
 
 		$(owner).after(this.domItems);
@@ -60,12 +60,12 @@ function DropDownMenu() {
 		});
 	};
 
-	DropDownMenu.prototype.positionAtEvent = function(e) {
+	Menu.prototype.positionAtEvent = function(e) {
 		this.domItems.css('left', e.pageX);
 		this.domItems.css('top',  e.pageY);
 	};
 
-	DropDownMenu.prototype.reposition = function(e) {
+	Menu.prototype.reposition = function(e) {
 		if (this.dropDown) {	
 			currentTarget = $(e.currentTarget);
 			marginTop = parseInt(currentTarget.css('margin-top').replace("px", ""));
@@ -85,8 +85,6 @@ function DropDownMenu() {
 			dropDownTouchPoint.x = menuTl.x + this.domItems.width();
 			dropDownTouchPoint.y = menuTl.y + this.domItems.height();
 
-			console.log(menuTl.x);
-
 			if (dropDownTouchPoint.y > $('html').height()) {
 				menuTl.y = ownerTl.y - this.domItems.height();
 			}
@@ -95,7 +93,6 @@ function DropDownMenu() {
 				p = this.domItems.width() - currentTarget.width();
 				p -= marginLeft;
 				p -= marginLeft;
-				console.log(this.domItems.width(), currentTarget.width(), p);
 				menuTl.x = ownerTl.x - p; //(this.domItems.width() - currentTarget.width());
 			}
 
@@ -106,7 +103,7 @@ function DropDownMenu() {
 		}
 	};
 
-	DropDownMenu.prototype.addMouseMove = function(owner) {
+	Menu.prototype.addMouseMove = function(owner) {
 		this.setOwner(owner);
 
 		$(owner).after(this.domItems);
@@ -122,21 +119,21 @@ function DropDownMenu() {
 		});
 	};
 
-	DropDownMenu.prototype.isShown = function() {
+	Menu.prototype.isShown = function() {
 		return this.domItems.css('display') != "none";
 	};
 
-	DropDownMenu.prototype.show = function() {
+	Menu.prototype.show = function() {
 		this.domItems.show();
 		this.owner.addClass('hasMenu');
 
-		window.currentDropDownMenu = self;
+		window.currentMenu = self;
 	};
 
-	DropDownMenu.prototype.hide = function() {
+	Menu.prototype.hide = function() {
 		this.domItems.hide();
 		this.owner.removeClass('hasMenu');
-		window.currentDropDownMenu = null;
+		window.currentMenu = null;
 	};
 
 	return this;
