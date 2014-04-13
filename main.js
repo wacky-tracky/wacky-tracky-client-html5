@@ -219,7 +219,6 @@ function Task(taskObject) {
 
 		if (window.selectedItem !== null) {
 			if (!window.selectedItem.deselect()) {
-				return;
 			}
 		}
 
