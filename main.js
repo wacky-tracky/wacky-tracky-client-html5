@@ -83,6 +83,7 @@ function Task(taskObject) {
 	this.domButtonTags.css('display', 'none');
 
 	this.menuTags = new Menu();
+	this.menuTags.dropDown = true;
 	this.menuTags.addTo(this.domButtonTags);
 	
 	this.domEditDialog = null;
