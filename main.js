@@ -303,7 +303,8 @@ function Task(taskObject) {
 	};
 
 	Task.prototype.hasTags = function() {
-		return this.fields.tags.length;
+		// this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
+		return this.domButtonTags.children().size() > 0; 
 	};
 
 	this.setDueDate();
