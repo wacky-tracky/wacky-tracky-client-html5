@@ -124,6 +124,12 @@ function Task(taskObject) {
 			newDate = "";
 		}
 
+		if (newDate != "") {
+			newDate = "Due: " + newDate;
+		} else {
+			newDate = "no due date"
+		}
+
 		self.domButtonDueDate.val(newDate);
 	};
 
