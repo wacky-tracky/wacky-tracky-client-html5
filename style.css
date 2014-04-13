@@ -378,7 +378,6 @@ ul.dropDownMenu {
 	color: black;
 	margin: 0;
 	padding: 0;
-	margin-left: .4em;
 	font-weight: normal;
 	display: block;
 	position: absolute;
@@ -386,7 +385,6 @@ ul.dropDownMenu {
 	right: 0;
 	width: 219px;
 	cursor: pointer;
-	top: 2em;
 }
 
 li.menuItem {

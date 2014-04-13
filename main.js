@@ -1,55 +1,5 @@
 window.host = "http://" + window.location.hostname + ":8082/";
 
-function DropDownMenu() {
-	var self = this;
-
-	this.domItems = $('<ul class = "dropDownMenu" style = "display: none" />');
-	this.owner = null;
-
-	DropDownMenu.prototype.addItem = function(text, callback) {
-		this.domItems.createAppend('<li class = "menuItem" />').text(text).click(function() {
-			self.hide();
-			callback();	
-		});
-	};
-
-	DropDownMenu.prototype.addTo = function(element) {
-		$('body').after(this.domItems);
-		this.domItems.position({
-			of: element,
-			my: 'right-5 top+20',
-			at: 'right bottom',
-		});
-		element.css('cursor', 'pointer');
-
-		element.click(function(e) {
-			if (self.isShown()) {
-				self.hide();
-			} else {
-				self.show();
-			}
-		});
-		//.children().click(function() { return false});
-	};
-
-	DropDownMenu.prototype.isShown = function() {
-		return self.domItems.css('display') != "none";
-	};
-
-	DropDownMenu.prototype.show = function() {
-		self.domItems.show();
-
-		window.currentDropDownMenu = self;
-	};
-
-	DropDownMenu.prototype.hide = function() {
-		self.domItems.hide();
-		window.currentDropDownMenu = null;
-	};
-
-	return this;
-}
-
 function ajaxRequest(params) {
 	if ($.isEmptyObject(params.error)) {
 		params.error = generalError
@@ -652,55 +602,6 @@ function TaskInputBox(label) {
 	return this;
 }
 
-$.fn.disable = function() {
-	return $(this).attr('disabled', 'disabled');
-}
-
-$.fn.enable = function() {
-	return $(this).removeAttr('disabled');
-}
-
-$.fn.rightClick = function(callback) {
-	$(this).on("contextmenu", function(e) {
-		if (e.which == 3) {
-			callback();
-			e.preventDefault();
-		}
-	});
-};
-
-$.fn.onEnter = function(callback) {
-	el = this;
-
-	this.keyup(function(e) {
-		if (e.keyCode == 13) {
-			callback($(el));
-		}
-	});
-};
-
-$.fn.replaceWithRet = function(newEl) {
-	this.replaceWith(newEl);
-
-	return $(newEl);
-};
-
-$.fn.createAppend = function(constructor) {
-	var childElement = $(constructor);
-
-	$(this).append(childElement);
-
-	return $(childElement);
-};
-
-$.fn.model = function() {
-	if (typeof(this.data('model')) == "undefined") {
-		this.data('model', {});
-	}
-
-	return this.data('model');
-};
-
 function renderTasks(list) {
 	window.content.list.addAll(list);
 }
@@ -760,6 +661,13 @@ function ListControls(list) {
 
 	this.domButtonSettings = this.dom.createAppend('<button />').text('Settings');
 	this.domButtonSettings.click(function (e) { self.showSettings(); });
+
+	this.domButtonMore = this.dom.createAppend('<button />').text('^');
+	
+	this.menuMore = new DropDownMenu();
+	this.menuMore.dropDown = true;
+	this.menuMore.addItem('Download', null);
+	this.menuMore.addTo(this.domButtonMore);
 
 	ListControls.prototype.del = function() {
 		this.list.del();
