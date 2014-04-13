@@ -79,6 +79,11 @@ function Task(taskObject) {
 	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 	this.domButtonDelete.click(function() { self.del(); });
 	this.domButtonDelete.css('display', 'none');
+	this.domButtonTags = this.domTaskButtons.createAppend('<button>tag</button>');
+	this.domButtonTags.css('display', 'none');
+
+	this.menuTags = new Menu();
+	this.menuTags.addTo(this.domButtonTags);
 	
 	this.domEditDialog = null;
 
@@ -136,10 +141,9 @@ function Task(taskObject) {
 		var self = this;
 
 		$(window.sidepanel.tags).each(function(i, tag) {
-			button = self.domTaskControls.createAppend('<button class = "tag" />').addClass('tag' + tag.obj.id).text(tag.obj.shortTitle);
-			button.click(function() {
+			self.menuTags.addItem(tag.obj.shortTitle, function() {
 				self.tagItem(tag);
-			});
+			}).addClass('tag' + tag.obj.id);
 		});
 	};
 
@@ -220,6 +224,7 @@ function Task(taskObject) {
 		}
 
 		this.domButtonDelete.css('display', 'inline-block');
+		this.domButtonTags.css('display', 'inline-block');
 		this.domButtonDueDate.model(this);
 		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate});
 		this.domButtonDueDate.removeAttr('disabled');
@@ -254,6 +259,7 @@ function Task(taskObject) {
 		this.domButtonDueDate.attr('disabled', 'disabled');
 
 		this.domButtonDelete.css('display', 'none');
+		this.domButtonTags.css('display', 'none');
 
 		window.content.taskInput.setLabel('');
 

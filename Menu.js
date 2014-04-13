@@ -11,7 +11,7 @@ function Menu() {
 	this.dropDown = false;
 
 	Menu.prototype.addItem = function(text, callback) {
-		this.domItems.createAppend('<li class = "menuItem" />').text(text).click(function() {
+		return this.domItems.createAppend('<li class = "menuItem" />').text(text).click(function() {
 			self.hide();
 			callback();	
 		});
@@ -124,6 +124,10 @@ function Menu() {
 	};
 
 	Menu.prototype.show = function() {
+		if (window.currentMenu != null) {
+			window.currentMenu.hide();
+		}
+
 		this.domItems.show();
 		this.owner.addClass('hasMenu');
 
