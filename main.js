@@ -168,8 +168,6 @@ function Task(taskObject) {
 	Task.prototype.toggleTag = function(tag) {
 		tagEl = this.menuTags.domItems.children('.tag' + tag.id);
 		
-		console.log(tag);
-
 		if (tagEl.hasClass('selected')) {
 			tagEl.removeClass('selected');
 
