@@ -221,6 +221,14 @@ function Task(taskObject) {
 		this.isBeingRenamed = false;
 		this.fields.content = newContent;
 		this.domTaskContent.text(newContent);
+
+		ajaxRequest({
+			url: 'renameItem',
+			data: {
+				'id': this.fields.id,
+				'content': newContent,
+			}
+		});
 	};
 
 	Task.prototype.select = function() {
@@ -277,6 +285,7 @@ function Task(taskObject) {
 		window.content.taskInput.setLabel('');
 
 		this.domTask.children('.renamer').remove();
+		this.menuTags.hide();
 	};
 
 	Task.prototype.del = function(i) {
