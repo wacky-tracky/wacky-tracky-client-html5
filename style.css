@@ -488,3 +488,30 @@ a, a:visited {
 h2:hover .dropdown {
 	color: black;
 }
+
+@media print {
+	div#sidepanel {
+		display: none;
+	}
+
+	div.itemInput {
+		display: none;
+	}
+
+	div.listControls {
+		display: none;		
+	}
+
+	div#content {
+		left: 0 !important;
+		right: 0;
+	}
+
+	button {
+		display: none !important;
+	}
+
+	body, input {
+		font-size: 9pt;
+	}
+}
