@@ -242,6 +242,10 @@ button:disabled {
 	background-color: #bbb;
 }
 
+button.expand:disabled {
+	background-color: white;
+}
+
 button:not([disabled]):hover {
 	background-color: #fff;
 	border-color: #ccc;

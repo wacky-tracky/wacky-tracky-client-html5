@@ -74,7 +74,7 @@ function Task(taskObject) {
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
 	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
-	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); });
+	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); self.toggleSubtasks(); });
 	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
 	this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
@@ -91,11 +91,24 @@ function Task(taskObject) {
 
 	if (this.fields.hasChildren) {
 		this.domButtonExpand.removeAttr('disabled');
+	} else {
+		this.domButtonExpand.html('&nbsp;');
 	}
 
 	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
+	this.domSubtasks.css('display', 'none');
 
 	this.subtasks = [];
+
+	Task.prototype.toggleSubtasks = function() {
+		if (this.domSubtasks.css('display') == 'block') {
+			this.domSubtasks.css('display', 'none') ;
+			this.domButtonExpand.text('+')
+		} else {
+			this.domSubtasks.css('display', 'block') ;
+			this.domButtonExpand.text('-')
+		}
+	};
 
 	Task.prototype.refreshSubtasks = function() {
 		this.domSubtasks.children().remove();
