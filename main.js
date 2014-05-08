@@ -711,10 +711,14 @@ function ListControls(list) {
 
 	this.domButtonMore = this.dom.createAppend('<button />').text('^');
 	
-	this.menuMore = new Menu();
-	this.menuMore.dropDown = true;
-	this.menuMore.addItem('Download', null);
-	this.menuMore.addTo(this.domButtonMore);
+	ListControls.prototype.requestDownload = function() {
+		ajaxRequest({
+			url: 'listDownload',
+			data: {
+				id: self.list.fields.id
+			}
+		});
+	};
 
 	ListControls.prototype.del = function() {
 		this.list.del();
@@ -727,6 +731,11 @@ function ListControls(list) {
 	ListControls.prototype.showSettings = function() {
 		this.list.openDialog();
 	};
+
+	this.menuMore = new Menu();
+	this.menuMore.dropDown = true;
+	this.menuMore.addItem('Download', this.requestDownload);
+	this.menuMore.addTo(this.domButtonMore);
 
 	return this;
 }
