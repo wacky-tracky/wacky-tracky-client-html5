@@ -711,14 +711,14 @@ function ListControls(list) {
 
 	this.domButtonMore = this.dom.createAppend('<button />').text('^');
 	
-	ListControls.prototype.requestDownload = function() {
-		ajaxRequest({
-			url: 'listDownload',
-			data: {
-				id: self.list.fields.id
-			}
-		});
+	ListControls.prototype.requestDownloadJson = function() {
+		window.location = window.host + 'listDownload?id=' + self.list.fields.id + '&format=json'
 	};
+
+	ListControls.prototype.requestDownloadText = function() {
+		window.location = window.host + 'listDownload?id=' + self.list.fields.id + '&format=text'
+	};
+
 
 	ListControls.prototype.del = function() {
 		this.list.del();
@@ -734,7 +734,8 @@ function ListControls(list) {
 
 	this.menuMore = new Menu();
 	this.menuMore.dropDown = true;
-	this.menuMore.addItem('Download', this.requestDownload);
+	this.menuMore.addItem('Download (JSON)', this.requestDownloadJson);
+	this.menuMore.addItem('Download (Text)', this.requestDownloadText);
 	this.menuMore.addTo(this.domButtonMore);
 
 	return this;
