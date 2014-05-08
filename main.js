@@ -29,6 +29,7 @@ function Tag(tagObject) {
 	this.domDialog = $('<p>dialog</p>');
 	this.domInputTitle = this.domDialog.createAppend('<input />').text(this.obj.title);
 	this.domInputShortTitle = this.domDialog.createAppend('<input />').text(this.obj.shortTitle);
+	this.domInputBackgroundColor = this.domDialog.createAppend('<input />').val(this.obj.backgroundColor);
 
 	Tag.prototype.toDomSidePanel = function() {
 		return this.domSidePanel;
@@ -40,7 +41,8 @@ function Tag(tagObject) {
 			data: {
 				id: window.tag.obj.id,
 				newTitle: window.tag.domInputTitle.val(),
-				shortTitle: window.tag.domInputShortTitle.val()
+				shortTitle: window.tag.domInputShortTitle.val(),
+				backgroundColor: window.tag.domInputBackgroundColor.val()
 			}
 		});
 	};
@@ -861,6 +863,9 @@ function List(jsonList) {
 function sidepanelResized() {
 	window.content.dom.css('left', window.sidepanel.dom.width());
 	window.content.dom.css('right', $('body').css('width'));
+
+	$('div.itemInput').css('left', window.sidepanel.dom.width());
+	$('div.itemInput').css('right', $('body').css('width'));
 }
 
 function logoutRequest() {
@@ -983,7 +988,7 @@ function SidePanel() {
 		ret = "";
 
 		$(tags).each(function(index, tag) {
-			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: #' + getNextTagColor() + ' !important }' + "\n";
+			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: ' + tag.backgroundColor + ' !important }' + "\n";
 			self.addTag(new Tag(tag));
 		});
 

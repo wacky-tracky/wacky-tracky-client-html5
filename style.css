@@ -149,10 +149,12 @@ li.list {
 div#content {
 	position: fixed;
 	overflow: auto;
+	/*
 	padding-top: .4em;
 	padding-left: 1em;
 	padding-right: 1em;
 	padding-bottom: 2em;
+	*/
 	margin-bottom: 6em;
 	left: 200;
 	background-color: rgba(239, 239, 239, 0.7);
@@ -165,9 +167,10 @@ input#task {
 	box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
 	transition: all 0.2s linear;
 	border-radius: .4em;
-	width: 100%;
+	width: 98%;
 	padding: .4em;
-	margin-bottom: 1.1em;
+	margin-bottom: 1em;
+	margin-top: 0;
 	color: darkgray;
 }
 
@@ -186,8 +189,8 @@ div.notification {
 }
 
 ul#taskList {
-	padding: 0;
-	margin: 0;
+	padding: 1em;
+	margin-top: 3em;
 	-moz-user-select: none;
 	user-select: none;
 }
@@ -290,11 +293,20 @@ div.subTasks {
 }
 
 .itemInput span {
-	display: inline-block;
+	display: none; /* was previously used*/
 }
 
 .itemIinput input {
 	display: inline-block;
+}
+
+div.itemInput {
+	position: fixed;
+	right: 0px;
+	left: 0px; /* will get overwritten */
+	padding-left: 1em;
+	padding-top: 0.6em;
+	background-color: rgb(12, 111, 238);
 }
 
 .tag {
