@@ -115,7 +115,8 @@ function Task(taskObject) {
 		ajaxRequest({
 			url: '/listTasks',
 			data: { 
-				task: this.fields.id 
+				task: this.fields.id,
+				sort: window.content.list.fields.sort
 			},
 			success: this.renderSubtasks
 		});
@@ -311,7 +312,7 @@ function Task(taskObject) {
 		window.toDelete = this;
 
 		ajaxRequest({
-			url: window.host + '//deleteTask',
+			url: 'deleteTask',
 			data: { id: this.fields.id },
 			success: this.renderDelete
 		});
@@ -442,7 +443,7 @@ function tryRegister(username, password, email) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
 
 	ajaxRequest({
-		url: window.host + 'register',
+		url: 'register',
 		error: registerFail,
 		success: registerSuccess,
 		data: {
@@ -461,7 +462,7 @@ function tryLogin(username, password) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
 
 	ajaxRequest({
-		url: window.host + 'authenticate',
+		url: 'authenticate',
 		error: loginFail,
 		success: loginSuccess,
 		data: {
@@ -526,7 +527,7 @@ function init() {
 	window.selectedItem = null;
 
 	ajaxRequest({
-		url: window.host + 'init',
+		url: 'init',
 		error: initFailure,
 		success: initSuccess,
 		dataType: 'json',
@@ -590,7 +591,7 @@ function newTask(text) {
 	}
 
 	ajaxRequest({
-		url: window.host + 'createTask',
+		url: 'createTask',
 		success: renderTaskCreated,
 		data: data
 	});
@@ -685,7 +686,7 @@ function requestTasks(list) {
 	window.content.setList(list);
 
 	ajaxRequest({
-		url: window.host + '/listTasks',
+		url: 'listTasks',
 		data: { 
 			list: list.fields.id,
 			sort: list.fields.sort,
@@ -872,7 +873,7 @@ function List(jsonList) {
 
 	List.prototype.del = function() {	
 		ajaxRequest({
-			url: window.host + 'deleteList',
+			url: 'deleteList',
 			data: { id: this.fields.id },
 			success: window.sidepanel.refreshLists
 		});
@@ -937,7 +938,7 @@ function SidePanel() {
 		}
 
 		ajaxRequest({
-			url: window.host + '/createTag',
+			url: 'createTag',
 			data: {
 				title: title
 			},
@@ -953,7 +954,7 @@ function SidePanel() {
 		}
 
 		ajaxRequest({
-			url: window.host + '/createList',
+			url: 'createList',
 			data: {
 				title: title
 			},
@@ -989,7 +990,7 @@ function SidePanel() {
 
 	SidePanel.prototype.refreshLists = function() {
 		ajaxRequest({
-			url: window.host + '/listLists',
+			url: 'listLists',
 			success: self.renderLists,
 			dataType: 'json',
 			type: 'GET',
@@ -1002,7 +1003,7 @@ function SidePanel() {
 
 	SidePanel.prototype.refreshTags = function() {
 		ajaxRequest({
-			url: window.host + 'listTags',
+			url: 'listTags',
 			success: this.renderTags
 		});
 	};
