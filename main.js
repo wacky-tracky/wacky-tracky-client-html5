@@ -26,10 +26,10 @@ function Tag(tagObject) {
 
 	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
 
-	this.domDialog = $('<p>dialog</p>');
-	this.domInputTitle = this.domDialog.createAppend('<input />').text(this.obj.title);
-	this.domInputShortTitle = this.domDialog.createAppend('<input />').text(this.obj.shortTitle);
-	this.domInputBackgroundColor = this.domDialog.createAppend('<input />').val(this.obj.backgroundColor);
+	this.domDialog = $('<div />');
+	this.domInputTitle = this.domDialog.createAppend('<p>').text('Title: ').createAppend('<input />').text(this.obj.title);
+	this.domInputShortTitle = this.domDialog.createAppend('<p>').text('Short Title: ').createAppend('<input />').text(this.obj.shortTitle);
+	this.domInputBackgroundColor = this.domDialog.createAppend('<p>').text('Background color: ').createAppend('<input />').val(this.obj.backgroundColor);
 
 	Tag.prototype.toDomSidePanel = function() {
 		return this.domSidePanel;
