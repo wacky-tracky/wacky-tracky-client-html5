@@ -903,8 +903,31 @@ function logoutSuccess() {
 	location.reload();
 }
 
-function changePassword() {
-	window.alert("cant do that yet");
+function changePasswordSuccess() {
+	notification('good', 'Your password has been changed!');
+}
+
+function promptChangePassword() {
+	password1 = window.prompt("New password");
+	password2 = window.prompt("Newpassword (again)");
+
+	if (password1 == password2) {
+		changePassword(password1);
+	} else {
+		generalError('Passwords do not match!');
+	}
+}
+
+function changePassword(password) {
+	hashedPassword = CryptoJS.SHA3(password).toString();
+
+	ajaxRequest({
+		url: 'changePassword',
+		data: {
+			'hashedPassword': hashedPassword
+		},
+		success: changePasswordSuccess
+	});
 }
 
 function SidePanel() {
@@ -923,7 +946,7 @@ function SidePanel() {
 	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
 	menuUser = new Menu();
-	menuUser.addItem('Change password', changePassword);
+	menuUser.addItem('Change password', promptChangePassword);
 	menuUser.addItem('Logout', logoutRequest);
 	menuUser.addTo(this.domTitle);
 
