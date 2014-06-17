@@ -84,6 +84,7 @@ function Task(taskObject) {
 	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 
 	this.menuTags = new Menu();
+	this.menuTags.domItems.addClass('tagsMenu');
 	this.menuTags.dropDown = true;
 	this.menuTags.addTo(this.domButtonTags);
 	
@@ -556,6 +557,8 @@ function Content() {
 
 		this.list = list;
 		this.domListContainer.children().remove();
+		$('.tagsMenu').remove();
+		$('.listControlsMenu').remove();
 		this.domListContainer.append(list.toDomContent());
 		this.domListContainer.append(new ListControls(list).toDom());
 
@@ -734,6 +737,7 @@ function ListControls(list) {
 	};
 
 	this.menuMore = new Menu();
+	this.menuMore.domItems.addClass('listControlsMenu');
 	this.menuMore.dropDown = true;
 	this.menuMore.addItem('Download (JSON)', this.requestDownloadJson);
 	this.menuMore.addItem('Download (Text)', this.requestDownloadText);
@@ -756,6 +760,8 @@ function List(jsonList) {
 	this.domInputSort.createAppend('<option value = "title">Title</option>');
 	this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
 
+	this.domShowTimeline = this.domDialog.createAppend('<p>Timeline:</p>').createAppend('<input type = "checkbox" />');
+
 	this.domList = $('<ul id = "taskList" />');
 
 	this.tasks = [];
@@ -767,6 +773,7 @@ function List(jsonList) {
 
 		this.domInputTitle.val(this.fields.title);
 		this.domInputSort.val(this.fields.sort);
+		this.domShowTimeline.val(this.fields.timeline);
 
 		this.domDialog.dialog({
 			title: "List options",
@@ -776,7 +783,8 @@ function List(jsonList) {
 					data: {
 						list: self.fields.id,
 						title: self.domInputTitle.val(),
-						sort: self.domInputSort.val()
+						sort: self.domInputSort.val(),
+						timeline: self.domShowTimeline.val(),
 					}
 				});
 			}
