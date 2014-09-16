@@ -662,7 +662,9 @@ function generalError(error) {
 	console.log("generalError() = ", error);
 	console.log("generalError() stack: ", new Error().stack);
 
-	if (error.status == 500) {
+	if (error.status == 403 && error.responseJSON.message == "Login required.") {
+		logoutSuccess(true);
+	} else if (error.status == 500) {
 		error = "Internal Server Error.";
 	} else if (error.statusText == "error") {
 		error = "Critical, unspecified client side error."
@@ -907,7 +909,11 @@ function logoutRequest() {
 	});
 }
 
-function logoutSuccess() {
+function logoutSuccess(hasExpired) {
+	if (hasExpired) {
+		window.alert("Your login session has expired. Please login again...")
+	}
+
 	location.reload();
 }
 
