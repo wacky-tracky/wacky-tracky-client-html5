@@ -515,3 +515,13 @@ h2:hover .dropdown {
 		font-size: 9pt;
 	}
 }
+
+input.validationError, input:invalid {
+	border: 1px solid red;
+}
+
+p.validationError {
+	color: red;
+	font-size: small;
+	text-align: right;
+}

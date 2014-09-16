@@ -1,7 +1,7 @@
 window.host = "http://" + window.location.hostname + ":8082/";
 
 function ajaxRequest(params) {
-	if ($.isEmptyObject(params.error)) {
+	if (typeof(params.error) != "function") {
 		params.error = generalError
 	}
 
@@ -456,11 +456,30 @@ function tryRegister(username, password, email) {
 }
 
 function registerFail(req, dat) {
-	generalErrorJson("Register fail. ", req)
+	clearValidationFailures();
+
+	if (typeof(req.responseJSON.uniqueType) != "undefined") {
+		switch(req.responseJSON.uniqueType) {
+			case "username-too-short":
+				highlightValidationFailure("#username", "Your username is too short.");
+				return
+			case "username-already-exists": 
+				highlightValidationFailure("#username", "Your username has been taken.");
+				return
+			case "username-invalid": 
+				highlightValidationFailure("#username", "Your username has some odd characters.");
+				return
+
+		}
+	}
+
+	generalErrorJson("Register fail. ", req, dat)
 }
 
 function tryLogin(username, password) {
 	hashedPassword = CryptoJS.SHA3(password).toString();
+
+	$('#loginForm input, #loginForm button').disable();
 
 	ajaxRequest({
 		url: 'authenticate',
@@ -484,8 +503,19 @@ function generalErrorJson(msg, res) {
 }
 
 function loginFail(res, dat) {
-	generalErrorJson("Login Failure. ", res);
+	$('#loginForm input, #loginForm button').enable();
 
+	clearValidationFailures();
+
+	switch (res.responseJSON.uniqueType) {
+		case "user-not-found":
+			highlightValidationFailure("#username", "Username not found");
+			return
+		case "user-wrong-password":
+			highlightValidationFailure("#password", "Incorrect pasword.");
+			return
+	}
+	generalErrorJson("Login Failure. ", res);
 }
 
 function loginSuccess() {
@@ -900,6 +930,21 @@ function sidepanelResized() {
 
 	$('div.itemInput').css('left', window.sidepanel.dom.width());
 	$('div.itemInput').css('right', $('body').css('width'));
+}
+
+function clearValidationFailures() {
+	$('p.validationError').remove();
+	$('input.validationError').removeClass('validationError');
+}
+
+function highlightValidationFailure(selector, message) {
+	element = $(selector)
+
+	element.addClass('validationError');
+
+	element.parent().children('p.validationError').remove();
+	element.parent().append($('<p class = "validationError">').text(message));
+
 }
 
 function logoutRequest() {
