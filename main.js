@@ -441,7 +441,7 @@ function registerSuccess() {
 }
 
 function tryRegister(username, password, email) {
-	hashedPassword = CryptoJS.SHA3(password).toString();
+	hashedPassword = CryptoJS.SHA1(password).toString();
 
 	ajaxRequest({
 		url: 'register',
@@ -477,7 +477,7 @@ function registerFail(req, dat) {
 }
 
 function tryLogin(username, password) {
-	hashedPassword = CryptoJS.SHA3(password).toString();
+	hashedPassword = CryptoJS.SHA1(password).toString();
 
 	$('#loginForm input, #loginForm button').disable();
 
@@ -978,7 +978,7 @@ function promptChangePassword() {
 }
 
 function changePassword(password) {
-	hashedPassword = CryptoJS.SHA3(password).toString();
+	hashedPassword = CryptoJS.SHA1(password).toString();
 
 	ajaxRequest({
 		url: 'changePassword',
