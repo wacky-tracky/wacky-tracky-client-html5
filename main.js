@@ -693,7 +693,7 @@ function generalError(error) {
 	console.log("generalError() stack: ", new Error().stack);
 
 	if (error.status == 403 && error.responseJSON.message == "Login required.") {
-		logoutSuccess(true);
+		logoutSuccess("expired");
 	} else if (error.status == 500) {
 		error = "Internal Server Error.";
 	} else if (error.statusText == "error") {
@@ -954,8 +954,8 @@ function logoutRequest() {
 	});
 }
 
-function logoutSuccess(hasExpired) {
-	if (hasExpired) {
+function logoutSuccess(reason) {
+	if (reason == "expired") {
 		window.alert("Your login session has expired. Please login again...")
 	}
 
