@@ -164,7 +164,13 @@ function Task(taskObject) {
 		var self = this;
 
 		$(window.sidepanel.tags).each(function(i, tag) {
-			self.menuTags.addItem(tag.obj.shortTitle, function() {
+			title = tag.obj.shortTitle;
+
+			if (title == "" || title == null) {
+				title = tag.obj.title;
+			}
+
+			self.menuTags.addItem(title, function() {
 				self.tagItem(tag);
 			}).addClass('tag' + tag.obj.id);
 		});
