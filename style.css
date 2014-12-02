@@ -9,6 +9,7 @@ body {
 
 h2 {
 	font-family: "Overpass", sans-serif;
+	background-color: #2dae82;
 }
 
 #loginForm h2 {
@@ -73,14 +74,16 @@ div.task button {
 }
 
 h2 {
-	color: darkblue;
+	color: white;
+	background-color: #2dae82;
 	margin: 0;
-	padding-top: .2em;
+	padding-top: .5em;
 	padding-left: .2em;
-	padding-bottom: .7em;
+	padding-bottom: .5em;
 	-moz-user-select: none;
 	user-select: none;
 	cursor: default;
+	border-bottom: 1px solid black;
 }
 
 th.dayHeader td {
@@ -95,7 +98,7 @@ div.period table {
 div#sidepanel {
 	background-color: #fff;
 	box-shadow: 0 0 6px #aaa;
-	border-right: 2px solid darkblue;
+	border-right: 2px solid black;
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -310,7 +313,8 @@ div.itemInput {
 	left: 0px; /* will get overwritten */
 	padding-left: 1em;
 	padding-top: 0.6em;
-	background-color: rgb(12, 111, 238);
+	background-color: #fff;
+	border-bottom: 1px solid black;
 }
 
 .tag {
@@ -398,7 +402,7 @@ div.taskWrapper.selected div.task input.hasDatePicker {
 }
 
 ul.dropDownMenu, .ui-datepicker, .ui-dialog {
-	border: 2px solid darkblue;
+	border: 2px solid black;
 	background-color: white;
 }
 
