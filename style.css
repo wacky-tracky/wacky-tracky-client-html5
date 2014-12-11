@@ -7,14 +7,11 @@ body {
 	font-family: sans-serif;
 }
 
-h2 {
-	font-family: "Overpass", sans-serif;
-	background-color: #2dae82;
-}
 
 #loginForm h2 {
 	margin: 0;
 	padding: 0;
+	color: black;
 }
 
 body, input, button {
@@ -74,8 +71,8 @@ div.task button {
 }
 
 h2 {
+	font-family: "Overpass", sans-serif;
 	color: white;
-	background-color: #2dae82;
 	margin: 0;
 	padding-top: .5em;
 	padding-left: .2em;
@@ -113,6 +110,7 @@ div#sidepanel * {
 }
 
 div#sidepanel h2 {
+	background-color: #2dae82;
 }
 
 ul.lists {
