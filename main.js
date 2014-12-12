@@ -83,7 +83,7 @@ function Task(taskObject) {
 	this.domButtonDelete.css('display', 'none');
 	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 
-	this.menuTags = new Menu();
+	this.menuTags = new Menu('tag menu');
 	this.menuTags.domItems.addClass('tagsMenu');
 	this.menuTags.dropDown = true;
 	this.menuTags.addTo(this.domButtonTags);
@@ -1001,7 +1001,7 @@ function SidePanel() {
 	this.dom = $('<div id = "sidepanel" />');
 	this.dom.model(this);
 	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidepanelResized});
-	this.domTitle = this.dom.createAppend('<h2>wacky-tracky <span class = "dropdown">&#x25bc;</span></h2>');
+	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
 	this.domTags = this.dom.createAppend('<ul class = "tags" />');
 	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
@@ -1010,10 +1010,10 @@ function SidePanel() {
 	this.domButtonRaiseIssue = this.dom.createAppend('<button id = "raiseIssue">Issue!</button>').click(function() { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") });
 	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
-	menuUser = new Menu();
+	menuUser = new Menu('User Menu');
 	menuUser.addItem('Change password', promptChangePassword);
 	menuUser.addItem('Logout', logoutRequest);
-	menuUser.addTo(this.domTitle);
+	menuUser.addTo(self.domTitle);
 
 	this.lists = [];
 	this.tags = [];
