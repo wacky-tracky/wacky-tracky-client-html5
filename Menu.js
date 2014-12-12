@@ -130,7 +130,6 @@ function Menu(title) {
 	};
 
 	Menu.prototype.show = function() {
-		console.log("show", this.title);
 		if (window.currentMenu != null) {
 			window.currentMenu.hide();
 		}
@@ -142,7 +141,6 @@ function Menu(title) {
 	};
 
 	Menu.prototype.hide = function() {
-		console.log("hiding", this.domItems);
 		this.domItems.hide();
 		this.owner.removeClass('hasMenu');
 		window.currentMenu = null;
