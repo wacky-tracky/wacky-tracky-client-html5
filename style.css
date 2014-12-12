@@ -318,10 +318,6 @@ div.itemInput {
 .tag {
 }
 
-.tag.selected {
-	background-color: limegreen;
-}
-
 ul.tags {
 	list-style: none;
 	margin: 0;
@@ -471,6 +467,15 @@ li.menuItem {
 
 li.menuItem:hover {
 	background-color: lightskyblue;
+}
+
+li.menuItem.selected {
+	font-weight: bold;
+}
+
+li.menuItem.selected:after {
+	content: '\2714';
+	float: right;
 }
 
 input.renamer {
