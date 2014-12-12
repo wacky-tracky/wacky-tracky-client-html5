@@ -1129,24 +1129,6 @@ function SidePanel() {
 	return this;
 }
 
-window.tagCount = 0;
-
-function getNextTagColor() {
-	window.tagCount++;
-
-	// http://www.tinygorilla.com/Easter_eggs/PallateHex.html
-
-	switch (window.tagCount) {
-		case 1: return "F7977A";
-		case 2: return "C4DF9B";
-		case 3: return "7EA7D8";
-		case 4: return "F9AD81";
-		case 5: return "8882BE";
-		case 6: return "F49AC2";
-		default: return "000000";
-	}
-}
-
 $(document).keyup(function(e) {
 	if (window.selectedItem !== null) {
 		if (e.keyCode == 27) {
