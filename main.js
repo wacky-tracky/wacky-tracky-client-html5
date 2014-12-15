@@ -24,7 +24,7 @@ function Tag(tagObject) {
 
 	this.obj = tagObject;
 
-	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
+	this.domSidePanel = $('<li class = "tagTitle tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<div />');
 	this.domInputTitle = this.domDialog.createAppend('<p>').text('Title: ').createAppend('<input />').text(this.obj.title);
@@ -172,7 +172,7 @@ function Task(taskObject) {
 
 			self.menuTags.addItem(title, function() {
 				self.tagItem(tag);
-			}).addClass('tag' + tag.obj.id);
+			}).addClass('tag' + tag.obj.id).addClass('tagTitle');
 		});
 	};
 
@@ -198,7 +198,7 @@ function Task(taskObject) {
 		} else {
 			tagEl.addClass('selected');
 
-			this.domButtonTags.createAppend('<span class = "tag selected tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
+			this.domButtonTags.createAppend('<span class = "tag indicator tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
 		}
 	};
 
@@ -1013,7 +1013,7 @@ function SidePanel() {
 	menuUser = new Menu('User Menu');
 	menuUser.addItem('Change password', promptChangePassword);
 	menuUser.addItem('Logout', logoutRequest);
-	menuUser.addTo(self.domTitle);
+	menuUser.addTo(this.domTitle);
 
 	this.lists = [];
 	this.tags = [];
@@ -1100,7 +1100,8 @@ function SidePanel() {
 		ret = "";
 
 		$(tags).each(function(index, tag) {
-			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: ' + tag.backgroundColor + ' !important }' + "\n";
+			ret += '.tag' + tag.id + '.tagTitle { border-left: 4px solid ' + tag.backgroundColor + ' !important }' + "\n";
+			ret += '.tag' + tag.id + '.indicator { background-color:' + tag.backgroundColor + ' !important }' + "\n";
 			self.addTag(new Tag(tag));
 		});
 

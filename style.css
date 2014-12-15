@@ -125,7 +125,7 @@ li.list {
 	color: black !important;
 }
 
-.listTitle {
+.listTitle, .tagTitle {
 	font-family: "Overpass", sans-serif;
 	font-size: 12pt;
 	display: block;
@@ -136,9 +136,13 @@ li.list {
 	border-bottom: 1px dashed #ccc;
 }
 
-.listTitle:hover {
+.listTitle:hover, .tagTitle:hover {
 	background-color: skyblue;
 	color: black;
+}
+
+.tagTitle {
+	font-size: 80%;
 }
 
 .selected a, .selected > div.task {
@@ -319,20 +323,11 @@ div.itemInput {
 }
 
 ul.tags {
+	border-top: 1px solid black;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	margin-top: 1em;
-}
-
-ul.tags li {
-	border: 1px solid #bbb;
-	margin: 6px;
-	padding: 2px;
-}
-
-ul.tags li:hover {
-	background-color: beige;
 }
 
 div#loginForm {
@@ -494,8 +489,8 @@ a, a:visited {
 	user-select: none;
 }
 
-h2:hover .dropdown {
-	color: black;
+h2.dropDownButton:hover, h2.hasMenu {
+	text-decoration: underline;
 }
 
 @media print {

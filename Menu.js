@@ -23,6 +23,7 @@ function Menu(title) {
 
 		$('body').after(this.domItems);
 		owner.css('cursor', 'pointer');
+		owner.addClass('dropDownButton');
 
 		clickCallback = function(e) {
 			e.preventDefault();
@@ -158,3 +159,5 @@ $('body').click(function(e) {
 		window.currentMenu.hide();
 	}
 });
+
+window.oncontextmenu = function() { return false; };
