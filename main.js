@@ -343,6 +343,14 @@ function Task(taskObject) {
 		window.toDelete.dom.remove();
 		window.content.list.tasks.pop(window.toDelete);
 		window.content.list.updateTaskCount();
+
+		if (window.toDelete.parent != null) {
+			parent = window.toDelete.parent;
+
+			parent.subtasks.pop(window.toDelete);
+			parent.refreshExpandButton();
+		}
+
 		window.toDelete = null;
 	};
 
