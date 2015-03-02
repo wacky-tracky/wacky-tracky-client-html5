@@ -1208,8 +1208,6 @@ $(document).keyup(function(e) {
 		if (e.keyCode == KeyCodes.SPACE) {
 			window.selectedItem.toggleSubtasks();
 		}
-
-		console.log(e.keyCode);
 	}
 
 	if (window.currentMenu != null) {
