@@ -49,36 +49,36 @@
 
 $('.draggable').draggable();
 
-DropDownMenu.prototype.addFakeItems = function() {
+Menu.prototype.addFakeItems = function() {
 	this.addItem('One')
 	this.addItem('Two')
 	this.addItem('Three')
 }
 
-menuLeft = new DropDownMenu();
+menuLeft = new Menu();
 menuLeft.addFakeItems()
 menuLeft.addTo($('#left'));
 
-menuLeftDropDown = new DropDownMenu();
+menuLeftDropDown = new Menu();
 menuLeftDropDown.dropDown = true;
 menuLeftDropDown.addFakeItems()
 menuLeftDropDown.addTo($('#leftDropDown'));
 
-menuLeftDropDownBottom = new DropDownMenu();
+menuLeftDropDownBottom = new Menu();
 menuLeftDropDownBottom.dropDown = true;
 menuLeftDropDownBottom.addFakeItems()
 menuLeftDropDownBottom.addTo($('#leftDropDownBottom'));
 
-menuRight = new DropDownMenu();
+menuRight = new Menu();
 menuRight.addFakeItems();
 menuRight.addAsRightClick($('#right'));
 
-menuRightDropDown = new DropDownMenu();
+menuRightDropDown = new Menu();
 menuRightDropDown.dropDown = true;
 menuRightDropDown.addFakeItems();
 menuRightDropDown.addAsRightClick($('#rightDropdown'));
 
-menuMouseMove = new DropDownMenu();
+menuMouseMove = new Menu();
 menuMouseMove.addFakeItems();
 menuMouseMove.addMouseMove($('#mouseMove'))
 </script>
