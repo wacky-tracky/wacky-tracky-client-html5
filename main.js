@@ -24,7 +24,7 @@ function Tag(tagObject) {
 
 	this.obj = tagObject;
 
-	this.domSidePanel = $('<li class = "selected tag' + this.obj.id + '">').text(this.obj.title);
+	this.domSidePanel = $('<li class = "tagTitle tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<div />');
 	this.domInputTitle = this.domDialog.createAppend('<p>').text('Title: ').createAppend('<input />').text(this.obj.title);
@@ -83,7 +83,7 @@ function Task(taskObject) {
 	this.domButtonDelete.css('display', 'none');
 	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 
-	this.menuTags = new Menu();
+	this.menuTags = new Menu('tag menu');
 	this.menuTags.domItems.addClass('tagsMenu');
 	this.menuTags.dropDown = true;
 	this.menuTags.addTo(this.domButtonTags);
@@ -170,9 +170,15 @@ function Task(taskObject) {
 		var self = this;
 
 		$(window.sidepanel.tags).each(function(i, tag) {
-			self.menuTags.addItem(tag.obj.shortTitle, function() {
+			title = tag.obj.shortTitle;
+
+			if (title == "" || title == null) {
+				title = tag.obj.title;
+			}
+
+			self.menuTags.addItem(title, function() {
 				self.tagItem(tag);
-			}).addClass('tag' + tag.obj.id);
+			}).addClass('tag' + tag.obj.id).addClass('tagTitle');
 		});
 	};
 
@@ -198,7 +204,7 @@ function Task(taskObject) {
 		} else {
 			tagEl.addClass('selected');
 
-			this.domButtonTags.createAppend('<span class = "tag selected tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
+			this.domButtonTags.createAppend('<span class = "tag indicator tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
 		}
 	};
 
@@ -1002,7 +1008,7 @@ function SidePanel() {
 	this.dom = $('<div id = "sidepanel" />');
 	this.dom.model(this);
 	this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidepanelResized});
-	this.domTitle = this.dom.createAppend('<h2>wacky-tracky <span class = "dropdown">&#x25bc;</span></h2>');
+	this.domTitle = this.dom.createAppend('<h2>wacky-tracky</h2>');
 	this.domLists = this.dom.createAppend('<ul class = "lists" />');
 	this.domTags = this.dom.createAppend('<ul class = "tags" />');
 	this.domButtonNewList = this.dom.createAppend('<button>New List</button>').click(function() { self.createList(); });
@@ -1011,7 +1017,7 @@ function SidePanel() {
 	this.domButtonRaiseIssue = this.dom.createAppend('<button id = "raiseIssue">Issue!</button>').click(function() { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") });
 	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
-	menuUser = new Menu();
+	menuUser = new Menu('User Menu');
 	menuUser.addItem('Change password', promptChangePassword);
 	menuUser.addItem('Logout', logoutRequest);
 	menuUser.addTo(this.domTitle);
@@ -1101,7 +1107,8 @@ function SidePanel() {
 		ret = "";
 
 		$(tags).each(function(index, tag) {
-			ret += '.tag' + tag.id + '.selected, .tag' + tag.id + ':hover { background-color: ' + tag.backgroundColor + ' !important }' + "\n";
+			ret += '.tag' + tag.id + '.tagTitle { border-left: 4px solid ' + tag.backgroundColor + ' !important }' + "\n";
+			ret += '.tag' + tag.id + '.indicator { background-color:' + tag.backgroundColor + ' !important }' + "\n";
 			self.addTag(new Tag(tag));
 		});
 
@@ -1128,24 +1135,6 @@ function SidePanel() {
 	};
 
 	return this;
-}
-
-window.tagCount = 0;
-
-function getNextTagColor() {
-	window.tagCount++;
-
-	// http://www.tinygorilla.com/Easter_eggs/PallateHex.html
-
-	switch (window.tagCount) {
-		case 1: return "F7977A";
-		case 2: return "C4DF9B";
-		case 3: return "7EA7D8";
-		case 4: return "F9AD81";
-		case 5: return "8882BE";
-		case 6: return "F49AC2";
-		default: return "000000";
-	}
 }
 
 $(document).keyup(function(e) {

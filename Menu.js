@@ -3,9 +3,10 @@ function Point() {
 	this.y = 0;
 }
 
-function Menu() {
+function Menu(title) {
 	var self = this;
 
+	this.title = title;
 	this.domItems = $('<ul class = "dropDownMenu" style = "display: none" />');
 	this.owner = null;
 	this.dropDown = false;
@@ -22,8 +23,11 @@ function Menu() {
 
 		$('body').after(this.domItems);
 		owner.css('cursor', 'pointer');
+		owner.addClass('dropDownButton');
 
-		owner.click(function(e) {
+		clickCallback = function(e) {
+			e.preventDefault();
+
 			self.reposition(e);
 
 			if (self.isShown()) {
@@ -31,9 +35,12 @@ function Menu() {
 			} else {
 				self.show();
 			}
-		});
 
-		//.children().click(function() { return false});
+			return false;
+		};
+
+		owner.mousedown(clickCallback);
+		owner.attr('oncontextmenu', 'return false;');
 	};
 
 	Menu.prototype.setOwner = function(owner) {
@@ -131,7 +138,7 @@ function Menu() {
 		this.domItems.show();
 		this.owner.addClass('hasMenu');
 
-		window.currentMenu = self;
+		window.currentMenu = this;
 	};
 
 	Menu.prototype.hide = function() {
@@ -143,4 +150,14 @@ function Menu() {
 	return this;
 }
 
+$('body').click(function(e) {
+	if (window.currentMenu != null) {
+		if ($(e.target).closest('.hasMenu').is(window.currentMenu.owner)) {
+			return false;
+		}
+		
+		window.currentMenu.hide();
+	}
+});
 
+window.oncontextmenu = function() { return false; };
