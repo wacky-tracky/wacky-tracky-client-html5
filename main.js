@@ -74,7 +74,7 @@ function Task(taskObject) {
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
 	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
-	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">+</button>').click(function() { self.refreshSubtasks(); self.toggleSubtasks(); });
+	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.refreshSubtasks(); self.toggleSubtasks(); });
 	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
 	this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
@@ -89,30 +89,37 @@ function Task(taskObject) {
 	this.menuTags.addTo(this.domButtonTags);
 	
 	this.domEditDialog = null;
-
-	if (this.fields.hasChildren) {
-		this.refreshExpandButton(true);
-	}
-
+	
 	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
 	this.domSubtasks.css('display', 'none');
 
 	this.subtasks = [];
 
+	Task.prototype.isSubtasksVisible = function() {
+		return this.domSubtasks.css('display') == 'block';
+	};
+
 	Task.prototype.toggleSubtasks = function() {
-		if (this.domSubtasks.css('display') == 'block') {
+		if (this.isSubtasksVisible()) {
 			this.domSubtasks.css('display', 'none') ;
-			this.domButtonExpand.text('+')
 		} else {
 			this.domSubtasks.css('display', 'block') ;
-			this.domButtonExpand.text('-')
 		}
+
+		this.refreshExpandButton();
 	};
 
 	Task.prototype.refreshExpandButton = function(forceEnabled) {
 		if (forceEnabled || this.subtasks.length > 0) {
+			if (this.isSubtasksVisible()) {
+				this.domButtonExpand.text('-');
+			} else {
+				this.domButtonExpand.text('+');
+			}
+
 			this.domButtonExpand.removeAttr('disabled');
 		} else {
+			this.domButtonExpand.attr('disabled', 'disabled');
 			this.domButtonExpand.html('&nbsp;');
 		}
 	};
@@ -343,6 +350,10 @@ function Task(taskObject) {
 		// this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
 		return this.domButtonTags.children().size() > 0; 
 	};
+
+	if (this.fields.hasChildren) {
+		this.refreshExpandButton(true);
+	}
 
 	this.setDueDate();
 	this.addTagButtons();
@@ -648,6 +659,10 @@ function renderTaskCreated(task) {
 		window.content.list.add(new Task(task));
 	} else {
 		window.selectedItem.addSubtask(new Task(task));
+
+		if (!window.selectedItem.isSubtasksVisible()) {
+			window.selectedItem.toggleSubtasks();
+		}
 	}
 }
 
