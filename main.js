@@ -91,9 +91,7 @@ function Task(taskObject) {
 	this.domEditDialog = null;
 
 	if (this.fields.hasChildren) {
-		this.domButtonExpand.removeAttr('disabled');
-	} else {
-		this.domButtonExpand.html('&nbsp;');
+		this.refreshExpandButton(true);
 	}
 
 	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
@@ -108,6 +106,14 @@ function Task(taskObject) {
 		} else {
 			this.domSubtasks.css('display', 'block') ;
 			this.domButtonExpand.text('-')
+		}
+	};
+
+	Task.prototype.refreshExpandButton = function(forceEnabled) {
+		if (forceEnabled || this.subtasks.length > 0) {
+			this.domButtonExpand.removeAttr('disabled');
+		} else {
+			this.domButtonExpand.html('&nbsp;');
 		}
 	};
 
@@ -205,6 +211,7 @@ function Task(taskObject) {
 		t.parent = this;
 		this.domSubtasks.append(t.toDom());
 		this.subtasks.push(t);
+		this.refreshExpandButton();
 	};
 
 	Task.prototype.toDom = function() {
