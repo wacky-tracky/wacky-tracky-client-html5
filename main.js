@@ -73,8 +73,8 @@ function Task(taskObject) {
 	this.domTask = this.dom.createAppend('<div class = "task" />');
 	this.domTask.click(function() { self.select(); });
 	this.domTask.dblclick(function() { self.openEditDialog(); });
-	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
 	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.toggleSubtasks(); });
+	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
 	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
 	this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
