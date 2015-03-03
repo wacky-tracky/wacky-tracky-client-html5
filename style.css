@@ -127,10 +127,13 @@ li.list {
 	color: black !important;
 }
 
+.listTitle {
+	display: flex;
+}
+
 .listTitle, .tagTitle {
 	font-family: "Overpass", sans-serif;
 	font-size: 12pt;
-	display: block;
 	text-decoration: none;
 	padding: .4em;
 	color: 000;;	
@@ -144,7 +147,12 @@ li.list {
 }
 
 .tagTitle {
+	display: block;
 	font-size: 80%;
+}
+
+.listCaption {
+	flex: 2 1 auto;
 }
 
 .selected a, .selected > div.task {
@@ -203,7 +211,8 @@ ul#taskList {
 }
 
 .list .subtle {
-	float: right;
+	flex: 1 1 auto;
+	text-align: right;
 	font-size: 80%;
 }
 

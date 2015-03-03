@@ -824,7 +824,8 @@ function List(jsonList) {
 
 	this.domSidePanel = $('<li class = "list" />');
 	this.domSidePanel.model(this);
-	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />').text(this.fields.title);
+	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />')
+	this.domSidePanelTitleText = this.domSidePanelTitle.createAppend('<span class = "listCaption" />').text(this.fields.title);
 	this.domSidePanelTitleSuffix = this.domSidePanelTitle.createAppend('<span class = "subtle" />');
 
 	this.domDialog = $('<p><small>Note: your changes will be automatically saved when you close this dialog.</small></p>');
