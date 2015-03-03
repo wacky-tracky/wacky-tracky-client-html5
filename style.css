@@ -53,6 +53,7 @@ div.task {
 	user-select: none;
 	cursor: pointer;
 	display: flex;
+	flex-wrap: wrap;
 }
 
 div.task:hover {
@@ -373,7 +374,7 @@ span.ui-button-text {
 }
 
 div.task div.controls {
-	flex: 1 0 auto;
+	flex: 1 1 auto;
 	text-align: right;
 }
 
