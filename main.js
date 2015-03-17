@@ -350,10 +350,12 @@ function Task(taskObject) {
 		window.content.list.updateTaskCount();
 
 		if (window.toDelete.parent != null) {
-			parent = window.toDelete.parent;
+			if (window.toDelete instanceof Task) {
+				parent = window.toDelete.parent;
 
-			parent.subtasks.pop(window.toDelete);
-			parent.refreshExpandButton();
+				parent.subtasks.pop(window.toDelete);
+				parent.refreshExpandButton();
+			}
 		}
 
 		window.toDelete = null;
@@ -905,6 +907,7 @@ function List(jsonList) {
 	};
 
 	List.prototype.add = function(task) {
+		task.parent = this;
 		this.tasks.push(task);
 		this.domList.append(task.toDom());
 
@@ -932,22 +935,6 @@ function List(jsonList) {
 		}
 	};
 
-	List.prototype.nextSelect = function() {
-		i = this.itemOffset(+1);
-
-		if (i != null) {
-			i.select();
-		}
-	};
-
-	List.prototype.prevSelect = function() {
-		i = this.itemOffset(-1);
-
-		if (i != null) {
-			i.select();
-		}
-	};
-
 	List.prototype.clear = function() {
 		this.domList.children().remove();
 		this.tasks.length = 0;
@@ -964,6 +951,50 @@ function List(jsonList) {
 	this.updateTaskCount(this.fields.count);
 
 	return this;
+}
+
+function selectByOffset(offset, currentItem) {
+	if (currentItem == null) {
+		if (window.selectedItem == null) {
+			return;
+		} else {
+			currentItem = window.selectedItem;
+		}
+	}
+
+	console.log("ci", currentItem);
+
+	if (currentItem.parent instanceof Task) {
+		parentTask = currentItem.parent;
+
+		currentOffset = parentTask.subtasks.indexOf(currentItem);
+
+		if (currentOffset != -1) {
+			targetOffset = currentOffset + offset;
+			targetTask = parentTask.subtasks[targetOffset];
+
+			if (targetTask != null) {
+				targetTask.select();
+			} else if (targetOffset >= parentTask.subtasks.length) {
+				console.log("foo");
+				nextIndex = parentTask.subtasks.indexOf(currentItem) + 1
+				selectByOffset(nextIndex, parentTask.parent)
+			}
+		}
+	} else if (currentItem instanceof List) {
+		parentList = currentItem;
+
+		currentOffset = parentList.tasks.indexOf(currentItem);
+
+		if (currentOffset != -1) {
+			targetOffset = currentOffset + offset;
+			targetTask = parentList.tasks[targetOffset];
+
+			if (targetTask != null) {
+				targetTask.select();
+			}
+		}
+	}
 }
 
 function sidepanelResized() {
@@ -1191,11 +1222,11 @@ $(document).keyup(function(e) {
 		}
 
 		if (e.keyCode == KeyCodes.DOWN) {
-			window.content.list.nextSelect();
+			selectByOffset(+1);
 		}
 
 		if (e.keyCode == KeyCodes.UP) {
-			window.content.list.prevSelect();
+			selectByOffset(-1);
 		}
 
 		if (e.keyCode == KeyCodes.RIGHT) {
@@ -1207,7 +1238,9 @@ $(document).keyup(function(e) {
 		}
 
 		if (e.keyCode == KeyCodes.SPACE) {
-			window.selectedItem.toggleSubtasks();
+			if (document.activeElement.type != "text") {
+				window.selectedItem.toggleSubtasks();
+			}
 		}
 	}
 
