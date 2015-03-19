@@ -178,15 +178,15 @@ div#content {
 }
 
 input#task {
+	display: inline-block;
 	background-color: beige;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
 	transition: all 0.2s linear;
 	border-radius: .4em;
-	width: 98%;
 	padding: .4em;
-	margin-bottom: 1em;
 	margin-top: 0;
 	color: darkgray;
+	flex: 1 2 auto;
 }
 
 input#task:focus {
@@ -324,9 +324,12 @@ div.itemInput {
 	right: 0px;
 	left: 0px; /* will get overwritten */
 	padding-left: 1em;
-	padding-top: 0.6em;
+	padding-right: 1em;
+	padding-top: 0.8em;
+	padding-bottom: 0.8em;
 	background-color: #fff;
 	border-bottom: 1px solid black;
+	display: flex;
 }
 
 .tag {
@@ -561,4 +564,15 @@ p.validationError {
 		padding: 0;
 		left: 0;
 	}
+}
+
+button#sidepanelIcon {
+	background-color: red;
+	display: inline-block;
+	flex: 0 1 auto;
+	margin-right: 1em;
+	background-color: #2dae82;
+	color: white;
+	font-weight: bold;
+	display: none;
 }

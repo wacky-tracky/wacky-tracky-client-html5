@@ -568,6 +568,7 @@ function loginSuccess() {
 	window.sidepanel.refreshLists();
 	window.sidepanel.refreshTags();
 
+	window.sidepanelIcon = new SidePanelIcon();
 	window.content = new Content();
 	$('body').append(window.content.toDom());
 
@@ -686,6 +687,7 @@ function TaskInputBox(label) {
 
 	this.dom = $('<div class = "itemInput" />');
 	this.domLabel = this.dom.createAppend('<span />');
+	this.domSidepanelIcon = this.dom.createAppend(window.sidepanelIcon.dom);
 	this.domInput = this.dom.createAppend('<input id = "task" value = "" />');
 	this.domInput.attr('disabled', 'disabled');
 	this.domInput.model(this);
@@ -998,10 +1000,16 @@ function selectByOffset(offset, currentItem) {
 }
 
 function sidepanelResized() {
-	window.content.dom.css('left', window.sidepanel.dom.width());
+	if ($('div#sidepanel').css('display') == 'block') {
+		sidepanelWidth = window.sidepanel.dom.width();
+	} else {
+		sidepanelWidth = 0;
+	}
+
+	window.content.dom.css('left', sidepanelWidth);
 	window.content.dom.css('right', $('body').css('width'));
 
-	$('div.itemInput').css('left', window.sidepanel.dom.width());
+	$('div.itemInput').css('left', sidepanelWidth);
 	$('div.itemInput').css('right', $('body').css('width'));
 }
 
@@ -1062,6 +1070,28 @@ function changePassword(password) {
 	});
 }
 
+function SidePanelIcon() {
+	var self = this;
+
+	this.dom = $('<button id = "sidepanelIcon">wt</button>');
+
+	this.dom.click(function() {
+		window.sidepanel.toggle();
+	});
+
+	SidePanelIcon.prototype.setVisible = function(isVisible) {
+		if (isVisible) {
+			display = 'inline-block';
+		} else {
+			display = 'none';
+		}
+
+		this.dom.css('display', display);
+	};
+
+	return self;
+}
+
 function SidePanel() {
 	var self = this;
 
@@ -1077,13 +1107,22 @@ function SidePanel() {
 	this.domButtonRaiseIssue = this.dom.createAppend('<button id = "raiseIssue">Issue!</button>').click(function() { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") });
 	this.domButtonRaiseIssue.css('color', 'darkred').css('font-weight', 'bold');
 
-	menuUser = new Menu('User Menu');
-	menuUser.addItem('Change password', promptChangePassword);
-	menuUser.addItem('Logout', logoutRequest);
-	menuUser.addTo(this.domTitle);
-
 	this.lists = [];
 	this.tags = [];
+
+	SidePanel.prototype.toggle = function() {
+		isVisible = $('div#sidepanel').css('display') == 'block';
+
+		if (isVisible) {
+			$('div#sidepanel').css('display', 'none');
+			sidepanelResized();
+		} else {
+			$('div#sidepanel').css('display', 'inline-block');
+			sidepanelResized();
+		}
+
+		window.sidepanelIcon.setVisible(isVisible)
+	};
 
 	SidePanel.prototype.createTag = function() {
 		var title = window.prompt("Tag name?");
@@ -1193,6 +1232,12 @@ function SidePanel() {
 	SidePanel.prototype.hide = function() {
 		this.dom.hide();
 	};
+
+	menuUser = new Menu('User Menu');
+	menuUser.addItem('Toggle', this.toggle);
+	menuUser.addItem('Change password', promptChangePassword);
+	menuUser.addItem('Logout', logoutRequest);
+	menuUser.addTo(this.domTitle);
 
 	return this;
 }
