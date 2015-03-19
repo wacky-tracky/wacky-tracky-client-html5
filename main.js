@@ -1251,8 +1251,15 @@ KeyCodes.DOWN = 40;
 KeyCodes.RIGHT = 39;
 KeyCodes.LEFT = 37;
 KeyCodes.SPACE = 32;
+KeyCodes.T = 84;
 
 $(document).keyup(function(e) {
+	if (e.altKey) {
+		if (e.keyCode == KeyCodes.T) {
+			window.sidepanel.toggle();
+		}
+	}
+
 	if (window.selectedItem !== null) {
 		if (e.keyCode == KeyCodes.ESC) {
 			window.selectedItem.deselect();
