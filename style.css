@@ -544,6 +544,17 @@ p.validationError {
 	text-align: right;
 }
 
+button#sidepanelIcon {
+	background-color: red;
+	display: inline-block;
+	flex: 0 1 auto;
+	margin-right: 1em;
+	background-color: #2dae82;
+	color: white;
+	font-weight: bold;
+	display: none;
+}
+
 @media screen and (max-width: 640px) {
 	div.task {
 		margin: 0;
@@ -564,15 +575,5 @@ p.validationError {
 		padding: 0;
 		left: 0;
 	}
-}
 
-button#sidepanelIcon {
-	background-color: red;
-	display: inline-block;
-	flex: 0 1 auto;
-	margin-right: 1em;
-	background-color: #2dae82;
-	color: white;
-	font-weight: bold;
-	display: none;
 }
