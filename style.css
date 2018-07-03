@@ -1,10 +1,13 @@
 body {
 	background-color: gray;
 	background-attachment: fixed;
-	display: table;
 	padding: 0;
 	margin: 0;
 	font-family: sans-serif;
+}
+
+#layout {
+	display: flex;
 }
 
 
@@ -98,13 +101,11 @@ div#sidepanel {
 	background-color: #fff;
 	box-shadow: 0 0 6px #aaa;
 	border-right: 2px solid black;
-	position: fixed;
-	left: 0;
-	top: 0;
-	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	direction: rtl;
+	flex: 1 1 auto;
+	max-width: 20%;
 }
 
 div#sidepanel * {
@@ -162,19 +163,9 @@ li.list {
 }
 
 div#content {
-	position: fixed;
 	overflow: auto;
-	/*
-	padding-top: .4em;
-	padding-left: 1em;
-	padding-right: 1em;
-	padding-bottom: 2em;
-	*/
-	margin-bottom: 6em;
-	left: 200px;
 	background-color: rgba(239, 239, 239, 0.7);
-	z-index: -2;
-	height: 100%;
+	flex: 1 2 auto;
 }
 
 input#task {
@@ -205,7 +196,6 @@ div.notification {
 
 ul#taskList {
 	padding: 1em;
-	margin-top: 3em;
 	-moz-user-select: none;
 	user-select: none;
 }
@@ -315,14 +305,12 @@ div.subTasks {
 	display: none; /* was previously used*/
 }
 
-.itemIinput input {
+.itemInput input {
 	display: inline-block;
 }
 
 div.itemInput {
 	position: fixed;
-	right: 0px;
-	left: 0px; /* will get overwritten */
 	padding-left: 1em;
 	padding-right: 1em;
 	padding-top: 0.8em;
@@ -330,6 +318,12 @@ div.itemInput {
 	background-color: #fff;
 	border-bottom: 1px solid black;
 	display: flex;
+	min-width: 98%;
+}
+
+div#listContainer {
+	display: block;
+	margin-top: 3em;
 }
 
 .tag {
@@ -544,6 +538,17 @@ p.validationError {
 	text-align: right;
 }
 
+button#sidepanelIcon {
+	background-color: red;
+	display: inline-block;
+	flex: 0 1 auto;
+	margin-right: 1em;
+	background-color: #2dae82;
+	color: white;
+	font-weight: bold;
+	display: none;
+}
+
 @media screen and (max-width: 640px) {
 	div.task {
 		margin: 0;
@@ -557,6 +562,17 @@ p.validationError {
 	}
 
 	div#sidepanel {
+		display: none;
+		max-width: 100%;
+		width: 100%;
+	}
+
+	#layout {
+		display: block;
+	}
+
+	button#sidepanelIcon {
+		display: block;
 	}
 
 	div#content {
@@ -564,15 +580,5 @@ p.validationError {
 		padding: 0;
 		left: 0;
 	}
-}
 
-button#sidepanelIcon {
-	background-color: red;
-	display: inline-block;
-	flex: 0 1 auto;
-	margin-right: 1em;
-	background-color: #2dae82;
-	color: white;
-	font-weight: bold;
-	display: none;
 }

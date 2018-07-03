@@ -466,7 +466,6 @@ function LoginForm() {
 
 	LoginForm.prototype.hide = function() {
 		this.loginForm.hide();
-		$('body').css('display', 'table');
 	};
 
 	return this;
@@ -561,16 +560,17 @@ function loginSuccess() {
 	hideAllErrors();
 
 	window.loginForm.hide();
+	$('body').createAppend('<div id = "layout" />');
 	
 	window.sidepanel = new SidePanel();
-	$('body').append(window.sidepanel.toDom());
+	$('div#layout').append(window.sidepanel.toDom());
 
 	window.sidepanel.refreshLists();
 	window.sidepanel.refreshTags();
 
 	window.sidepanelIcon = new SidePanelIcon();
 	window.content = new Content();
-	$('body').append(window.content.toDom());
+	$('div#layout').append(window.content.toDom());
 
 	sidepanelResized();
 }
@@ -614,7 +614,7 @@ function Content() {
 	this.dom = $('<div id = "content" />');
 	this.taskInput = new TaskInputBox();
 	this.dom.append(this.taskInput.toDom());
-	this.domListContainer = this.dom.createAppend('<div>');
+	this.domListContainer = this.dom.createAppend('<div id = "listContainer">');
 
 	this.list = null;
 
@@ -840,7 +840,7 @@ function List(jsonList) {
 
 	this.domShowTimeline = this.domDialog.createAppend('<p>Timeline:</p>').createAppend('<input type = "checkbox" />');
 
-	this.domList = $('<ul id = "taskList" />');
+	this.domList = $('<ul id = "taskList" class = "foo" />');
 
 	this.tasks = [];
 
@@ -1000,17 +1000,6 @@ function selectByOffset(offset, currentItem) {
 }
 
 function sidepanelResized() {
-	if ($('div#sidepanel').css('display') == 'block') {
-		sidepanelWidth = window.sidepanel.dom.width();
-	} else {
-		sidepanelWidth = 0;
-	}
-
-	window.content.dom.css('left', sidepanelWidth);
-	window.content.dom.css('right', $('body').css('width'));
-
-	$('div.itemInput').css('left', sidepanelWidth);
-	$('div.itemInput').css('right', $('body').css('width'));
 }
 
 function clearValidationFailures() {
@@ -1251,8 +1240,15 @@ KeyCodes.DOWN = 40;
 KeyCodes.RIGHT = 39;
 KeyCodes.LEFT = 37;
 KeyCodes.SPACE = 32;
+KeyCodes.T = 84;
 
 $(document).keyup(function(e) {
+	if (e.altKey) {
+		if (e.keyCode == KeyCodes.T) {
+			window.sidepanel.toggle();
+		}
+	}
+
 	if (window.selectedItem !== null) {
 		if (e.keyCode == KeyCodes.ESC) {
 			window.selectedItem.deselect();
