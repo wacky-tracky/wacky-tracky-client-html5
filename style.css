@@ -582,3 +582,12 @@ button#sidepanelIcon {
 	}
 
 }
+
+a.externalItemUrl {
+	background-color: #efefef;
+	color: blue;
+	padding: 2px;
+	margin-left: .2em;
+	margin-right: .2em;
+
+}

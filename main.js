@@ -83,6 +83,11 @@ function Task(taskObject) {
 	this.domButtonDelete.css('display', 'none');
 	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 
+	if (this.fields.url.length > 0) {
+		  this.domTaskControls.createAppend('<img alt = "externalIcon" />').attr('src', "resources/images/icons/" + this.fields.icon)
+		  this.domTaskLink = this.domTaskControls.createAppend('<a target = "_new" class = "externalItemUrl" />').attr('href', this.fields.url).text(this.fields.source);
+	}
+
 	this.menuTags = new Menu('tag menu');
 	this.menuTags.domItems.addClass('tagsMenu');
 	this.menuTags.dropDown = true;
