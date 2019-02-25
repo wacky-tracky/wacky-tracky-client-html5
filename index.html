@@ -8,18 +8,45 @@
 	<link rel="stylesheet" href="style.css" />
 	<link rel="shortcut icon" href = "wacky-tracky.png" type = "image/png" />
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha1.js"></script>
 
-	<script src = "extensions.js"></script>
-	<script src = "Menu.js"></script>
-	<script src = "main.js"></script>
+	<script src = "util.js"></script>
+	<script src = "keyboardShortcuts.js"></script>
 </head>
 
 <body>
-	<script type = "text/javascript">init();</script>
+	<noscript>Javascript is needed.</noscript>
+	<script type = "module">
+	import main from "./module.js";	main();
+	</script>
+
+	<template id = "loginForm">
+		<div id = "loginFormContainer">
+			<h2>wacky-tracky</h2>
+
+			<p>
+				<label for = "username">Username</label>
+				<input id = "username" />
+			</p>
+
+			<p>
+				<label for = "password">Password</label>
+				<input id = "password" type = "password" />
+			</p>
+
+			<p hidden>
+				<input for = "email">Email</input>
+				<input id = "email" type = "email" />
+			</p>
+
+			<p id = "loginButtons">
+				<button id = "login">Login</button>
+				<button id = "register">Register</button>
+				<button id = "forgotPassword">Forgot Password</button>
+			</p>
+		</div>
+	</template>
 </body>
 
 </html>

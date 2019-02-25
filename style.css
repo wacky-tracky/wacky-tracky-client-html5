@@ -6,12 +6,13 @@ body {
 	font-family: sans-serif;
 }
 
-#layout {
+content {
 	display: flex;
+	min-height: 100vh;
 }
 
 
-#loginForm h2 {
+login-form h2 {
 	margin: 0;
 	padding: 0;
 	color: black;
@@ -97,7 +98,7 @@ div.period table {
 	background-color: white;
 }
 
-div#sidepanel {
+aside {
 	background-color: #fff;
 	box-shadow: 0 0 6px #aaa;
 	border-right: 2px solid black;
@@ -108,11 +109,11 @@ div#sidepanel {
 	max-width: 20%;
 }
 
-div#sidepanel * {
+aside * {
 	direction: ltr;
 }
 
-div#sidepanel h2 {
+aside h2 {
 	background-color: #2dae82;
 }
 
@@ -337,7 +338,7 @@ ul.tags {
 	margin-top: 1em;
 }
 
-div#loginForm {
+login-form {
 	position: absolute;
 	left: 1em;
 	top: 10em;
@@ -348,7 +349,7 @@ div#loginForm {
 	border-radius: .4em;
 }
 
-div#loginForm p:last-child {
+login-form p:last-child {
 	margin-bottom: 0;
 }
 
@@ -567,7 +568,7 @@ button#sidepanelIcon {
 		width: 100%;
 	}
 
-	#layout {
+	content {
 		display: block;
 	}
 
