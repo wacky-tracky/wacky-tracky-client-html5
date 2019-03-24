@@ -1,5 +1,5 @@
-import Bootloader from "./js/Bootloader.js";
+import UiManager from "./js/UiManager.js";
 
 export default function main() {
-	new Bootloader();
+	window.uimanager = new UiManager();
 }

@@ -8,28 +8,6 @@ HTMLElement.prototype.onEnter = function(callback) {
 	});
 }
 
-function ajaxRequest(params) {
-	if (typeof(params.error) != "function") {
-		params.error = generalError
-	}
-
-	// Assigning the callbacks to variables here is important, because the fetch 
-	// promise mangles the "this" context on the callbacks. 
-	var callbackSuccess = (data) => { params.success(data) };
-	var callbackError = (data) => { params.error(data) }
-
-	console.log(callbackError);
-
-	fetch(window.host + params.url, {
-		method: 'GET',
-		credentials: 'include',
-	})
-	.then(resp => resp.json())
-	.then(data => { callbackSuccess(data) })
-	.catch(err => { callbackError(err) });
-
-}
-
 function registerSuccess() {
 	notification('good', 'Thanks for registering, you can now login!');
 
@@ -76,19 +54,15 @@ function registerFail(req, dat) {
 function generalErrorJson(msg, res) {
 	msg = "General JSON Error.";
 
-	if (typeof(res.responseJSON) !== "undefined") {
-		msg += ": " + res.responseJSON.message;
-	}
-
 	generalError(msg);
 }
 
 function newTask(text) {
-	if ($.isEmptyObject(text)) {
+	if (text == "") {
 		return;
 	}
 
-	$('input#task').val('');
+	window.content.taskInput.clear();
 
 	data = { content: text };
 
@@ -102,26 +76,9 @@ function newTask(text) {
 
 	ajaxRequest({
 		url: 'createTask',
-		success: renderTaskCreated,
+		success: window.uimanager.renderTaskCreated,
 		data: data
 	});
-}
-
-function renderTaskCreated(task) {
-	if (window.selectedItem === null) {
-		window.content.list.add(new Task(task));
-	} else {
-		window.selectedItem.addSubtask(new Task(task));
-
-		if (!window.selectedItem.isSubtasksVisible()) {
-			window.selectedItem.toggleSubtasks();
-		}
-	}
-}
-
-
-function renderTasks(list) {
-	window.content.list.addAll(list);
 }
 
 function generalError(error) {
@@ -155,21 +112,6 @@ function notification(cls, text) {
 function hideAllErrors() {
 	document.querySelectorAll('.notification').forEach(e => e.remove());
 }
-
-function requestTasks(list) {
-	window.content.setList(list);
-
-	ajaxRequest({
-		url: 'listTasks',
-		data: { 
-			list: list.fields.id,
-			sort: list.fields.sort,
-		},
-		success: renderTasks,
-		error: generalError
-	});
-}
-
 
 function selectByOffset(offset, currentItem) {
 	if (currentItem == null) {
@@ -216,21 +158,6 @@ function selectByOffset(offset, currentItem) {
 }
 
 function sidepanelResized() {
-}
-
-function clearValidationFailures() {
-	$('p.validationError').remove();
-	$('input.validationError').removeClass('validationError');
-}
-
-function highlightValidationFailure(selector, message) {
-	element = $(selector)
-
-	element.addClass('validationError');
-
-	element.parent().children('p.validationError').remove();
-	element.parent().append($('<p class = "validationError">').text(message));
-
 }
 
 function logoutRequest() {

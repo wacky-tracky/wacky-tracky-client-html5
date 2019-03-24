@@ -1,47 +1,52 @@
-function TaskInputBox(label) {
-	this.label = null;
+export default class TaskInputBox extends HTMLDivElement {
+	setupComponents() {
+		this.label = null;
 
-	this.dom = $('<div class = "itemInput" />');
-	this.domLabel = this.dom.createAppend('<span />');
-	this.domSidepanelIcon = this.dom.createAppend(window.sidepanelIcon.dom);
-	this.domInput = this.dom.createAppend('<input id = "task" value = "" />');
-	this.domInput.attr('disabled', 'disabled');
-	this.domInput.model(this);
-	this.domInput.keypress(function(e) {
-		var key = e.keyCode ? e.keyCode : e.which;
+		this.domLabel = document.createElement('span');
+		this.appendChild(this.domLabel)
 
-		if (key == 13) {
-			newTask($(this).val(), window.content.list.fields.id);
+		this.domInput = document.createElement('input');
+		this.domInput.id = "task"
+		this.domInput.value = ""
+		this.domInput.disabled = true;
+		this.appendChild(this.domInput);
+
+
+		this.domInput.onkeypress = (e) => {
+			var key = e.keyCode ? e.keyCode : e.which;
+
+			if (key == 13) {
+				newTask(this.domInput.value, window.content.list.getId());
+			}
+		};
+
+		this.domInput.onfocus = () => {
+			this.domInput.value = ""
 		}
-	});
 
-	this.domInput.focus(function() {
-		$(this).val('');
-	});
-
-	this.domInput.blur(function() {
-		$(this).val(self.label);
-	});
-
-	TaskInputBox.prototype.toDom = function() {
-		return this.dom;
-	};
-
-	TaskInputBox.prototype.enable = function() {
-		this.domInput.removeAttr('disabled');
+		this.domInput.onblur = () => {
+			this.domInput.value = this.label
+		}
+	}
+	
+	enable() {
+		this.domInput.disabled = false;;
 		this.domInput.focus();
 	};
 	
-	TaskInputBox.prototype.setLabel = function(label) {
-		if ($.isEmptyObject(label)) {
+	setLabel(label) {
+		if (label == "") {
 			this.label = "";
 		} else {
 			this.label = "Click to add subtask of: " + label;
 		}
 
-		this.domInput.val(this.label);
+		this.domInput.value = this.label
 	};
 
-	return this;
+	clear() {
+		this.domInput.value = "";
+	}
 }
 
+document.registerElement("task-input-box", TaskInputBox)

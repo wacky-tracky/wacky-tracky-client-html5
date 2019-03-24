@@ -15,7 +15,7 @@ export default class LoginForm extends HTMLDivElement {
 		};
 
 		this.elLoginButton = this.querySelector('button#login');
-		this.elLoginButton.onclick = () => { this.tryLogin() } ;
+		this.elLoginButton.onclick = this.tryLogin.bind(this);
 	}
 
 	isShown() {
@@ -54,7 +54,7 @@ export default class LoginForm extends HTMLDivElement {
 	}
 
 	tryLogin() {
-		console.log(this);
+		console.log("tryLogin() this = ", this);
 		let username = this.elUsername.value;
 		let password = this.elPassword.value;
 
@@ -74,12 +74,12 @@ export default class LoginForm extends HTMLDivElement {
 	}
 
 	loginFail(res, dat) {
-		console.log(this);
+		console.log("loginFail this() = ", this, res, dat);
 		this.enable();
 
 		clearValidationFailures();
 
-		switch (res.responseJSON.uniqueType) {
+		switch (res.uniqueType) {
 			case "user-not-found":
 				highlightValidationFailure("#username", "Username not found");
 				return
@@ -90,6 +90,9 @@ export default class LoginForm extends HTMLDivElement {
 		generalErrorJson("Login Failure. ", res);
 	}
 
+	loginSuccess(res) {
+		window.bootloader.loginSuccess();
+	}
 
 	show() {
 		this.hidden = false;
@@ -108,9 +111,11 @@ export default class LoginForm extends HTMLDivElement {
 	}
 
 	setEnabled(b) {
+		b = !b
+
 		this.elUsername.disabled = b;
 		this.elPassword.disabled = b;
-		this.querySelectorAll("button").forEach(b => b.disabled = b);
+		this.querySelectorAll("button").forEach(btn => btn.disabled = b);
 	}
 }
 

@@ -1,18 +1,24 @@
-function Tag(tagObject) {
-	var self = this;
+export default class SidePanelTagButton extends HTMLDivElement {
+	setFields(jsonTag) {
+		this.fields = jsonTag
+	}
 
-	this.obj = tagObject;
+	setupComponents() {
+		let li = document.createElement("li");
+		li.innerHTML = '&#128193; ' + this.fields.title;
+		li.classList.add("tagTitle")
+		li.classList.add("tag")
 
+		this.appendChild(li);
+	}
+
+	/**	
 	this.domSidePanel = $('<li class = "tagTitle tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<div />');
 	this.domInputTitle = this.domDialog.createAppend('<p>').text('Title: ').createAppend('<input />').text(this.obj.title);
 	this.domInputShortTitle = this.domDialog.createAppend('<p>').text('Short Title: ').createAppend('<input />').text(this.obj.shortTitle);
 	this.domInputBackgroundColor = this.domDialog.createAppend('<p>').text('Background color: ').createAppend('<input />').val(this.obj.backgroundColor);
-
-	Tag.prototype.toDomSidePanel = function() {
-		return this.domSidePanel;
-	};
 
 	Tag.prototype.requestUpdate = function() {
 		ajaxRequest({
@@ -41,6 +47,7 @@ function Tag(tagObject) {
 	this.domSidePanel.rightClick(self.showDialog);
 
 	return this;
+	*/
 }
 
-
+document.registerElement("side-panel-tag-button", SidePanelTagButton);

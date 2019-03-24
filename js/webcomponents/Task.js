@@ -1,70 +1,111 @@
-function Task(taskObject) {
-	var self = this;
-	this.parent = null;
-	this.fields = taskObject;
+import PopupMenu from './PopupMenu.js';
 
-	this.dom = $('<div class = "taskWrapper" />');
-	this.domTask = this.dom.createAppend('<div class = "task" />');
-	this.domTask.click(function() { self.select(); });
-	this.domTask.dblclick(function() { self.openEditDialog(); });
-	this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.toggleSubtasks(); });
-	this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
-	this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
-	this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
-	this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
-	this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
-	this.domButtonDelete.click(function() { self.del(); });
-	this.domButtonDelete.css('display', 'none');
-	this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
+export default class Task extends HTMLDivElement {
+	setFields(taskObject) {
+		this.fields = taskObject;
+	}
 
-	this.menuTags = new Menu('tag menu');
-	this.menuTags.domItems.addClass('tagsMenu');
-	this.menuTags.dropDown = true;
-	this.menuTags.addTo(this.domButtonTags);
+	setupComponents() {
+		this.dom = document.createElement("div")
+		this.dom.classList.add("taskWrapper");
+		this.appendChild(this.dom);
+		
+		this.domTask = document.createElement("div")
+		this.domTask.classList.add("task");
+		this.dom.appendChild(this.domTask)
+
+		this.domTask.addEventListener("click", () => { this.select() });
+
+		/*
+		this.domTask.dblclick(function() { self.openEditDialog(); });
+		this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.toggleSubtasks(); });
+		this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
+		this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
+		this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
+		this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
+		this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
+		this.domButtonDelete.click(function() { self.del(); });
+		this.domButtonDelete.css('display', 'none');
+		this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
+		*/
+		
+		this.domEditDialog = null;
+		
+		this.domButtonExpand = document.createElement("button");
+		this.domButtonExpand.classList.add("expand")
+		this.domButtonExpand.disabled = true;
+		this.domButtonExpand.onclick = () => { this.toggleSubtasks() }
+		this.domTask.appendChild(this.domButtonExpand);
+
+		this.domTaskContent = document.createElement("span")
+		this.domTaskContent.classList.add("content");
+		this.domTaskContent.innerText = this.fields.content;
+		this.domTaskContent.setAttribute("title", "ID:" + this.fields.id);
+		this.domTask.appendChild(this.domTaskContent);
+
+		this.domTaskButtons = document.createElement("div")
+		this.domTaskButtons.classList.add("taskButtons")
+		this.domTask.appendChild(this.domTaskButtons);
+
+		this.domButtonTags = document.createElement("button")
+		this.domButtonTags.innerText = "Tag"
+		this.domTaskButtons.appendChild(this.domButtonTags);
+
+		this.menuTags = document.createElement("popup-menu")
+		this.menuTags.setFields("task menu");
+		this.menuTags.domItems.classList.add('tagsMenu');
+		this.menuTags.dropDown = true;
+		this.menuTags.addTo(this.domButtonTags);
 	
-	this.domEditDialog = null;
-	
-	this.domSubtasks = this.dom.createAppend('<div class = "subTasks" />');
-	this.domSubtasks.css('display', 'none');
+		this.domSubTasks = document.createElement("div");
+		this.domSubTasks.classList.add("subTasks");
+		this.domSubTasks.hidden = true;
+		this.dom.appendChild(this.domSubTasks);
 
-	this.subtasks = [];
+		this.subtasks = [];
 
-	Task.prototype.isSubtasksVisible = function() {
-		return this.domSubtasks.css('display') == 'block';
-	};
+		this.setup2();
+	}
 
-	Task.prototype.setSubtasksVisible = function(visible) {
+	isSubtasksVisible() {
+		return !this.domSubTasks.hidden
+	}
+
+	setSubtasksVisible(visible) {
 		if (visible) {
 			this.refreshSubtasks();
-			this.domSubtasks.css('display', 'block') ;
+			this.domSubTasks.hidden = false;
 		} else {
-			this.domSubtasks.css('display', 'none') ;
+			this.domSubTasks.hidden = true;
 		}
 
 		this.refreshExpandButton();
 	};
 
-	Task.prototype.toggleSubtasks = function() {
+	toggleSubtasks() {
 		this.setSubtasksVisible(!this.isSubtasksVisible());
 	};
 
-	Task.prototype.refreshExpandButton = function(forceEnabled) {
+	refreshExpandButton(forceEnabled) {
 		if (forceEnabled || this.subtasks.length > 0) {
 			if (this.isSubtasksVisible()) {
-				this.domButtonExpand.text('-');
+				this.domButtonExpand.innerText = '-';
 			} else {
-				this.domButtonExpand.text('+');
+				this.domButtonExpand.innerText = '+';
 			}
 
-			this.domButtonExpand.removeAttr('disabled');
+			this.domButtonExpand.disabled = false;
 		} else {
-			this.domButtonExpand.attr('disabled', 'disabled');
-			this.domButtonExpand.html('&nbsp;');
+			this.domButtonExpand.disabled = true;
+			this.domButtonExpand.innerHTML = '&nbsp;';
 		}
 	};
 
-	Task.prototype.refreshSubtasks = function() {
-		this.domSubtasks.children().remove();
+	refreshSubtasks() {
+		for (let child of this.domSubTasks.children) {
+			child.remove();	
+		}
+
 		ajaxRequest({
 			url: '/listTasks',
 			data: { 
@@ -75,18 +116,19 @@ function Task(taskObject) {
 		});
 	};
 
-	Task.prototype.renderSubtasks = function(subtasks) {
-		$(subtasks).each(function(i, t) {
-			t = new Task(t);
+	renderSubtasks(subtasks) {
+		for (let subtask of subtasks) {
+			let t = document.createElement("task-item");
+			t.setFields(subtask)
+			t.setupComponents()
 
-			// TODO Change this to "this" or "self"
 			window.selectedItem.addSubtask(t);
-		});
+		}
 	};
 
-	Task.prototype.setDueDate = function(newDate) {
+	setDueDate(newDate) {
 		if (newDate == null) {
-			newDate = self.fields.dueDate;
+			//newDate = self.fields.dueDate;
 		}
 
 		if (newDate == null) {
@@ -99,10 +141,10 @@ function Task(taskObject) {
 			newDate = "no due date"
 		}
 
-		self.domButtonDueDate.val(newDate);
+		//self.domButtonDueDate.val(newDate);
 	};
 
-	Task.prototype.openEditDialog = function() {
+	openEditDialog() {
 		this.closeEditDialog();
 
 		this.domEditDialog = $('<div class = "editDialog" />');
@@ -112,9 +154,11 @@ function Task(taskObject) {
 		this.domEditDialog.slideDown();
 	};
 
-	Task.prototype.addTagButtons = function() {
-		var self = this;
-
+	addTagButtons() {
+		this.menuTags.addItem("one", null);
+		this.menuTags.addItem("two", null);
+		this.menuTags.addItem("three", null);
+/*
 		$(window.sidepanel.tags).each(function(i, tag) {
 			title = tag.obj.shortTitle;
 
@@ -126,9 +170,10 @@ function Task(taskObject) {
 				self.tagItem(tag);
 			}).addClass('tag' + tag.obj.id).addClass('tagTitle');
 		});
+*/
 	};
 
-	Task.prototype.tagItem = function(tag) {
+	tagItem(tag) {
 		ajaxRequest({
 			url: '/tag',
 			data: {
@@ -140,7 +185,7 @@ function Task(taskObject) {
 		this.toggleTag(tag.obj);
 	};
 
-	Task.prototype.toggleTag = function(tag) {
+	toggleTag(tag) {
 		tagEl = this.menuTags.domItems.children('.tag' + tag.id);
 		
 		if (tagEl.hasClass('selected')) {
@@ -154,28 +199,23 @@ function Task(taskObject) {
 		}
 	};
 
-	Task.prototype.closeEditDialog = function() {
+	closeEditDialog() {
+		return
+		 
 		this.dom.children('.editDialog').remove();
 		this.domEditDialog = null;
 	};
 
-	Task.prototype.addSubtask = function(t) {
-		t.parent = this;
-		this.domSubtasks.append(t.toDom());
+	addSubtask(t) {
+		this.domSubTasks.append(t);
 		this.subtasks.push(t);
 		this.refreshExpandButton();
 	};
 
-	Task.prototype.toDom = function() {
-		return this.dom;
-	};
-
-	Task.prototype.rename = function() {
+	rename() {
 		if (this.domTask.children('.renamer').length > 0) {
 			this.domTask.children('.renamer').focus();
 		} else {
-			var self = this;
-			
 			this.isBeingRenamed = true;
 			this.domTaskContent.text('');
 
@@ -191,7 +231,7 @@ function Task(taskObject) {
 		}
 	};
 
-	Task.prototype.renameTo = function(newContent) {
+	renameTo(newContent) {
 		this.isBeingRenamed = false;
 		this.fields.content = newContent;
 		this.domTaskContent.text(newContent);
@@ -205,7 +245,7 @@ function Task(taskObject) {
 		});
 	};
 
-	Task.prototype.select = function() {
+	select() {
 		if (window.selectedItem == this || window.toDelete == this) {
 			return;
 		}
@@ -215,19 +255,18 @@ function Task(taskObject) {
 			}
 		}
 
-		this.domButtonDelete.css('display', 'inline-block');
-		this.domButtonTags.css('display', 'inline-block');
-		this.domButtonDueDate.model(this);
-		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate});
-		this.domButtonDueDate.removeAttr('disabled');
+//		this.domButtonDelete.css('display', 'inline-block');
+//		this.domButtonDueDate.model(this);
+//		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate});
+//		this.domButtonDueDate.removeAttr('disabled');
 
 		window.content.taskInput.setLabel(this.fields.content);
 
 		window.selectedItem = this;
-		this.dom.addClass('selected');
+		this.dom.classList.add('selected');
 	};
 
-	Task.prototype.requestUpdateDueDate = function(newDate) {
+	requestUpdateDueDate(newDate) {
 		ajaxRequest({
 			url: 'setDueDate',
 			data: {
@@ -237,7 +276,7 @@ function Task(taskObject) {
 		});
 	};
 
-	Task.prototype.deselect = function() {
+	deselect() {
 		if (window.selectedItem.isBeingRenamed) {
 			window.selectedItem.domTask.children('.renamer').focus().effect('highlight');
 			return false;
@@ -246,23 +285,23 @@ function Task(taskObject) {
 		this.closeEditDialog();
 
 		window.selectedItem = null;
-		this.dom.removeClass('selected');
+		this.dom.classList.remove('selected');
 
-		this.domButtonDueDate.attr('disabled', 'disabled');
+		//this.domButtonDueDate.attr('disabled', 'disabled');
 
-		this.domButtonDelete.css('display', 'none');
+		//this.domButtonDelete.css('display', 'none');
 
 		if (!this.hasTags()) {
-			this.domButtonTags.css('display', 'none');
+			this.domButtonTags.display = 'none';
 		}
 
 		window.content.taskInput.setLabel('');
 
-		this.domTask.children('.renamer').remove();
-		this.menuTags.hide();
+		//this.domTask.children.querySelectorAll('.renamer').remove();
+		//this.menuTags.hide();
 	};
 
-	Task.prototype.del = function(i) {
+	del(i) {
 		if (window.selectedItem.isBeingRenamed) {
 			return;
 		}
@@ -278,11 +317,11 @@ function Task(taskObject) {
 		});
 	};
 
-	Task.prototype.renderDelete = function() {
-		window.toDelete.dom.remove();
-		window.content.list.tasks.pop(window.toDelete);
+	renderDelete() {
+		window.toDelete.remove();
 		window.content.list.updateTaskCount();
 
+		/**
 		if (window.toDelete.parent != null) {
 			if (window.toDelete instanceof Task) {
 				parent = window.toDelete.parent;
@@ -291,29 +330,33 @@ function Task(taskObject) {
 				parent.refreshExpandButton();
 			}
 		}
+		*/
 
 		window.toDelete = null;
 	};
 
-	Task.prototype.hasTags = function() {
+	hasTags() {
 		// this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
-		return this.domButtonTags.children().size() > 0; 
+		return this.domButtonTags.children.length > 0; 
 	};
 
-	if (this.fields.hasChildren) {
-		this.refreshExpandButton(true);
+	setup2() {
+		if (this.fields.hasChildren) {
+			this.refreshExpandButton(true);
+		}
+
+		this.setDueDate();
+		this.addTagButtons()
+		/*;
+		$(this.fields.tags).each(function(i, tag) {
+			self.toggleTag(tag);
+		});
+
+		if (!this.hasTags()) {
+			this.domButtonTags.css('display', 'none');
+		}
+		*/
 	}
-
-	this.setDueDate();
-	this.addTagButtons();
-	$(this.fields.tags).each(function(i, tag) {
-		self.toggleTag(tag);
-	});
-
-	if (!this.hasTags()) {
-		this.domButtonTags.css('display', 'none');
-	}
-
-	return this;
 }
 
+document.registerElement("task-item", Task)

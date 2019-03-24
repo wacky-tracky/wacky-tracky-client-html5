@@ -1,14 +1,23 @@
+:root {
+	--highlight-bg-color: #C3E6FC;
+}
+
 body {
 	background-color: gray;
 	background-attachment: fixed;
+	background-size: cover;
 	padding: 0;
 	margin: 0;
 	font-family: sans-serif;
 }
 
-content {
+content-panel {
 	display: flex;
+	flex: 1 2 auto;
+	flex-direction: column;
 	min-height: 100vh;
+	overflow: auto;
+	background-color: rgba(239, 239, 239, 0.7);
 }
 
 
@@ -16,10 +25,13 @@ login-form h2 {
 	margin: 0;
 	padding: 0;
 	color: black;
+	box-shadow: none;
 }
 
 body, input, button {
 	font-family: sans-serif;
+	flex-direction: row;
+	display: flex;
 }
 
 div.projectContainer {
@@ -61,7 +73,7 @@ div.task {
 }
 
 div.task:hover {
-	background-color: lightskyblue;
+	background-color: var(--highlight-bg-color);
 }
 
 div.task button {
@@ -87,6 +99,7 @@ h2 {
 	user-select: none;
 	cursor: default;
 	border-bottom: 1px solid black;
+	box-shadow: 0px 5px 8px 0px rgba(0,0,0,0.35);
 }
 
 th.dayHeader td {
@@ -98,19 +111,20 @@ div.period table {
 	background-color: white;
 }
 
+side-panel {
+	display: flex;
+}
+
+
 aside {
 	background-color: #fff;
 	box-shadow: 0 0 6px #aaa;
 	border-right: 2px solid black;
 	overflow-x: hidden;
 	overflow-y: auto;
-	direction: rtl;
-	flex: 1 1 auto;
-	max-width: 20%;
-}
-
-aside * {
-	direction: ltr;
+	width: 100%;
+	min-width: 200px;
+	resize: horizontal;
 }
 
 aside h2 {
@@ -144,7 +158,8 @@ li.list {
 }
 
 .listTitle:hover, .tagTitle:hover {
-	background-color: skyblue;
+	background-color: var(--highlight-bg-color);
+	cursor: pointer;
 	color: black;
 }
 
@@ -163,26 +178,32 @@ li.list {
 	background-color: beige;
 }
 
-div#content {
-	overflow: auto;
-	background-color: rgba(239, 239, 239, 0.7);
-	flex: 1 2 auto;
+input {
+	border: 1px solid grey;
+	padding: .5em;
 }
 
 input#task {
 	display: inline-block;
-	background-color: beige;
+	background-color: #fff;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
 	transition: all 0.2s linear;
 	border-radius: .4em;
 	padding: .4em;
-	margin-top: 0;
 	color: darkgray;
 	flex: 1 2 auto;
+	margin: .5em;
+	margin-bottom: .8em;
+	font-size: 1.2em;
+	width: 97%;
+	height: 1em;
 }
 
 input#task:focus {
+	background-color: beige;
 	color: black;
+	border-color: black;
+	outline: 0;
 }
 
 input#task:disabled {
@@ -197,8 +218,14 @@ div.notification {
 
 ul#taskList {
 	padding: 1em;
+	padding-top: 0;
+	margin-top: 0;
 	-moz-user-select: none;
 	user-select: none;
+}
+
+.subtle {
+	color: grey;
 }
 
 .list .subtle {
@@ -231,12 +258,25 @@ ul#taskList {
 	border-color: black;
 }
 
+.buttonToolbar {
+	display: flex;
+}
+
 button {
-	background-color: #d6d6d6;
+	background-color: white;
+	text-transform: uppercase;
+	font-weight: bold;
+	box-shadow: 0 1px #666;
 	padding: .4em;
 	border-radius: 0.2em;
 	border: 1px solid #ccc;
+	opacity: 100;
 	margin: .2em;
+}
+
+button:hover {
+	top: 2px;
+	box-shadow: 0 2px #666;
 }
 
 button.expand {
@@ -248,24 +288,15 @@ button:disabled {
 	background-color: #bbb;
 }
 
-button.expand:disabled {
-	background-color: white;
-}
-
 button:not([disabled]):hover {
-	background-color: #fff;
+	background-color: var(--highlight-bg-color);
 	border-color: #ccc;
 	cursor: pointer;
 }
 
-button.refresh {
-	background-image: url('refresh.png');
-	background-repeat: no-repeat;
-	background-position: center center;
-}
-
 .task button {
-	padding: 0;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 div.subTasks {
@@ -391,6 +422,10 @@ div.task input {
 	border-bottom: 0;
 }
 
+div.task span.content {
+	flex: 1;
+}
+
 div.taskButtons input {
 	text-align: right;
 }
@@ -441,12 +476,11 @@ a:hover {
 }
 
 a.ui-state-hover {
-	background-color: lightskyblue;
+	background-color: var(--highlight-bg-color);
 	cursor: pointer;
 }
 
-ul.dropDownMenu {
-	display: none;
+ul.popupMenu {
 	background-color: white;
 	list-style: none;
 	font-size: 12pt;
@@ -454,11 +488,8 @@ ul.dropDownMenu {
 	margin: 0;
 	padding: 0;
 	font-weight: normal;
-	display: block;
 	position: absolute;
-	left: 0;
-	right: 0;
-	width: 219px;
+	width: 12em;
 	cursor: pointer;
 	border: 1px solid gray;
 }
@@ -470,7 +501,7 @@ li.menuItem {
 }
 
 li.menuItem:hover {
-	background-color: lightskyblue;
+	background-color: var(--highlight-bg-color);
 }
 
 li.menuItem.selected {
@@ -498,12 +529,12 @@ a, a:visited {
 	user-select: none;
 }
 
-h2.dropDownButton:hover, h2.hasMenu {
+h2.popupMenuButton:hover, h2.hasMenu {
 	text-decoration: underline;
 }
 
 @media print {
-	div#sidepanel {
+	side-panel {
 		display: none;
 	}
 
@@ -515,7 +546,7 @@ h2.dropDownButton:hover, h2.hasMenu {
 		display: none;		
 	}
 
-	div#content {
+	content-panel {
 		left: 0 !important;
 		right: 0;
 	}
@@ -568,7 +599,7 @@ button#sidepanelIcon {
 		width: 100%;
 	}
 
-	content {
+	content-panel {
 		display: block;
 	}
 

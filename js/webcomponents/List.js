@@ -1,29 +1,41 @@
-function List(jsonList) {
-	this.fields = jsonList;
+import Task from "./Task.js"
 
-	this.domSidePanel = $('<li class = "list" />');
-	this.domSidePanel.model(this);
-	this.domSidePanelTitle = this.domSidePanel.createAppend('<a href = "#" class = "listTitle" />')
-	this.domSidePanelTitleText = this.domSidePanelTitle.createAppend('<span class = "listCaption" />').text(this.fields.title);
-	this.domSidePanelTitleSuffix = this.domSidePanelTitle.createAppend('<span class = "subtle" />');
+export default class List extends HTMLDivElement {
+	setFields(fields) {
+		this.fields = fields
+	}
 
-	this.domDialog = $('<p><small>Note: your changes will be automatically saved when you close this dialog.</small></p>');
-	this.domInputTitle = this.domDialog.createAppend('<p>Title:</p>').createAppend('<input />').text(this.fields.title);
-	this.domInputSort = this.domDialog.createAppend('<p>Sort:</p>').createAppend('<select />');
-	this.domInputSort.createAppend('<option value = "title">Title</option>');
-	this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
+	setupComponents(menuItem) {
+		this.sidePanelMenuItem = menuItem;
+/*
+		this.domDialog = $('<p><small>Note: your changes will be automatically saved when you close this dialog.</small></p>');
+		this.domInputTitle = this.domDialog.createAppend('<p>Title:</p>').createAppend('<input />').text(this.fields.title);
+		this.domInputSort = this.domDialog.createAppend('<p>Sort:</p>').createAppend('<select />');
+		this.domInputSort.createAppend('<option value = "title">Title</option>');
+		this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
 
-	this.domShowTimeline = this.domDialog.createAppend('<p>Timeline:</p>').createAppend('<input type = "checkbox" />');
+		this.domShowTimeline = this.domDialog.createAppend('<p>Timeline:</p>').createAppend('<input type = "checkbox" />');
 
-	this.domList = $('<ul id = "taskList" class = "foo" />');
+*/
+		this.domList = document.createElement("ul");
+		this.domList.id = "taskList"
+		this.domList.classList.add("foo")
+		this.appendChild(this.domList);
+	}
 
-	this.tasks = [];
+	getId() {
+		return this.fields.id;
+	}
 
-	var self = this;
+	getCountItems() {
+		return this.fields.countItems;
+	}
 
-	List.prototype.openDialog = function() {
-		var self = this;
+	getTitle() {
+		return this.fields.title;
+	}
 
+	openDialog() {
 		this.domInputTitle.val(this.fields.title);
 		this.domInputSort.val(this.fields.sort);
 		this.domShowTimeline.val(this.fields.timeline);
@@ -34,99 +46,81 @@ function List(jsonList) {
 				ajaxRequest({
 					url: 'listUpdate',
 					data: {
-						list: self.fields.id,
-						title: self.domInputTitle.val(),
-						sort: self.domInputSort.val(),
-						timeline: self.domShowTimeline.val(),
+						list: this.fields.id,
+						title: this.domInputTitle.val(),
+						sort: this.domInputSort.val(),
+						timeline: this.domShowTimeline.val(),
 					}
 				});
 			}
 		});
 	};
 
-	this.updateTaskCount = function(newCount) {
-		if (newCount === null) {
-			newCount = this.tasks.length;
-		}
+	updateTaskCount() {
+		let newCount = this.domList.children.length;
 
-		this.domSidePanelTitleSuffix.text(newCount);
+		this.sidePanelMenuItem.setSuffixText(newCount)
 	};
 
-	this.domSidePanelTitle.click(function(e) {
-		self.select();
-	});
-
-	List.prototype.select = function() {
-		requestTasks(this);
+	select() {
+		this.requestTasks(this);
+		window.content.setList(this);
 
 		window.sidepanel.deselectAll();
-		this.domSidePanel.addClass('selected');
+		this.sidePanelMenuItem.select();
 	};
 
-	List.prototype.toDomSidePanel = function () {
-		return this.domSidePanel;
-	}; 
-
-	List.prototype.toDomContent = function() {
-		return this.domList;
-	};
-
-	List.prototype.addAll = function(tasks) {
-		var self = this;
-
+	addAll(tasks) {
 		this.clear();
 
-		$(tasks).each(function(index, item) {	
-			self.add(new Task(item));
+		tasks.forEach((item) => {	
+			let task = document.createElement("task-item")
+			task.setFields(item);
+			task.setupComponents();
+
+			this.add(task);
 		});
 		
-		self.updateTaskCount();
+		this.updateTaskCount();
 	};
 
-	List.prototype.add = function(task) {
+	add(task) {
 		task.parent = this;
-		this.tasks.push(task);
-		this.domList.append(task.toDom());
+		this.domList.append(task);
 
 		this.updateTaskCount();
 	};
 
-	List.prototype.deselect = function() {
-		this.domSidePanel.removeClass('selected');
+	deselect() {
+		this.sidePanelMenuItem.deselect()
 	};
 
-	List.prototype.itemOffset = function(offset) {
-		selectedItemIndex = -1;
-
-		$(this.tasks).each(function(index, item) {
-			if (item == window.selectedItem) {
-				selectedItemIndex = index;
-				return;
-			}
-		});
-
-		if (selectedItemIndex != -1) {
-			return this.tasks[selectedItemIndex + offset]
-		} else {
-			return null;
+	clear() {
+		while (this.domList.hasChildNodes()) {
+			this.domList.firstChild.remove()
 		}
 	};
 
-	List.prototype.clear = function() {
-		this.domList.children().remove();
-		this.tasks.length = 0;
-	};
-
-	List.prototype.del = function() {	
+	del() {	
 		ajaxRequest({
 			url: 'deleteList',
 			data: { id: this.fields.id },
-			success: window.sidepanel.refreshLists
+			success: window.uimanager.fetchLists
 		});
 	};
 
-	this.updateTaskCount(this.fields.count);
+	requestTasks() {
+		ajaxRequest({
+			url: 'listTasks',
+			data: { 
+				list: this.fields.id,
+				sort: "default"
+			},
+			success: this.addAll.bind(this)
+		});
+	}
 
-	return this;
+
 }
 
+document.registerElement("list-stuff", List)

@@ -12,6 +12,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha1.js"></script>
 
 	<script src = "util.js"></script>
+	<script src = "middleware.js"></script>
 	<script src = "keyboardShortcuts.js"></script>
 </head>
 
@@ -45,6 +46,28 @@
 				<button id = "register">Register</button>
 				<button id = "forgotPassword">Forgot Password</button>
 			</p>
+		</div>
+	</template>
+
+	<template id = "listControls"> 
+		<div class = "listControls">
+			<div class = "buttonToolbar">
+				<h3>title</h3>
+				<button id = "delete">Delete</button>
+				<button id = "settings">Settings</button>
+				<button>^</button>
+			</div>
+		</div>
+	</template>
+
+	<template id = "sidePanel">
+		<ul class = "lists" id = "listList"></ul>
+		<ul class = "tags" id = "tagList"></ul>
+		<div class = "buttonToolbar">
+			<button id = "newList">New List</button>
+			<button id = "newTag">New Tag</button>
+			<button id = "refresh" title = "Refresh">&#128472;</button>
+			<button id = "raiseIssue">Raise Issue</button>
 		</div>
 	</template>
 </body>
