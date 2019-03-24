@@ -1,0 +1,22 @@
+{
+  "name": "wacky-tracky-client-html5",
+  "version": "1.0.0",
+  "description": "wacky-tracky ===",
+  "main": "module.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "nodeunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wacky-tracky/wacky-tracky-client-html5.git"
+  },
+  "author": "jamesread",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/wacky-tracky/wacky-tracky-client-html5/issues"
+  },
+  "homepage": "https://github.com/wacky-tracky/wacky-tracky-client-html5#readme"
+}
