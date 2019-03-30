@@ -2,3 +2,7 @@
 **/*.swp
 wallpapers
 **/sessions
+package-lock.json
+yarn.lock
+.cache
+dist

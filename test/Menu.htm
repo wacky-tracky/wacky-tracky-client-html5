@@ -1,10 +1,6 @@
 <html>
 <head>
 	<link rel = "stylesheet" href = "../style.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-	<script src = "../extensions.js"></script>
-	<script src = "../Menu.js"></script>
 </head>
 <body>
 	<style type = "text/css">
@@ -31,23 +27,11 @@
 
 	</style>
 	
-	<div class = "menuOwner" id = "leftDropDown">Click Me!</div>
+	<div class = "menuOwner" id = "left">Click Me!</div>
 
-	<div style = "position: absolute; left: 1442px; top: 300px; background-color: red; padding: 1em; border: 1px solid white;" class = "draggable">
-		<p>foo</p>
-		<button class = "menuOwner" id = "leftDropDownBottom">Click Me (bottom)!</button>
-	</div>
+<script type = "module">
 
-	<div class = "menuOwner" id = "left">Click Me! (abosolute)</div>
-
-	<div class = "menuOwner" id = "right">Right Click Me! (absolute)</div>
-
-	<div class = "menuOwner" id = "rightDropdown">Right Click Me!</div>
-	
-	<div class = "menuOwner" id = "mouseMove">MouseMove Over Me!</div>
-<script>
-
-$('.draggable').draggable();
+import Menu from "../js/webcomponents/PopupMenu.js"
 
 Menu.prototype.addFakeItems = function() {
 	this.addItem('One')
@@ -55,32 +39,14 @@ Menu.prototype.addFakeItems = function() {
 	this.addItem('Three')
 }
 
-menuLeft = new Menu();
+let menuLeft = new Menu();
+menuLeft.addTo(document.querySelector('#left'));
 menuLeft.addFakeItems()
-menuLeft.addTo($('#left'));
 
-menuLeftDropDown = new Menu();
-menuLeftDropDown.dropDown = true;
-menuLeftDropDown.addFakeItems()
-menuLeftDropDown.addTo($('#leftDropDown'));
 
-menuLeftDropDownBottom = new Menu();
-menuLeftDropDownBottom.dropDown = true;
-menuLeftDropDownBottom.addFakeItems()
-menuLeftDropDownBottom.addTo($('#leftDropDownBottom'));
 
-menuRight = new Menu();
-menuRight.addFakeItems();
-menuRight.addAsRightClick($('#right'));
 
-menuRightDropDown = new Menu();
-menuRightDropDown.dropDown = true;
-menuRightDropDown.addFakeItems();
-menuRightDropDown.addAsRightClick($('#rightDropdown'));
-
-menuMouseMove = new Menu();
-menuMouseMove.addFakeItems();
-menuMouseMove.addMouseMove($('#mouseMove'))
+const foo = "bar";
 </script>
 
 </body>

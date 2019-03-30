@@ -10,12 +10,6 @@ KeyCodes.SPACE = 32;
 KeyCodes.T = 84;
 
 window.addEventListener("keyup", e => {
-	if (e.altKey) {
-		if (e.keyCode == KeyCodes.T) {
-			window.sidepanel.toggle();
-		}
-	}
-
 	if (window.selectedItem !== null) {
 		if (e.keyCode == KeyCodes.ESC) {
 			window.selectedItem.deselect();
@@ -38,6 +32,7 @@ window.addEventListener("keyup", e => {
 		}
 
 		if (e.keyCode == KeyCodes.RIGHT) {
+
 			window.selectedItem.setSubtasksVisible(true);
 		}
 

@@ -1,17 +1,19 @@
+import SidePanelToggleIcon from './SidePanelToggleButton.js';
 import SidePanelListButton from './SidePanelListButton.js';
 
-export default class SidePanel extends HTMLDivElement {
+export default class SidePanel extends HTMLElement {
 	setupElements() {
 		this.dom = document.createElement('aside');
 		this.appendChild(this.dom);
-		//this.dom.resizable({ minWidth: 200, handles: 'e', resize: sidepanelResized});
-		
-		this.domTitle = document.createElement("h2");
-		this.domTitle.innerText = "wacky-tracky"
-		this.dom.appendChild(this.domTitle);
-
-
+			
 		this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
+
+		this.domTitle = this.dom.querySelector("h2")
+
+		this.mnu = document.createElement("popup-menu")
+		this.mnu.addTo(this.domTitle)
+		this.mnu.addItem("Toggle sidebar", () => { this.toggle() });
+		this.mnu.addItem("Logout", logoutRequest);
 
 		this.domLists = this.querySelector("#listList")
 
@@ -28,21 +30,22 @@ export default class SidePanel extends HTMLDivElement {
 
 		this.domButtonIssue = this.querySelector("button#raiseIssue");
 		this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
+
+		this.toggleIcon = document.createElement("side-panel-toggle-button")
+		this.toggleIcon.setupComponents();
+
+		this.appendChild(this.toggleIcon)
 	}
 
 	toggle() {
-		isVisible = $('div#sidepanel').css('display') == 'block';
-
-		if (isVisible) {
-			$('div#sidepanel').css('display', 'none');
-			sidepanelResized();
+		if (this.dom.hidden) {
+			this.dom.hidden = false;
+			this.toggleIcon.hidden = true;
 		} else {
-			$('div#sidepanel').css('display', 'inline-block');
-			sidepanelResized();
+			this.dom.hidden = true;
+			this.toggleIcon.hidden = false;
 		}
-
-		window.sidepanelIcon.setVisible(isVisible)
-	};
+	}
 
 	createTag() {
 		var title = window.prompt("Tag name?");
@@ -77,23 +80,22 @@ export default class SidePanel extends HTMLDivElement {
 	};
 
 	addMenuItem(menuItem) {
-		this.domLists.append(menuItem);
+		let li = document.createElement("li")
+		li.appendChild(menuItem);
 
-		if (this.selectedItem == null) {
-			this.selectedItem = menuItem;
-
-			menuItem.select();
-		}
-	};
+		this.domLists.append(li);
+	}
 
 	deselectAll() {
 		for (let menuItem of this.domLists.children) {
-			menuItem.deselect();	
+			menuItem.firstElementChild.deselect();	
 		}
 	}
 
 	addTag(tag) {
-		this.domTags.append(tag);
+		let li = document.createElement("li")
+		li.append(tag);
+		this.domTags.append(li);
 	};
 
 	toDom() {
@@ -122,7 +124,6 @@ export default class SidePanel extends HTMLDivElement {
 		});
 
 		//$('body').append($('<style type = "text/css">' + ret + '</style>'));
-		sidepanelResized();
 	};
 
 	addListMenuItem(list) {
@@ -132,8 +133,6 @@ export default class SidePanel extends HTMLDivElement {
 		item.setListCallback(list);
 
 		this.addMenuItem(item);
-
-		sidepanelResized();
 
 		return item;
 	};
@@ -151,4 +150,4 @@ export default class SidePanel extends HTMLDivElement {
 	}
 }
 
-document.registerElement("side-panel", SidePanel);
+window.customElements.define("side-panel", SidePanel)

@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/wacky-tracky/wacky-tracky-client-html5/issues"
   },
-  "homepage": "https://github.com/wacky-tracky/wacky-tracky-client-html5#readme"
+  "homepage": "https://github.com/wacky-tracky/wacky-tracky-client-html5#readme",
+  "dependencies": {
+    "yarn": "^1.13.0"
+  }
 }

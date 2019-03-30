@@ -1,6 +1,6 @@
 import PopupMenu from './PopupMenu.js';
 
-export default class Task extends HTMLDivElement {
+export default class Task extends HTMLElement {
 	setFields(taskObject) {
 		this.fields = taskObject;
 	}
@@ -32,6 +32,7 @@ export default class Task extends HTMLDivElement {
 		this.domEditDialog = null;
 		
 		this.domButtonExpand = document.createElement("button");
+		this.domButtonExpand.setAttribute("aria-label", "expand task")
 		this.domButtonExpand.classList.add("expand")
 		this.domButtonExpand.disabled = true;
 		this.domButtonExpand.onclick = () => { this.toggleSubtasks() }
@@ -47,6 +48,15 @@ export default class Task extends HTMLDivElement {
 		this.domTaskButtons.classList.add("taskButtons")
 		this.domTask.appendChild(this.domTaskButtons);
 
+		this.domTags = document.createElement("ul");
+		this.domTags.setAttribute("aria-label", "tag list")
+		this.domTags.classList.add("taskTags");
+		this.domTaskButtons.appendChild(this.domTags);
+
+		this.domNumericProduct = document.createElement("span")
+		this.domNumericProduct.innerText = this.fields.tagNumericProduct;
+		this.domTaskButtons.appendChild(this.domNumericProduct)
+
 		this.domButtonTags = document.createElement("button")
 		this.domButtonTags.innerText = "Tag"
 		this.domTaskButtons.appendChild(this.domButtonTags);
@@ -54,7 +64,6 @@ export default class Task extends HTMLDivElement {
 		this.menuTags = document.createElement("popup-menu")
 		this.menuTags.setFields("task menu");
 		this.menuTags.domItems.classList.add('tagsMenu');
-		this.menuTags.dropDown = true;
 		this.menuTags.addTo(this.domButtonTags);
 	
 		this.domSubTasks = document.createElement("div");
@@ -154,48 +163,51 @@ export default class Task extends HTMLDivElement {
 		this.domEditDialog.slideDown();
 	};
 
-	addTagButtons() {
-		this.menuTags.addItem("one", null);
-		this.menuTags.addItem("two", null);
-		this.menuTags.addItem("three", null);
-/*
-		$(window.sidepanel.tags).each(function(i, tag) {
-			title = tag.obj.shortTitle;
-
-			if (title == "" || title == null) {
-				title = tag.obj.title;
-			}
-
-			self.menuTags.addItem(title, function() {
-				self.tagItem(tag);
-			}).addClass('tag' + tag.obj.id).addClass('tagTitle');
+	addTagMenu() {
+		window.tags.forEach(tag => {
+			this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
+				this.tagItem(tag);	
+			})
 		});
-*/
 	};
 
 	tagItem(tag) {
 		ajaxRequest({
 			url: '/tag',
+			success: console.log,
 			data: {
 				item: this.fields.id,
-				tag: tag.obj.id
+				tag: tag.id,
+				tagValueId: tag.tagValueId
 			}
 		});
 
-		this.toggleTag(tag.obj);
+		this.toggleTag(tag);
 	};
 
+	addExistingTags() {
+		this.fields.tags.forEach(tag => {
+			this.setTag(tag);
+		});
+	}
+
+	setTag(tag) {
+		let tagEl = document.createElement("li");
+		tagEl.classList.add("tag")
+		tagEl.classList.add("tag" + tag.id)
+		tagEl.style.backgroundColor = tag.backgroundColor;
+		tagEl.innerHTML = tag.title + " (" + tag.textualValue + ")";
+
+		this.domTags.appendChild(tagEl);
+	}
+
 	toggleTag(tag) {
-		tagEl = this.menuTags.domItems.children('.tag' + tag.id);
+		let tagEl = this.domTags.querySelector('.tag' + tag.id);
 		
-		if (tagEl.hasClass('selected')) {
-			tagEl.removeClass('selected');
-
-			this.domButtonTags.children('.tag' + tag.id).remove();
+		if (tagEl == null) {
+			this.setTag(tag);
 		} else {
-			tagEl.addClass('selected');
-
-			this.domButtonTags.createAppend('<span class = "tag indicator tag' + tag.id + '">&nbsp;&nbsp;&nbsp;&nbsp;</span> ');
+			tagEl.remove()
 		}
 	};
 
@@ -346,17 +358,9 @@ export default class Task extends HTMLDivElement {
 		}
 
 		this.setDueDate();
-		this.addTagButtons()
-		/*;
-		$(this.fields.tags).each(function(i, tag) {
-			self.toggleTag(tag);
-		});
-
-		if (!this.hasTags()) {
-			this.domButtonTags.css('display', 'none');
-		}
-		*/
+		this.addTagMenu()
+		this.addExistingTags();
 	}
 }
 
-document.registerElement("task-item", Task)
+window.customElements.define("task-item", Task)

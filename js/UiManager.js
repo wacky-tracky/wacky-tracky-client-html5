@@ -9,11 +9,10 @@ export default class UiManager {
 	constructor() {
 		this.init();
 
-		window.lists = []
+		window.lists = {}
 	}
 
 	initSuccess(res) {
-		console.log("initSuccess() this = ", this);
 		if (res.wallpaper !== null) {
 			let img = "url(/wallpapers/" + res.wallpaper + ")";
 			document.body.style.backgroundImage = img;
@@ -35,7 +34,6 @@ export default class UiManager {
 	}
 
 	init() {
-		console.log("init()", this);
 		window.selectedItem = null;
 
 
@@ -51,17 +49,15 @@ export default class UiManager {
 		
 		window.sidepanel = document.createElement('side-panel')
 		window.sidepanel.setupElements();
-		window.sidepanelIcon = document.createElement("side-panel-icon")
 		document.body.appendChild(window.sidepanel);
 
 		window.content = document.createElement("content-panel")
 		window.content.setupComponents()
 		document.body.appendChild(window.content);
 
-		sidepanelResized();
-
-		this.fetchLists();
+		// Fetch tags, then lists, because List->Tasks need Tags to be available.
 		this.fetchTags();
+		this.fetchLists();
 	}
 
 	loadListFromHash() {
@@ -94,12 +90,10 @@ export default class UiManager {
 					let menuItem = window.sidepanel.addListMenuItem(list);
 					list.setupComponents(menuItem)
 
-					window.lists.push(list);
+					window.lists[jsonList.id] = list;
 				});
 
-				window.lists[0].select();
-
-				this.loadListFromHash()
+				window.uimanager.loadListFromHash() // FIXME using window instead of this
 			}
 		});
 	}
@@ -110,9 +104,9 @@ export default class UiManager {
 		ajaxRequest({
 			url: 'listTags',
 			success: (tags) => {
-				tags.forEach((jsonTag) => {
-					console.log("tag", jsonTag)
+				window.tags = tags;
 
+				tags.forEach((jsonTag) => {
 					let tag = document.createElement("side-panel-tag-button")
 					tag.setFields(jsonTag)
 					tag.setupComponents();

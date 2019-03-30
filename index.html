@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang = "en">
 
 <head>
 	<title>wacky-tracky</title>
+	
+	<meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+	<meta name = "theme-color" content = "#2dae82">
+	<meta name = "description" content = "A timer to track cooking times for multiple dishes." />
 
-	<link rel="stylehseet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css" type = "text/css" media="all" />
-	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href = "style.css" />
 	<link rel="shortcut icon" href = "wacky-tracky.png" type = "image/png" />
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha1.js"></script>
 
 	<script src = "util.js"></script>
 	<script src = "middleware.js"></script>
@@ -19,7 +19,7 @@
 <body>
 	<noscript>Javascript is needed.</noscript>
 	<script type = "module">
-	import main from "./module.js";	main();
+	import main from "./module.js"; main();
 	</script>
 
 	<template id = "loginForm">
@@ -28,7 +28,7 @@
 
 			<p>
 				<label for = "username">Username</label>
-				<input id = "username" />
+				<input id = "username" autofocus />
 			</p>
 
 			<p>
@@ -53,21 +53,89 @@
 		<div class = "listControls">
 			<div class = "buttonToolbar">
 				<h3>title</h3>
-				<button id = "delete">Delete</button>
-				<button id = "settings">Settings</button>
-				<button>^</button>
+				<button id = "delete" aria-label = "Delete List">Delete</button>
+				<button id = "settings" aria-label = "List Settings">Settings</button>
+				<button id = "more" aria-label = "More List Options">&#9776;</button>
 			</div>
 		</div>
 	</template>
 
 	<template id = "sidePanel">
-		<ul class = "lists" id = "listList"></ul>
-		<ul class = "tags" id = "tagList"></ul>
+		<h2><a href = "#">&#9776; wacky-tracky</a></h2>
+
+		<ul class = "lists" id = "listList" accesskey = "l"></ul>
+		<ul class = "tags" id = "tagList" accesskey = "t"></ul>
 		<div class = "buttonToolbar">
 			<button id = "newList">New List</button>
 			<button id = "newTag">New Tag</button>
-			<button id = "refresh" title = "Refresh">&#128472;</button>
+			<button id = "refresh" title = "Refresh" aria-label = "Refresh lists">&#128472;</button>
 			<button id = "raiseIssue">Raise Issue</button>
+		</div>
+	</template>
+
+	<template id = "listEditor">
+		<div class = "contentTab">
+			<h3>List Editor</h3>
+
+			<p>
+				<label>Title <input id = "listEditorTitle"></input></label>
+			</p>
+
+			<label>Sort
+				<select id = "listEditorSort">
+					<option>title</option>
+					<option>tagNumericProduct</option>
+				</select>
+			</label>
+
+			<div class = "buttonToolbar">
+				<button id = "listEditorSave">Save</button>
+			</div>
+		</div>
+	</template>
+
+	<template id = "tagValueEditor">
+	</template>
+
+	<template id = "tagEditor">
+		<div class = "contentTab">
+			<h3>Tag Editor</h3>
+
+			<p>
+				<label>Title <input id = "tagEditorTitle"></input></label>
+			</p>
+
+			<h4>Tag Value</h4>
+
+			<p>
+				<label>Background <input id = "tagEditorBackgroundColor" type = "color" list = "colorscale"></input></label>
+				<datalist id = "colorscale">
+					<option>#ff8484</option>
+					<option>#ffea58</option>
+					<option>#beecbe</option>
+				</datalist>
+			</p>
+
+			<p>Optional tag text/numeric value.</p>
+
+			<div>
+				<p>
+					<label>Numeric Value
+					<input id = "tagValueNumeric" placeholder = "eg: 5, minimum value is 1" type = "number" min = "1"></input>
+					</label>
+				</p>
+
+				<p>
+					<label>Text Value
+					<input id = "tagValueTextual" placeholder = "eg: High Priority"></input>
+					</label>
+				</p>
+			</div>
+
+			<div class = "buttonToolbar">
+				<button id = "tagEditorSave">Save</button>
+				<button id = "tagEditorDelete">Delete</button>
+			</div>
 		</div>
 	</template>
 </body>

@@ -1,18 +1,17 @@
-export default class SidePanelListButton extends HTMLDivElement {
+export default class SidePanelListButton extends HTMLElement {
 	setFields(list) {
 		this.list = list;
 		this.listTitle = list.getTitle()
 	}
 
 	setupComponents() {
-		this.dom = document.createElement("li")
-
 		this.domSidePanelTitle = document.createElement("a")
-		this.domSidePanelTitle.classList.add("listTitle");
-		this.dom.appendChild(this.domSidePanelTitle);
+		this.domSidePanelTitle.setAttribute("href", "#");
+		this.domSidePanelTitle.classList.add("listMenuLink");
+		this.appendChild(this.domSidePanelTitle);
 
 		this.domSidePanelTitleText = document.createElement("span");
-		this.domSidePanelTitleText.classList.add("listCaption")
+		this.domSidePanelTitleText.classList.add("listTitle")
 		this.domSidePanelTitleText.innerText = this.listTitle
 		this.domSidePanelTitle.appendChild(this.domSidePanelTitleText)
 
@@ -20,8 +19,6 @@ export default class SidePanelListButton extends HTMLDivElement {
 		this.domSidePanelTitleSuffix.classList.add("subtle")
 		this.domSidePanelTitleSuffix.innerText = this.list.getCountItems()
 		this.domSidePanelTitle.appendChild(this.domSidePanelTitleSuffix);
-
-		this.appendChild(this.dom);
 	}
 
 	setSuffixText(text) {
@@ -34,7 +31,6 @@ export default class SidePanelListButton extends HTMLDivElement {
 				window.selectedItem.deselect();
 			}
 
-			window.sidepanel.selectedItem.deselect();
 			window.sidepanel.selectedItem = list;
 			list.select();
 
@@ -52,12 +48,12 @@ export default class SidePanelListButton extends HTMLDivElement {
 	}
 
 	select() {
-		this.dom.classList.add("selected");
+		this.classList.add("selected");
 	}
 
 	deselect() {
-		this.dom.classList.remove("selected");
+		this.classList.remove("selected");
 	}
 }
 
-document.registerElement("side-panel-list-button", SidePanelListButton);
+window.customElements.define("side-panel-list-button", SidePanelListButton)

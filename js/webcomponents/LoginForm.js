@@ -1,4 +1,4 @@
-export default class LoginForm extends HTMLDivElement {
+export default class LoginForm extends HTMLElement {
 	create() {
 		this.appendChild(document.querySelector('#loginForm').content.cloneNode(true))
 		document.body.appendChild(this);
@@ -55,21 +55,21 @@ export default class LoginForm extends HTMLDivElement {
 
 	tryLogin() {
 		console.log("tryLogin() this = ", this);
-		let username = this.elUsername.value;
-		let password = this.elPassword.value;
+		
+		hashPassword(this.elPassword.value).then(hashedPassword => {
+			let username = this.elUsername.value;
 
-		let hashedPassword = CryptoJS.SHA1(password).toString();
+			this.disable();
 
-		this.disable();
-
-		ajaxRequest({
-			url: 'authenticate',
-			error: this.loginFail,
-			success: this.loginSuccess,
-			data: {
-				username: username,
-				password: hashedPassword,
-			}
+			ajaxRequest({
+				url: 'authenticate',
+				error: this.loginFail,
+				success: this.loginSuccess,
+				data: {
+					username: username,
+					password: hashedPassword,
+				}
+			});
 		});
 	}
 
@@ -91,7 +91,7 @@ export default class LoginForm extends HTMLDivElement {
 	}
 
 	loginSuccess(res) {
-		window.bootloader.loginSuccess();
+		window.uimanager.loginSuccess();
 	}
 
 	show() {
@@ -119,4 +119,4 @@ export default class LoginForm extends HTMLDivElement {
 	}
 }
 
-document.registerElement("login-form", LoginForm)
+window.customElements.define("login-form", LoginForm)

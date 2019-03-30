@@ -1,19 +1,46 @@
-export default class SidePanelTagButton extends HTMLDivElement {
+import TagEditor from './TagEditor.js'
+
+export default class SidePanelTagButton extends HTMLElement {
 	setFields(jsonTag) {
 		this.fields = jsonTag
 	}
 
 	setupComponents() {
-		let li = document.createElement("li");
-		li.innerHTML = '&#128193; ' + this.fields.title;
-		li.classList.add("tagTitle")
-		li.classList.add("tag")
+		let link = document.createElement("a");
+		link.setAttribute("href", "#")
+		link.classList.add("tagMenuLink")
+		link.classList.add("tag")
+		link.onclick = () => {
+			this.openTagEditDialog(this);
+		};
 
-		this.appendChild(li);
+		let tagTitle = document.createElement("span");
+		tagTitle.innerHTML = '&#128193; ' + this.fields.title;
+		tagTitle.classList.add("tagTitle");
+		link.appendChild(tagTitle);
+
+		let tagCaption = document.createElement("span")
+		tagCaption.innerText = this.fields.textualValue;
+		tagCaption.classList.add("subtle");
+		link.appendChild(tagCaption);
+
+		let indicator = document.createElement("div")
+		indicator.classList.add("indicator")
+		indicator.style.backgroundColor = this.fields.backgroundColor
+		indicator.innerHTML = "&nbsp;&nbsp;&nbsp;"
+		link.appendChild(indicator)
+
+		this.appendChild(link);
+	}
+
+	openTagEditDialog() {
+		let tagEditor = document.createElement("tag-editor")
+		tagEditor.setFields(this.fields);
+
+		window.content.setTab(tagEditor);
 	}
 
 	/**	
-	this.domSidePanel = $('<li class = "tagTitle tag' + this.obj.id + '">').text(this.obj.title);
 
 	this.domDialog = $('<div />');
 	this.domInputTitle = this.domDialog.createAppend('<p>').text('Title: ').createAppend('<input />').text(this.obj.title);
@@ -44,10 +71,7 @@ export default class SidePanelTagButton extends HTMLDivElement {
 		});	
 	};
 
-	this.domSidePanel.rightClick(self.showDialog);
-
-	return this;
 	*/
 }
 
-document.registerElement("side-panel-tag-button", SidePanelTagButton);
+window.customElements.define("side-panel-tag-button", SidePanelTagButton)

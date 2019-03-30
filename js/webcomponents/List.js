@@ -1,6 +1,6 @@
 import Task from "./Task.js"
 
-export default class List extends HTMLDivElement {
+export default class List extends HTMLElement {
 	setFields(fields) {
 		this.fields = fields
 	}
@@ -85,8 +85,9 @@ export default class List extends HTMLDivElement {
 	};
 
 	add(task) {
-		task.parent = this;
-		this.domList.append(task);
+		let li = document.createElement("li");
+		li.append(task);
+		this.domList.append(li);
 
 		this.updateTaskCount();
 	};
@@ -114,7 +115,7 @@ export default class List extends HTMLDivElement {
 			url: 'listTasks',
 			data: { 
 				list: this.fields.id,
-				sort: "default"
+				sort: this.fields.sort
 			},
 			success: this.addAll.bind(this)
 		});
@@ -123,4 +124,4 @@ export default class List extends HTMLDivElement {
 
 }
 
-document.registerElement("list-stuff", List)
+window.customElements.define("list-stuff", List)

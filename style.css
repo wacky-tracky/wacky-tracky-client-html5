@@ -1,5 +1,10 @@
 :root {
-	--highlight-bg-color: #C3E6FC;
+	--selected-bg-color: beige;
+	--focus-bg-color: #c0ffbb;
+	--focus-outline: 1px solid red;
+	--focus-border: 1px solid red;
+	--hover-bg-color: #C3E6FC;
+	--hover-border: 1px solid black;
 }
 
 body {
@@ -18,14 +23,6 @@ content-panel {
 	min-height: 100vh;
 	overflow: auto;
 	background-color: rgba(239, 239, 239, 0.7);
-}
-
-
-login-form h2 {
-	margin: 0;
-	padding: 0;
-	color: black;
-	box-shadow: none;
 }
 
 body, input, button {
@@ -59,21 +56,30 @@ div.period {
 }
 
 div.task {
-	background-color: #fff;
-	box-shadow: 0 0 4px lightgray;
+	cursor: pointer;
+	display: flex;
 	margin: .1em;
 	margin-bottom: .4em;
 	padding: .4em;
+}
+
+div.task, .contentTab {
+	background-color: #fff;
+	box-shadow: 0 0 4px lightgray;
 	border-radius: .4em;
 	-moz-user-select: none;
 	user-select: none;
-	cursor: pointer;
-	display: flex;
 	flex-wrap: wrap;
 }
 
+.contentTab {
+	display: block;
+	margin: .6em;
+	padding: 1em;
+}
+
 div.task:hover {
-	background-color: var(--highlight-bg-color);
+	background-color: var(--hover-bg-color);
 }
 
 div.task button {
@@ -81,20 +87,13 @@ div.task button {
 }
 
 .taskButtons {
-	display: inline-block;
-}
-
-.taskButtons .span {
-	display: inline-block;
+	display: flex;
 }
 
 h2 {
 	font-family: "Overpass", sans-serif;
 	color: white;
 	margin: 0;
-	padding-top: .5em;
-	padding-left: .2em;
-	padding-bottom: .5em;
 	-moz-user-select: none;
 	user-select: none;
 	cursor: default;
@@ -113,13 +112,13 @@ div.period table {
 
 side-panel {
 	display: flex;
+	box-shadow: 0 0 6px #aaa;
+	background-color: #fff;
+	border-right: 2px solid black;
+
 }
 
-
 aside {
-	background-color: #fff;
-	box-shadow: 0 0 6px #aaa;
-	border-right: 2px solid black;
 	overflow-x: hidden;
 	overflow-y: auto;
 	width: 100%;
@@ -127,9 +126,41 @@ aside {
 	resize: horizontal;
 }
 
-aside h2 {
+aside h2 a, aside h2 a:visited, .sidePanelToggleButton {
 	background-color: #2dae82;
+	color: white;
+	display: block;
+	padding-top: .5em;
+	padding-left: .2em;
+	padding-bottom: .5em;
 }
+
+.sidePanelToggleButton:hover {
+	background-color: #2dbb80 !important;
+}
+
+.sidePanelToggleButton {
+	margin: 1em;
+}
+
+aside h2 a:hover {
+	background-color: #2dbb80 !important;
+	cursor: pointer;
+}
+
+aside a:focus, aside a:visited:focus, .sidePanelToggleButton:focus {
+	outline: var(--focus-border);
+	background-color: var(--focus-bg-color);
+	color: black;
+}
+
+login-form h2 {
+	margin: 0;
+	padding: 0;
+	color: black;
+	box-shadow: none;
+}
+
 
 ul.lists {
 	padding: 0;
@@ -143,11 +174,12 @@ li.list {
 	color: black !important;
 }
 
-.listTitle {
-	display: flex;
+side-panel-list-button, side-panel-tag-button {
+	border-bottom: 1px dashed #ccc;
 }
 
-.listTitle, .tagTitle {
+.listMenuLink, .tagMenuLink {
+	display: flex;
 	font-family: "Overpass", sans-serif;
 	font-size: 12pt;
 	text-decoration: none;
@@ -157,25 +189,28 @@ li.list {
 	border-bottom: 1px dashed #ccc;
 }
 
-.listTitle:hover, .tagTitle:hover {
-	background-color: var(--highlight-bg-color);
+.listMenuLink:hover, .tagMenuLink:hover {
+	background-color: var(--hover-bg-color);
 	cursor: pointer;
 	color: black;
 }
 
-.tagTitle {
-	display: block;
-	font-size: 80%;
+.listMenuLink:focus, .tagMenuLink:focus {
+	background-color: var(--focus-bg-color);
+	outline: var(--focus-outline);
 }
 
-.listCaption {
+.tagMenuLink {
+}
+
+.listTitle, .tagTitle {
 	flex: 2 1 auto;
 }
 
 .selected a, .selected > div.task {
 	color: black;
 	font-weight: bold;
-	background-color: beige;
+	background-color: var(--selected-bg-color);
 }
 
 input {
@@ -195,15 +230,15 @@ input#task {
 	margin: .5em;
 	margin-bottom: .8em;
 	font-size: 1.2em;
-	width: 97%;
 	height: 1em;
 }
 
 input#task:focus {
-	background-color: beige;
+	background-color: var(--focus-bg-color);
 	color: black;
 	border-color: black;
-	outline: 0;
+	outline: var(--focus-outline);
+	border-radius: 0;
 }
 
 input#task:disabled {
@@ -217,7 +252,7 @@ div.notification {
 }
 
 ul#taskList {
-	padding: 1em;
+	padding: .5em;
 	padding-top: 0;
 	margin-top: 0;
 	-moz-user-select: none;
@@ -260,6 +295,7 @@ ul#taskList {
 
 .buttonToolbar {
 	display: flex;
+	align-items: center;
 }
 
 button {
@@ -274,8 +310,14 @@ button {
 	margin: .2em;
 }
 
+button:focus {
+	background-color: var(--focus-bg-color) !important;
+	outline: var(--focus-outline);
+	border-radius: 0;
+	box-shadow: 0 2px #666;
+}
+
 button:hover {
-	top: 2px;
 	box-shadow: 0 2px #666;
 }
 
@@ -289,9 +331,14 @@ button:disabled {
 }
 
 button:not([disabled]):hover {
-	background-color: var(--highlight-bg-color);
-	border-color: #ccc;
+	background-color: var(--hover-bg-color);
+	border: var(--hover-border);
+	box-shadow: 0;
 	cursor: pointer;
+}
+
+button:not([disabled]):hover:focus {
+	border: 1px solid transparent;
 }
 
 .task button {
@@ -358,15 +405,17 @@ div#listContainer {
 	margin-top: 3em;
 }
 
-.tag {
-}
-
 ul.tags {
-	border-top: 1px solid black;
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	margin-top: 1em;
+}
+
+ul.taskTags li {
+	margin-right: 1em;
+	display: inline-block;
+	background-color: #efefef; 
+	padding: .1em;
 }
 
 login-form {
@@ -387,28 +436,6 @@ login-form p:last-child {
 label {
 	min-width: 8em;
 	display: inline-block;
-}
-
-.ui-dialog-titlebar-close {
-	float: right;
-}
-
-.ui-dialog-content {
-	padding-left: .6em;
-}
-
-.ui-dialog-titlebar {
-	background-color: beige;
-	border-bottom: 1px solid black;
-	padding-top: .2em;
-	padding-bottom: .2em;
-	padding-left: .4em;
-	cursor: pointer;
-	font-weight: bold;
-}
-
-span.ui-button-text {
-	display: none !important;
 }
 
 div.task div.controls {
@@ -434,16 +461,16 @@ div.taskWrapper.selected div.task input.hasDatePicker {
 	border-bottom: 1px dashed gray;
 }
 
-ul.dropDownMenu, .ui-datepicker, .ui-dialog {
+div.indicator {
+	padding: .2em;
+	margin-right: -.5em;
+	margin-left: .5em;
+}
+
+ul.popupMenu, .ui-datepicker, .ui-dialog {
 	border: 2px solid black;
 	background-color: white;
 	box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.7);
-}
-
-.ui-datepicker-header {
-	background-color: beige;
-	border-bottom: 1px solid black;
-	margin-bottom: .2em;
 }
 
 .ui-datepicker-next {
@@ -475,11 +502,6 @@ a {
 a:hover {
 }
 
-a.ui-state-hover {
-	background-color: var(--highlight-bg-color);
-	cursor: pointer;
-}
-
 ul.popupMenu {
 	background-color: white;
 	list-style: none;
@@ -492,16 +514,28 @@ ul.popupMenu {
 	width: 12em;
 	cursor: pointer;
 	border: 1px solid gray;
+	z-index: 99;
+}
+
+ul.popupMenu a {
+	display: block;
+	padding: .5em;
+}
+
+ul.popupMenu a:hover {
+	background-color: var(--hover-bg-color);
+}
+
+ul.popupMenu a:focus {
+	background-color: var(--focus-bg-color);
+	outline: var(--focus-border);
 }
 
 li.menuItem {
-	padding: 4px;
-	font-family: sans-serif;
-	font-size: 80%;
+	text-align: left;
 }
 
 li.menuItem:hover {
-	background-color: var(--highlight-bg-color);
 }
 
 li.menuItem.selected {
@@ -527,6 +561,10 @@ a, a:visited {
 	text-align: right;
 	-moz-user-select: none;
 	user-select: none;
+}
+
+.popupMenuButton {
+	position: relative; /** This is important, because the resulting popup menu has position absolute, which is absolute relative to the button. */
 }
 
 h2.popupMenuButton:hover, h2.hasMenu {
@@ -622,4 +660,16 @@ a.externalItemUrl {
 	margin-left: .2em;
 	margin-right: .2em;
 
+}
+
+task-input-box {
+	display: flex;
+}
+
+h3 {
+	margin: 0;
+}
+
+#tagValues div > * {
+	display: inline-block;
 }

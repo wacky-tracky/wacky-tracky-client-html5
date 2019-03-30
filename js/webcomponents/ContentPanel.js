@@ -1,37 +1,46 @@
 import TaskInputBox from "./TaskInputBox.js"
 import ListControls from "./ListControls.js"
 
-export default class ContentPanel extends HTMLDivElement {
+export default class ContentPanel extends HTMLElement {
 	setupComponents() {
 		this.taskInput = document.createElement("task-input-box");
 		this.taskInput.setupComponents();
 		this.appendChild(this.taskInput)
 
-		this.domListContainer = document.createElement('list-container');
-		this.appendChild(this.domListContainer);
+		this.domView = document.createElement('main');
+		this.appendChild(this.domView);
 	}
 
 	setList(list) {
 		window.selectedItem = null;
 
+		this.clear()
+
 		this.list = list;
+
+		this.domView.appendChild(list);
 		
-		while (this.domListContainer.hasChildNodes()) {
-			this.domListContainer.firstChild.remove();
-		}
-
-		//$('.tagsMenu').remove();
-		//$('.listControlsMenu').remove();
-		this.domListContainer.appendChild(list);
-
 		let listControls = document.createElement("list-controls")
 		listControls.setupComponents();
 		listControls.setList(list);
 
-		this.domListContainer.append(listControls);
+		this.domView.appendChild(listControls);
 
 		this.taskInput.enable();
 	}
+
+	setTab(tab) {
+		this.clear()
+
+		this.domView.appendChild(tab);
+		this.taskInput.disable();
+	}
+
+	clear() {
+		while (this.domView.hasChildNodes()) {
+			this.domView.firstChild.remove();
+		}
+	}
 }
 
-document.registerElement("content-panel", ContentPanel)
+window.customElements.define("content-panel", ContentPanel)

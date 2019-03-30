@@ -1,4 +1,4 @@
-export default class TaskInputBox extends HTMLDivElement {
+export default class TaskInputBox extends HTMLElement {
 	setupComponents() {
 		this.label = null;
 
@@ -7,6 +7,9 @@ export default class TaskInputBox extends HTMLDivElement {
 
 		this.domInput = document.createElement('input');
 		this.domInput.id = "task"
+		this.domInput.setAttribute("aria-label", 'Create new task')
+		this.domInput.setAttribute("tabindex", '0')
+		this.domInput.setAttribute("autofocus", true)
 		this.domInput.value = ""
 		this.domInput.disabled = true;
 		this.appendChild(this.domInput);
@@ -30,9 +33,13 @@ export default class TaskInputBox extends HTMLDivElement {
 	}
 	
 	enable() {
-		this.domInput.disabled = false;;
+		this.domInput.disabled = false;
 		this.domInput.focus();
 	};
+
+	disable() {
+		this.domInput.disabled = true;
+	}
 	
 	setLabel(label) {
 		if (label == "") {
@@ -49,4 +56,4 @@ export default class TaskInputBox extends HTMLDivElement {
 	}
 }
 
-document.registerElement("task-input-box", TaskInputBox)
+window.customElements.define("task-input-box", TaskInputBox)
