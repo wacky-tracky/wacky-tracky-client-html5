@@ -15,7 +15,6 @@ export default class SidePanelTagButton extends HTMLElement {
 		};
 
 		let tagTitle = document.createElement("span");
-		tagTitle.innerHTML = '&#128193; ' + this.fields.title;
 		tagTitle.classList.add("tagTitle");
 		link.appendChild(tagTitle);
 

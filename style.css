@@ -174,7 +174,7 @@ li.list {
 	color: black !important;
 }
 
-side-panel-list-button, side-panel-tag-button {
+aside ul li {
 	border-bottom: 1px dashed #ccc;
 }
 
@@ -201,6 +201,8 @@ side-panel-list-button, side-panel-tag-button {
 }
 
 .tagMenuLink {
+	padding-left: 2em;
+	font-size: smaller;
 }
 
 .listTitle, .tagTitle {
@@ -405,10 +407,14 @@ div#listContainer {
 	margin-top: 3em;
 }
 
-ul.tags {
+div#tagList ul.tagList {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+}
+
+div#tagList ul.tagList li {
+	display: inline-block;
 }
 
 ul.taskTags li {
@@ -511,7 +517,7 @@ ul.popupMenu {
 	padding: 0;
 	font-weight: normal;
 	position: absolute;
-	width: 12em;
+	width: 16em;
 	cursor: pointer;
 	border: 1px solid gray;
 	z-index: 99;

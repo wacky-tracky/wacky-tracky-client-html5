@@ -28,6 +28,17 @@ export default class TagEditor extends HTMLElement {
 		this.domButtonDelete.onclick = () => {
 			this.del();
 		}
+
+		this.domButtonNewValue = this.querySelector("#tagEditorNewValue");
+		this.domButtonNewValue.onclick = () => {
+			ajaxRequest({
+				url: "addTagValue",
+				data: {
+					tagId: this.tag.id
+				},
+				success: window.uimanager.fetchTags
+			})
+		}
 	}
 
 	save() {

@@ -17,7 +17,7 @@ export default class SidePanel extends HTMLElement {
 
 		this.domLists = this.querySelector("#listList")
 
-		this.domTags = this.querySelector("#tagList")
+		this.domTagContainer = this.querySelector("div#tagList")
 
 		this.domButtonNewTag = this.querySelector("button#newTag")
 		this.domButtonNewTag.onclick = () => { this.createTag() };
@@ -93,6 +93,17 @@ export default class SidePanel extends HTMLElement {
 	}
 
 	addTag(tag) {
+		if (window.lastTag != tag.fields.id) {
+			window.lastTag = tag.fields.id
+			let tagName = document.createElement("div")
+			tagName.innerHTML = "&#128193" + tag.fields.title;
+			this.domTagContainer.append(tagName);
+
+			this.domTags = document.createElement("ul");
+			this.domTags.classList.add("tagList")
+			this.domTagContainer.append(this.domTags);
+		}
+
 		let li = document.createElement("li")
 		li.append(tag);
 		this.domTags.append(li);
@@ -109,8 +120,10 @@ export default class SidePanel extends HTMLElement {
 	}
 
 	clearTags() {
-		while (this.domTags.hasChildNodes()) {
-			this.domTags.firstChild.remove();
+		let tags = this.querySelector("div#tagList")
+
+		while (tags.hasChildNodes()) {
+			tags.firstChild.remove();
 		}
 	};
 

@@ -1,5 +1,5 @@
 **/*.pyc
-**/*.swp
+**/*.sw[po]
 wallpapers
 **/sessions
 package-lock.json
