@@ -1,4 +1,4 @@
-window.host = "http://" + window.location.hostname + ":8082/";
+window.host = "https://api.wacky-tracky.com/"
 
 HTMLElement.prototype.onEnter = function(callback) {
 	this.addEventListener("keydown", function(e) {
@@ -6,6 +6,10 @@ HTMLElement.prototype.onEnter = function(callback) {
 			callback()
 		}
 	});
+}
+
+function isNarrowScreen() {
+	return window.innerWidth < 1000;
 }
 
 function registerSuccess() {
@@ -118,11 +122,20 @@ function generalError(error) {
 	notification('error', 'Error: ' + error);
 }
 
-function notification(cls, text) {
+function notification(cls, text, callback = null) {
+	if (text == null) {
+		text = cls;
+	}
+
 	let notification = document.createElement("div");
 	notification.classList += cls + " notification";
 	notification.textContent = text;
-	notification.addEventListener("click", notification.remove);
+
+	if (callback == null) {
+		notification.addEventListener("click", notification.remove);
+	} else { 
+		notification.addEventListener("click", e => { callback(notification) });
+	}
 
 	document.body.appendChild(notification);
 }
@@ -215,6 +228,14 @@ function changePassword(password) {
 function closePopupMenus() {
 	if (window.currentMenu != null) {
 		window.currentMenu.hide();
+	}
+}
+
+function setBootMessage(message) {
+	var container = document.querySelector("#bootMessage");
+	
+	if (container != null) {
+		container.innerText = message + "...";
 	}
 }
 

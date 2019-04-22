@@ -2,7 +2,7 @@
   "name": "wacky-tracky-client-html5",
   "version": "1.0.0",
   "description": "wacky-tracky ===",
-  "main": "module.js",
+  "private": true,
   "directories": {
     "test": "test"
   },
@@ -19,7 +19,8 @@
     "url": "https://github.com/wacky-tracky/wacky-tracky-client-html5/issues"
   },
   "homepage": "https://github.com/wacky-tracky/wacky-tracky-client-html5#readme",
-  "dependencies": {
-    "yarn": "^1.13.0"
+  "devDependencies": {
+    "parcel": "^1.12.3",
+    "yarn": "^1.15.2"
   }
 }

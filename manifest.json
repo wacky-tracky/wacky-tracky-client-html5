@@ -1,0 +1,26 @@
+{
+	"short_name": "wacky-tracky",
+	"name": "wacky-tracky",
+	"icons": [
+		{
+			"src": "resources/images/logos/wacky-tracky.png",
+			"type": "image/png",
+			"sizes": "735x735"
+		},
+		{
+			"src": "resources/images/logos/wacky-tracky-192.png",
+			"type": "image/png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "resources/images/logos/wacky-tracky-512.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	],
+	"start_url": "/",
+	"background_color": "#000000",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#000000"
+}

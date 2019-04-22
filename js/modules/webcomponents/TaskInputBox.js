@@ -3,17 +3,21 @@ export default class TaskInputBox extends HTMLElement {
 		this.label = null;
 
 		this.domLabel = document.createElement('span');
+		this.domLabel.classList.add("taskInputPrefix");
+		this.setPrefix();
 		this.appendChild(this.domLabel)
 
 		this.domInput = document.createElement('input');
 		this.domInput.id = "task"
 		this.domInput.setAttribute("aria-label", 'Create new task')
+		this.domInput.setAttribute("accesskey", 'c')
 		this.domInput.setAttribute("tabindex", '0')
 		this.domInput.setAttribute("autofocus", true)
 		this.domInput.value = ""
 		this.domInput.disabled = true;
 		this.appendChild(this.domInput);
 
+		this.prepend(window.sidepanel.getToggleButton());
 
 		this.domInput.onkeypress = (e) => {
 			var key = e.keyCode ? e.keyCode : e.which;
@@ -30,6 +34,22 @@ export default class TaskInputBox extends HTMLElement {
 		this.domInput.onblur = () => {
 			this.domInput.value = this.label
 		}
+	}
+
+	setPrefix(prefix) {
+		if (prefix == null) {
+			prefix = "Create";
+		}
+
+		if (prefix == "Create") {
+			prefix = "&#127381;";
+		}
+
+		if (prefix == "Search") {
+			prefix = "&#128270;";
+		}
+
+		this.domLabel.innerHTML = prefix;
 	}
 	
 	enable() {

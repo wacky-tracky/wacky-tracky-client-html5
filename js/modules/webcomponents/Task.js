@@ -116,7 +116,7 @@ export default class Task extends HTMLElement {
 		}
 
 		ajaxRequest({
-			url: '/listTasks',
+			url: 'listTasks',
 			data: { 
 				task: this.fields.id,
 				sort: window.content.list.fields.sort
@@ -165,15 +165,19 @@ export default class Task extends HTMLElement {
 
 	addTagMenu() {
 		window.tags.forEach(tag => {
+			var i = document.createElement("span");
+			i.innerHTML = "&nbsp;&nbsp;&nbsp;";
+			i.setAttribute("style", "background-color: " + tag.backgroundColor + "; ");
+
 			this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
-				this.tagItem(tag);	
-			})
+				this.requestTagItem(tag);	
+			}, null, i)
 		});
 	};
 
-	tagItem(tag) {
+	requestTagItem(tag) {
 		ajaxRequest({
-			url: '/tag',
+			url: 'tag',
 			success: console.log,
 			data: {
 				item: this.fields.id,
@@ -183,7 +187,7 @@ export default class Task extends HTMLElement {
 		});
 
 		this.toggleTag(tag);
-	};
+	}
 
 	addExistingTags() {
 		this.fields.tags.forEach(tag => {
@@ -195,6 +199,7 @@ export default class Task extends HTMLElement {
 		let tagEl = document.createElement("li");
 		tagEl.classList.add("tag")
 		tagEl.classList.add("tag" + tag.id)
+		tagEl.classList.add("tagValue" + tag.tagValueId)
 		tagEl.style.backgroundColor = tag.backgroundColor;
 		tagEl.innerHTML = tag.title + " (" + tag.textualValue + ")";
 
@@ -202,14 +207,20 @@ export default class Task extends HTMLElement {
 	}
 
 	toggleTag(tag) {
-		let tagEl = this.domTags.querySelector('.tag' + tag.id);
-		
-		if (tagEl == null) {
+		let tv = this.domTags.querySelector(".tagValue" + tag.tagValueId)
+
+		if (tv == null) {
+			let tagEl = this.domTags.querySelector('.tag' + tag.id);
+			
+			if (tagEl != null) {
+				tagEl.remove()
+			}
+
 			this.setTag(tag);
 		} else {
-			tagEl.remove()
+			tv.remove();
 		}
-	};
+	}
 
 	closeEditDialog() {
 		return

@@ -12,7 +12,13 @@ export default class UiManager {
 		window.lists = {}
 	}
 
+	/**
+	At this stage, the critical "boot" path is complete. 
+	We have the minimum browser features, core javascript, etc.
+	*/
 	initSuccess(res) {
+		document.querySelector("#bootMessage").remove();
+
 		if (res.wallpaper !== null) {
 			let img = "url(/wallpapers/" + res.wallpaper + ")";
 			document.body.style.backgroundImage = img;
@@ -30,12 +36,18 @@ export default class UiManager {
 
 	initFailure(a, b, c) {
 		console.log(a, b, c);
-		generalError("Could not init. Is the server running?", a, b, c);
+
+		if (a != null && a.toString().includes("Failed to fetch")) {
+			setBootMessage("Failed to fetch during init, are you offline?");
+		} else {
+			setBootMessage("Unknown init failure.");
+		}
+
 	}
 
 	init() {
+		setBootMessage("UiManager init");
 		window.selectedItem = null;
-
 
 		ajaxRequest.bind(this, {
 			url: "init",

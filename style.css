@@ -26,7 +26,7 @@ content-panel {
 }
 
 body, input, button {
-	font-family: sans-serif;
+	font-family: "Overpass", sans-serif;
 	flex-direction: row;
 	display: flex;
 }
@@ -67,8 +67,6 @@ div.task, .contentTab {
 	background-color: #fff;
 	box-shadow: 0 0 4px lightgray;
 	border-radius: .4em;
-	-moz-user-select: none;
-	user-select: none;
 	flex-wrap: wrap;
 }
 
@@ -94,8 +92,6 @@ h2 {
 	font-family: "Overpass", sans-serif;
 	color: white;
 	margin: 0;
-	-moz-user-select: none;
-	user-select: none;
 	cursor: default;
 	border-bottom: 1px solid black;
 	box-shadow: 0px 5px 8px 0px rgba(0,0,0,0.35);
@@ -115,7 +111,6 @@ side-panel {
 	box-shadow: 0 0 6px #aaa;
 	background-color: #fff;
 	border-right: 2px solid black;
-
 }
 
 aside {
@@ -124,15 +119,28 @@ aside {
 	width: 100%;
 	min-width: 200px;
 	resize: horizontal;
+	user-select: none;
 }
 
-aside h2 a, aside h2 a:visited, .sidePanelToggleButton {
+aside #sidepanelMenuButton, .sidePanelToggleButton {
+	font-family: "Overpass", sans-serif;
+	text-transform: unset;
 	background-color: #2dae82;
 	color: white;
+}
+
+aside #sidepanelMenuButton {
 	display: block;
 	padding-top: .5em;
 	padding-left: .2em;
 	padding-bottom: .5em;
+	text-transform: normal;
+	border-radius: 0;
+	border: 0;
+	text-align: left;
+	width: 100%;
+	margin: 0;
+	font-size: x-large;
 }
 
 .sidePanelToggleButton:hover {
@@ -141,11 +149,17 @@ aside h2 a, aside h2 a:visited, .sidePanelToggleButton {
 
 .sidePanelToggleButton {
 	margin: 1em;
+	margin-left: 1em;
+	margin-right: 0;
 }
 
-aside h2 a:hover {
+aside #sidepanelMenuButton:hover {
 	background-color: #2dbb80 !important;
 	cursor: pointer;
+}
+
+aside #sidepanelMenuButton:focus {
+	color: black;
 }
 
 aside a:focus, aside a:visited:focus, .sidePanelToggleButton:focus {
@@ -165,8 +179,6 @@ login-form h2 {
 ul.lists {
 	padding: 0;
 	margin: 0;
-	-moz-user-select: none;
-	user-select: none;
 }
 
 li.list {
@@ -174,7 +186,7 @@ li.list {
 	color: black !important;
 }
 
-aside ul li {
+aside ul.lists li, aside ul.tagList  {
 	border-bottom: 1px dashed #ccc;
 }
 
@@ -186,7 +198,7 @@ aside ul li {
 	padding: .4em;
 	color: 000;;	
 	text-shadow: 1px 1px #ccc;
-	border-bottom: 1px dashed #ccc;
+	align-items: center;
 }
 
 .listMenuLink:hover, .tagMenuLink:hover {
@@ -201,8 +213,9 @@ aside ul li {
 }
 
 .tagMenuLink {
-	padding-left: 2em;
 	font-size: smaller;
+	padding-bottom: 0;
+	padding-top: 0;
 }
 
 .listTitle, .tagTitle {
@@ -230,7 +243,8 @@ input#task {
 	color: darkgray;
 	flex: 1 2 auto;
 	margin: .5em;
-	margin-bottom: .8em;
+	margin-left: 0;
+	margin-bottom: .6em;
 	font-size: 1.2em;
 	height: 1em;
 }
@@ -248,17 +262,24 @@ input#task:disabled {
 	cursor: not-allowed;
 }
 
+.taskInputPrefix {
+	color: white;
+	vertical-align: middle;
+	margin-left: .2em;
+	padding-right: .5em;
+	font-size: 2em;
+}
+
 div.notification {
 	position: absolute;
 	float: right;
+	z-index: 99;
 }
 
 ul#taskList {
 	padding: .5em;
 	padding-top: 0;
 	margin-top: 0;
-	-moz-user-select: none;
-	user-select: none;
 }
 
 .subtle {
@@ -283,7 +304,7 @@ ul#taskList {
 
 .notification.good {
 	border: 2px solid green;
-	background-color: limegreen;
+	background-color: lightgreen;
 }
 
 .notification.error {
@@ -310,6 +331,7 @@ button {
 	border: 1px solid #ccc;
 	opacity: 100;
 	margin: .2em;
+	user-select: none;
 }
 
 button:focus {
@@ -377,8 +399,6 @@ div.subTasks {
 	color: white;
 	border-radius: 0 0 0.5em 0.5em;
 	box-shadow: 0 0 4px lightgray;
-	-moz-user-select: none;
-	user-select: none;
 	padding: 0.5em;
 }
 
@@ -469,7 +489,7 @@ div.taskWrapper.selected div.task input.hasDatePicker {
 
 div.indicator {
 	padding: .2em;
-	margin-right: -.5em;
+	margin-right: 0em;
 	margin-left: .5em;
 }
 
@@ -523,9 +543,13 @@ ul.popupMenu {
 	z-index: 99;
 }
 
+ul.popupMenu li {
+	display: flex;
+}
+
 ul.popupMenu a {
-	display: block;
-	padding: .5em;
+	padding: .5em 0 .5em .5em;
+	flex: 1 1 auto;
 }
 
 ul.popupMenu a:hover {
@@ -565,8 +589,6 @@ a, a:visited {
 	color: gray;
 	font-size: 80%;
 	text-align: right;
-	-moz-user-select: none;
-	user-select: none;
 }
 
 .popupMenuButton {
@@ -670,6 +692,12 @@ a.externalItemUrl {
 
 task-input-box {
 	display: flex;
+	background-color: #666;
+	position: fixed;
+	width: 100%;
+	z-index: 9;
+	align-items: center;
+	text-align: right;
 }
 
 h3 {
@@ -678,4 +706,8 @@ h3 {
 
 #tagValues div > * {
 	display: inline-block;
+}
+
+main {
+	margin-top: 4em;
 }

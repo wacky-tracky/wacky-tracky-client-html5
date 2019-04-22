@@ -31,6 +31,12 @@ export default class SidePanelListButton extends HTMLElement {
 				window.selectedItem.deselect();
 			}
 
+			if (isNarrowScreen()) {
+				window.sidepanel.toggle();
+			}
+
+			document.title = list.fields.title;
+
 			window.sidepanel.selectedItem = list;
 			list.select();
 

@@ -21,6 +21,7 @@ export default class ListControls extends HTMLElement {
 		this.menuMore.addItem("Download (JSON)", () => { this.requestDownload("json") })
 		this.menuMore.addItem("Download (Text)", () => { this.requestDownload("text") });
 		this.menuMore.addItem("Download (CSV)", () => { this.requestDownload("csv") });
+		this.menuMore.addItem("Copy as spreadsheet", () => { this.requestCopyAsSpreadsheet() });
 		this.menuMore.addTo(this.domButtonMore);
 	}
 
@@ -30,6 +31,9 @@ export default class ListControls extends HTMLElement {
 		this.domLabel.innerText = list.fields.title;
 
 		this.domButtonDelete.onclick = () => { list.del() };
+	}
+
+	copyAsSpreadsheet() {
 	}
 
 	requestDownload(format) {

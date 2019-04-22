@@ -8,11 +8,11 @@ export default class SidePanel extends HTMLElement {
 			
 		this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
 
-		this.domTitle = this.dom.querySelector("h2")
+		this.domMenuButton = this.dom.querySelector("#sidepanelMenuButton")
 
 		this.mnu = document.createElement("popup-menu")
-		this.mnu.addTo(this.domTitle)
-		this.mnu.addItem("Toggle sidebar", () => { this.toggle() });
+		this.mnu.addTo(this.domMenuButton)
+		this.mnu.addItem("Toggle sidebar", () => { this.toggle() }, "t");
 		this.mnu.addItem("Logout", logoutRequest);
 
 		this.domLists = this.querySelector("#listList")
@@ -33,8 +33,10 @@ export default class SidePanel extends HTMLElement {
 
 		this.toggleIcon = document.createElement("side-panel-toggle-button")
 		this.toggleIcon.setupComponents();
+	}
 
-		this.appendChild(this.toggleIcon)
+	getToggleButton() {
+		return this.toggleIcon;
 	}
 
 	toggle() {

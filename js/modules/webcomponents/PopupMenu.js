@@ -14,14 +14,23 @@ export default class PopupMenu extends HTMLElement {
 		this.owner = null;
 	}
 
-	addItem(text, callback) {
+	addItem(text, callback, accesskey = null, indicator = null) {
 		let li = document.createElement("li");
 		let a = document.createElement("a");
 		a.setAttribute("href", "#")
+
+		if (accesskey != null) {
+			a.setAttribute("accesskey", accesskey);
+		}
+
 		a.innerText = text
 		a.onclick = callback;
 		li.appendChild(a);
 		li.classList.add("menuItem");
+
+		if (indicator != null) {
+			li.appendChild(indicator)
+		}
 
 		this.domItems.appendChild(li);
 	}
