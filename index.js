@@ -4,3 +4,4 @@ export default function main() {
 	window.uimanager = new UiManager();
 }
 
+main();
