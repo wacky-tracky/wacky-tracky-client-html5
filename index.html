@@ -11,16 +11,20 @@
 	<link rel="stylesheet" href = "style.css" />
 	<link rel="shortcut icon" href = "wacky-tracky.png" type = "image/png" />
 
-	<script src = "util.js"></script>
-	<script src = "middleware.js"></script>
-	<script src = "keyboardShortcuts.js"></script>
+
+	<script src = "js/firmware/util.js"></script>
+	<script src = "js/firmware/middleware.js"></script>
+	<script src = "js/firmware/sw_loader.js" defer></script>
+	<script src = "js/firmware/keyboardShortcuts.js" defer></script>
 </head>
 
 <body>
 	<noscript>Javascript is needed.</noscript>
-	<script type = "module">
-	import main from "./module.js"; main();
-	</script>
+	<div id = "bootMessage" style = "background-color: white; padding: 1em; flex: 1 1 auto; text-align: center; font-weight: bold; margin-top: 1em;">
+		Waiting for scripts to initialize...
+	</div>
+
+	<script type = "module" src = "index.js"></script>
 
 	<template id = "loginForm">
 		<div id = "loginFormContainer">
