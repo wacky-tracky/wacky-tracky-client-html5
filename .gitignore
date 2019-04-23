@@ -1,3 +1,4 @@
+**/*.log
 **/*.pyc
 **/*.sw[po]
 wallpapers
@@ -6,3 +7,4 @@ package-lock.json
 yarn.lock
 .cache
 dist
+node_modules/

@@ -8,8 +8,10 @@
 	<meta name = "theme-color" content = "#2dae82">
 	<meta name = "description" content = "A timer to track cooking times for multiple dishes." />
 
+	<link rel="manifest" href = "manifest.json" />
+	<link rel="canonical" href = "https://web.wacky-tracky.com" />
 	<link rel="stylesheet" href = "style.css" />
-	<link rel="shortcut icon" href = "wacky-tracky.png" type = "image/png" />
+	<link rel="shortcut icon" href = "resources/images/logos/wacky-tracky.png" type = "image/png" />
 
 	<script src = "util.js"></script>
 	<script src = "middleware.js"></script>
@@ -18,6 +20,11 @@
 
 <body>
 	<noscript>Javascript is needed.</noscript>
+
+	<div id = "bootMessage" style = "background-color: white; padding: 1em; flex: 1 1 auto; text-align: center; font-weight: bold; margin-top: 1em;">
+		Waiting for scripts to initialize...
+	</div>
+
 	<script type = "module">
 	import main from "./module.js"; main();
 	</script>
@@ -61,7 +68,7 @@
 	</template>
 
 	<template id = "sidePanel">
-		<h2><a href = "#">&#9776; wacky-tracky</a></h2>
+		<button id = "sidepanelMenuButton" aria-label = "Main Sidebar Menu" accesskey = "m">&#9776; wacky-tracky</button>
 
 		<ul class = "lists" id = "listList" accesskey = "l"></ul>
 
