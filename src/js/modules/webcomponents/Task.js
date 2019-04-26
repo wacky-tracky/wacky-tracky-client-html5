@@ -1,4 +1,6 @@
-import PopupMenu from './PopupMenu.js';
+import './PopupMenu.js';
+
+import { ajaxRequest } from "../../firmware/middleware.js"
 
 export default class Task extends HTMLElement {
 	setFields(taskObject) {
@@ -89,11 +91,11 @@ export default class Task extends HTMLElement {
 		}
 
 		this.refreshExpandButton();
-	};
+	}
 
 	toggleSubtasks() {
 		this.setSubtasksVisible(!this.isSubtasksVisible());
-	};
+	}
 
 	refreshExpandButton(forceEnabled) {
 		if (forceEnabled || this.subtasks.length > 0) {
@@ -108,7 +110,7 @@ export default class Task extends HTMLElement {
 			this.domButtonExpand.disabled = true;
 			this.domButtonExpand.innerHTML = '&nbsp;';
 		}
-	};
+	}
 
 	refreshSubtasks() {
 		for (let child of this.domSubTasks.children) {
@@ -123,7 +125,7 @@ export default class Task extends HTMLElement {
 			},
 			success: this.renderSubtasks
 		});
-	};
+	}
 
 	renderSubtasks(subtasks) {
 		for (let subtask of subtasks) {
@@ -133,7 +135,7 @@ export default class Task extends HTMLElement {
 
 			window.selectedItem.addSubtask(t);
 		}
-	};
+	}
 
 	setDueDate(newDate) {
 		if (newDate == null) {
@@ -151,17 +153,18 @@ export default class Task extends HTMLElement {
 		}
 
 		//self.domButtonDueDate.val(newDate);
-	};
+	}
 
 	openEditDialog() {
 		this.closeEditDialog();
 
-		this.domEditDialog = $('<div class = "editDialog" />');
+		this.domEditDialog = document.createElement("div");
+		this.domEditDialog.classList.add("editDialog");
 		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
 	
 		this.dom.append(this.domEditDialog).fadeIn();
 		this.domEditDialog.slideDown();
-	};
+	}
 
 	addTagMenu() {
 		window.tags.forEach(tag => {
@@ -173,7 +176,7 @@ export default class Task extends HTMLElement {
 				this.requestTagItem(tag);	
 			}, null, i)
 		});
-	};
+	}
 
 	requestTagItem(tag) {
 		ajaxRequest({
@@ -223,17 +226,17 @@ export default class Task extends HTMLElement {
 	}
 
 	closeEditDialog() {
-		return
-		 
+		/**
 		this.dom.children('.editDialog').remove();
 		this.domEditDialog = null;
-	};
+		*/
+	}
 
 	addSubtask(t) {
 		this.domSubTasks.append(t);
 		this.subtasks.push(t);
 		this.refreshExpandButton();
-	};
+	}
 
 	rename() {
 		if (this.domTask.children('.renamer').length > 0) {
@@ -242,7 +245,8 @@ export default class Task extends HTMLElement {
 			this.isBeingRenamed = true;
 			this.domTaskContent.text('');
 
-			renamer = $('<input class = "renamer" />');
+			let renamer = document.createElement('input');
+			renamer.classList.add("renamer");
 			renamer.val(this.fields.content);
 			renamer.onEnter(function(el) {
 				self.renameTo(el.val());
@@ -252,7 +256,7 @@ export default class Task extends HTMLElement {
 			this.domTask.append(renamer)
 			renamer.focus();
 		}
-	};
+	}
 
 	renameTo(newContent) {
 		this.isBeingRenamed = false;
@@ -266,7 +270,7 @@ export default class Task extends HTMLElement {
 				'content': newContent,
 			}
 		});
-	};
+	}
 
 	select() {
 		if (window.selectedItem == this || window.toDelete == this) {
@@ -274,8 +278,7 @@ export default class Task extends HTMLElement {
 		}
 
 		if (window.selectedItem !== null) {
-			if (!window.selectedItem.deselect()) {
-			}
+			window.selectedItem.deselect();
 		}
 
 //		this.domButtonDelete.css('display', 'inline-block');
@@ -287,7 +290,7 @@ export default class Task extends HTMLElement {
 
 		window.selectedItem = this;
 		this.dom.classList.add('selected');
-	};
+	}
 
 	requestUpdateDueDate(newDate) {
 		ajaxRequest({
@@ -297,7 +300,7 @@ export default class Task extends HTMLElement {
 				"dueDate": newDate
 			}
 		});
-	};
+	}
 
 	deselect() {
 		if (window.selectedItem.isBeingRenamed) {
@@ -322,9 +325,9 @@ export default class Task extends HTMLElement {
 
 		//this.domTask.children.querySelectorAll('.renamer').remove();
 		//this.menuTags.hide();
-	};
+	}
 
-	del(i) {
+	del() {
 		if (window.selectedItem.isBeingRenamed) {
 			return;
 		}
@@ -338,7 +341,7 @@ export default class Task extends HTMLElement {
 			data: { id: this.fields.id },
 			success: this.renderDelete
 		});
-	};
+	}
 
 	renderDelete() {
 		window.toDelete.remove();
@@ -356,12 +359,12 @@ export default class Task extends HTMLElement {
 		*/
 
 		window.toDelete = null;
-	};
+	}
 
 	hasTags() {
 		// this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
 		return this.domButtonTags.children.length > 0; 
-	};
+	}
 
 	setup2() {
 		if (this.fields.hasChildren) {

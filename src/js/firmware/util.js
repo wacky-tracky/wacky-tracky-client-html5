@@ -1,5 +1,7 @@
 window.host = "https://api.wacky-tracky.com/"
 
+import { clearValidationFailures, highlightValidationFailure, ajaxRequest } from "./middleware.js"
+
 HTMLElement.prototype.onEnter = function(callback) {
 	this.addEventListener("keydown", function(e) {
 		if (e.keyCode == 13) {
@@ -8,18 +10,18 @@ HTMLElement.prototype.onEnter = function(callback) {
 	});
 }
 
-function isNarrowScreen() {
+export function isNarrowScreen() {
 	return window.innerWidth < 1000;
 }
 
-function registerSuccess() {
+export function registerSuccess() {
 	notification('good', 'Thanks for registering, you can now login!');
 
 	window.loginForm.hideRegistration();
 	window.content.remove();
 }
 
-function tryRegister(username, password, email) {
+export function tryRegister(username, password, email) {
 	hashPassword(password).then(hashedPassword => {
 		ajaxRequest({
 			url: 'register',
@@ -34,7 +36,7 @@ function tryRegister(username, password, email) {
 	});
 }
 
-async function hashPassword(message) {
+export async function hashPassword(message) {
     // encode as UTF-8
     const msgBuffer = new TextEncoder('utf-8').encode(message);                    
 
@@ -74,19 +76,19 @@ function registerFail(req, dat) {
 }
 
 function generalErrorJson(msg, res) {
-	msg = "General JSON Error.";
+	msg = "General JSON Error. " + res;
 
 	generalError(msg);
 }
 
-function newTask(text) {
+export function newTask(text) {
 	if (text == "") {
 		return;
 	}
 
 	window.content.taskInput.clear();
 
-	data = { content: text };
+	let data = { content: text };
 
 	if (window.selectedItem === null) {
 		data.parentId = window.content.list.fields.id;
@@ -122,7 +124,7 @@ function generalError(error) {
 	notification('error', 'Error: ' + error);
 }
 
-function notification(cls, text, callback = null) {
+export function notification(cls, text, callback = null) {
 	if (text == null) {
 		text = cls;
 	}
@@ -134,17 +136,17 @@ function notification(cls, text, callback = null) {
 	if (callback == null) {
 		notification.addEventListener("click", notification.remove);
 	} else { 
-		notification.addEventListener("click", e => { callback(notification) });
+		notification.addEventListener("click", () => { callback(notification) });
 	}
 
 	document.body.appendChild(notification);
 }
 
-function hideAllErrors() {
+export function hideAllErrors() {
 	document.querySelectorAll('.notification').forEach(e => e.remove());
 }
 
-function selectByOffset(offset, currentItem) {
+export function selectByOffset(offset, currentItem) {
 	if (currentItem == null) {
 		if (window.selectedItem == null) {
 			return;
@@ -168,13 +170,12 @@ function selectByOffset(offset, currentItem) {
 			}
 		}
 	} else if (currentItem.constructor.name == "List") {
-		parentList = currentItem;
-
-		currentOffset = parentList.tasks.indexOf(currentItem);
+		let parentList = currentItem;
+		let currentOffset = parentList.tasks.indexOf(currentItem);
 
 		if (currentOffset != -1) {
-			targetOffset = currentOffset + offset;
-			targetTask = parentList.tasks[targetOffset];
+			let targetOffset = currentOffset + offset;
+			let targetTask = parentList.tasks[targetOffset];
 
 			if (targetTask != null) {
 				targetTask.select();
@@ -183,7 +184,7 @@ function selectByOffset(offset, currentItem) {
 	}
 }
 
-function logoutRequest() {
+export function logoutRequest() {
 	ajaxRequest({
 		url: "logout",
 		success: logoutSuccess
@@ -202,9 +203,9 @@ function changePasswordSuccess() {
 	notification('good', 'Your password has been changed!');
 }
 
-function promptChangePassword() {
-	password1 = window.prompt("New password");
-	password2 = window.prompt("Newpassword (again)");
+export function promptChangePassword() {
+	let password1 = window.prompt("New password");
+	let password2 = window.prompt("Newpassword (again)");
 
 	if (password1 == password2) {
 		changePassword(password1);
@@ -214,14 +215,14 @@ function promptChangePassword() {
 }
 
 function changePassword(password) {
-	hashedPassword = CryptoJS.SHA1(password).toString();
-
-	ajaxRequest({
-		url: 'changePassword',
-		data: {
-			'hashedPassword': hashedPassword
-		},
-		success: changePasswordSuccess
+	hashPassword(password).then(hashedPassword => {
+		ajaxRequest({
+			url: 'changePassword',
+			success: changePasswordSuccess,
+			data: {
+				hashedPassword: hashedPassword
+			}
+		});
 	});
 }
 
@@ -231,13 +232,26 @@ function closePopupMenus() {
 	}
 }
 
-function setBootMessage(message) {
+export function setBootMessage(message) {
 	var container = document.querySelector("#bootMessage");
 	
 	if (container != null) {
 		container.innerText = message + "...";
 	}
 }
+
+export function setupDefaultContextMenuAction() {
+	document.body.addEventListener('click', (e) => {
+		if (window.currentMenu != null) {
+			if (e.target.parent == window.currentMenu.owner) {
+				return false;
+			}
+			
+	//		window.currentMenu.hide();
+		}
+	});
+}
+
 
 document.addEventListener("click", () => {
 	closePopupMenus()

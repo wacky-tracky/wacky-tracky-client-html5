@@ -1,4 +1,6 @@
-KeyCodes = {}
+import { selectByOffset } from "./util.js"
+
+let KeyCodes = {}
 KeyCodes.ESC = 27;
 KeyCodes.DEL = 46;
 KeyCodes.F2 = 113;

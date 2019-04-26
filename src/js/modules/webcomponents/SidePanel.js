@@ -1,5 +1,8 @@
-import SidePanelToggleIcon from './SidePanelToggleButton.js';
-import SidePanelListButton from './SidePanelListButton.js';
+import './SidePanelToggleButton.js';
+import './SidePanelListButton.js';
+
+import { ajaxRequest } from "../../firmware/middleware.js"
+import { logoutRequest, promptChangePassword } from "../../firmware/util.js"
 
 export default class SidePanel extends HTMLElement {
 	setupElements() {
@@ -63,7 +66,7 @@ export default class SidePanel extends HTMLElement {
 			},
 			success: window.uimanager.fetchTags
 		});
-	};
+	}
 
 	createList() {
 		var title = window.prompt("List name?");
@@ -79,7 +82,7 @@ export default class SidePanel extends HTMLElement {
 			},
 			success: window.uimanager.fetchLists
 		});
-	};
+	}
 
 	addMenuItem(menuItem) {
 		let li = document.createElement("li")
@@ -109,11 +112,11 @@ export default class SidePanel extends HTMLElement {
 		let li = document.createElement("li")
 		li.append(tag);
 		this.domTags.append(li);
-	};
+	}
 
 	toDom() {
 		return this.dom;
-	};
+	}
 
 	clearLists() {
 		while (this.domLists.hasChildNodes()) {
@@ -127,10 +130,11 @@ export default class SidePanel extends HTMLElement {
 		while (tags.hasChildNodes()) {
 			tags.firstChild.remove();
 		}
-	};
+	}
 
+		/**
 	renderTags(tags) {
-		var ret = "";
+		let ret = "";
 
 		tags.forEach(tag => {
 			ret += '.tag' + tag.id + '.tagTitle { border-left: 4px solid ' + tag.backgroundColor + ' !important }' + "\n";
@@ -139,7 +143,9 @@ export default class SidePanel extends HTMLElement {
 		});
 
 		//$('body').append($('<style type = "text/css">' + ret + '</style>'));
-	};
+		
+	}
+	*/
 
 	addListMenuItem(list) {
 		let item = document.createElement("side-panel-list-button");
@@ -150,14 +156,14 @@ export default class SidePanel extends HTMLElement {
 		this.addMenuItem(item);
 
 		return item;
-	};
+	}
 
 	hide() {
 		this.dom.hide();
-	};
+	}
 
 	setupMenu() {
-		menuUser = new Menu('User Menu');
+		let menuUser = document.createElement("popup-menu");
 		menuUser.addItem('Toggle', this.toggle);
 		menuUser.addItem('Change password', promptChangePassword);
 		menuUser.addItem('Logout', logoutRequest);

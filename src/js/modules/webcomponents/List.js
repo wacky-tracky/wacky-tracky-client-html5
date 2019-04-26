@@ -1,4 +1,6 @@
-import Task from "./Task.js"
+import "./Task.js"
+
+import { ajaxRequest } from "../../firmware/middleware.js"
 
 export default class List extends HTMLElement {
 	setFields(fields) {
@@ -54,13 +56,13 @@ export default class List extends HTMLElement {
 				});
 			}
 		});
-	};
+	}
 
 	updateTaskCount() {
 		let newCount = this.domList.children.length;
 
 		this.sidePanelMenuItem.setSuffixText(newCount)
-	};
+	}
 
 	select() {
 		this.requestTasks(this);
@@ -68,7 +70,7 @@ export default class List extends HTMLElement {
 
 		window.sidepanel.deselectAll();
 		this.sidePanelMenuItem.select();
-	};
+	}
 
 	addAll(tasks) {
 		this.clear();
@@ -82,7 +84,7 @@ export default class List extends HTMLElement {
 		});
 		
 		this.updateTaskCount();
-	};
+	}
 
 	add(task) {
 		let li = document.createElement("li");
@@ -90,17 +92,17 @@ export default class List extends HTMLElement {
 		this.domList.append(li);
 
 		this.updateTaskCount();
-	};
+	}
 
 	deselect() {
 		this.sidePanelMenuItem.deselect()
-	};
+	}
 
 	clear() {
 		while (this.domList.hasChildNodes()) {
 			this.domList.firstChild.remove()
 		}
-	};
+	}
 
 	del() {	
 		ajaxRequest({
@@ -108,7 +110,7 @@ export default class List extends HTMLElement {
 			data: { id: this.fields.id },
 			success: window.uimanager.fetchLists
 		});
-	};
+	}
 
 	requestTasks() {
 		ajaxRequest({

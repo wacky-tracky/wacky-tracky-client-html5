@@ -1,4 +1,6 @@
-function ajaxRequest(params) {
+import generalError from "./util.js"
+
+export function ajaxRequest(params) {
 	if (typeof(params.error) != "function") {
 		params.error = generalError
 	}
@@ -51,12 +53,12 @@ function ajaxRequest(params) {
 	});
 }
 
-function clearValidationFailures() {
+export function clearValidationFailures() {
 	document.querySelectorAll('p.validationError').forEach(e => e.remove());
 	document.querySelectorAll('input.validationError').forEach(e => e.classList -= 'validationError');
 }
 
-function highlightValidationFailure(selector, message) {
+export function highlightValidationFailure(selector, message) {
 	let element = document.querySelector(selector)
 
 	element.classList += 'validationError'

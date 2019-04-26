@@ -1,3 +1,5 @@
+import { ajaxRequest, notification } from "../../firmware/util.js"
+
 export default class TagEditor extends HTMLElement {
 	setFields(tag) {
 		this.tag = tag;

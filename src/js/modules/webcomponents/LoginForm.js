@@ -1,3 +1,12 @@
+import { ajaxRequest } from "../../firmware/middleware.js"
+import { 
+	tryRegister, 
+	hashPassword, 
+	generalErrorJson, 
+	highlightValidationFailure, 
+	clearValidationFailures 
+} from "../../firmware/util.js"
+
 export default class LoginForm extends HTMLElement {
 	create() {
 		this.appendChild(document.querySelector('#loginForm').content.cloneNode(true))
@@ -11,7 +20,7 @@ export default class LoginForm extends HTMLElement {
 		this.elEmail = this.querySelector('#email');
 
 		this.elEmail.onEnter = () => {
-			tryRegister(usernameInput.val(), passwordInput.val(), emailInput.val());
+			tryRegister(this.elUsernameInput.value, this.elPassword.value, this.elEmail.value);
 		};
 
 		this.elLoginButton = this.querySelector('button#login');
@@ -20,7 +29,7 @@ export default class LoginForm extends HTMLElement {
 
 	isShown() {
 		return document.createElement('body').children('#loginForm').length > 0;
-	};
+	}
 
 	toggleRegistration() {
 		if (!this.isShown()) {
@@ -90,7 +99,7 @@ export default class LoginForm extends HTMLElement {
 		generalErrorJson("Login Failure. ", res);
 	}
 
-	loginSuccess(res) {
+	loginSuccess() {
 		window.uimanager.loginSuccess();
 	}
 

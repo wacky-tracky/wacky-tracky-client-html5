@@ -8,16 +8,10 @@
 	<meta name = "theme-color" content = "#2dae82">
 	<meta name = "description" content = "A timer to track cooking times for multiple dishes." />
 
-	<link rel="manifest" href = "manifest.json" />
+	<link rel="manifest" href = "wt.webmanifest" />
 	<link rel="canonical" href = "https://web.wacky-tracky.com" />
 	<link rel="stylesheet" href = "style.css" />
 	<link rel="shortcut icon" href = "resources/images/logos/wacky-tracky.png" type = "image/png" />
-
-
-	<script src = "js/firmware/util.js"></script>
-	<script src = "js/firmware/middleware.js"></script>
-	<script src = "js/firmware/sw_loader.js" defer></script>
-	<script src = "js/firmware/keyboardShortcuts.js" defer></script>
 </head>
 
 <body>
@@ -26,9 +20,6 @@
 		Waiting for scripts to initialize...
 	</div>
 
-	<script type = "module">
-	import main from "./index.js"; 
-	</script>
 
 	<template id = "loginForm">
 		<div id = "loginFormContainer">
@@ -150,6 +141,8 @@
 			</div>
 		</div>
 	</template>
+	
+	<script src = "index.js" defer></script>
 </body>
 
 </html>

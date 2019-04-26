@@ -1,9 +1,12 @@
-import LoginForm from './webcomponents/LoginForm.js';
-import Task from './webcomponents/Task.js';
-import SidePanel from './webcomponents/SidePanel.js';
-import SidePanelTagButton from './webcomponents/SidePanelTagButton.js';
-import List from "./webcomponents/List.js";
-import ContentPanel from "./webcomponents/ContentPanel.js";
+import './webcomponents/LoginForm.js';
+import './webcomponents/Task.js';
+import './webcomponents/SidePanel.js';
+import './webcomponents/SidePanelTagButton.js';
+import "./webcomponents/List.js";
+import "./webcomponents/ContentPanel.js";
+
+import { setBootMessage, setupDefaultContextMenuAction } from "../firmware/util.js"
+import { ajaxRequest } from "../firmware/middleware.js"
 
 export default class UiManager {
 	constructor() {
@@ -48,6 +51,8 @@ export default class UiManager {
 	init() {
 		setBootMessage("UiManager init");
 		window.selectedItem = null;
+
+		setupDefaultContextMenuAction();
 
 		ajaxRequest.bind(this, {
 			url: "init",

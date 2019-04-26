@@ -1,4 +1,4 @@
-import ListEditor from './ListEditor.js'
+import './ListEditor.js'
 
 export default class ListControls extends HTMLElement {
 	setupComponents() {

@@ -1,3 +1,5 @@
+import { ajaxRequest, notification } from "../../firmware/middleware.js"
+
 export default class ListEditor extends HTMLElement {
 	setList(listId) {
 		this.listId = listId;

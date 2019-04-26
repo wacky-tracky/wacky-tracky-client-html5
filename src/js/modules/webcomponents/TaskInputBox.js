@@ -1,3 +1,5 @@
+import { newTask } from "../../firmware/util.js"
+
 export default class TaskInputBox extends HTMLElement {
 	setupComponents() {
 		this.label = null;
@@ -55,7 +57,7 @@ export default class TaskInputBox extends HTMLElement {
 	enable() {
 		this.domInput.disabled = false;
 		this.domInput.focus();
-	};
+	}
 
 	disable() {
 		this.domInput.disabled = true;
@@ -69,7 +71,7 @@ export default class TaskInputBox extends HTMLElement {
 		}
 
 		this.domInput.value = this.label
-	};
+	}
 
 	clear() {
 		this.domInput.value = "";

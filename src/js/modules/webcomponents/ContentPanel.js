@@ -1,5 +1,5 @@
-import TaskInputBox from "./TaskInputBox.js"
-import ListControls from "./ListControls.js"
+import "./TaskInputBox.js"
+import "./ListControls.js"
 
 export default class ContentPanel extends HTMLElement {
 	setupComponents() {

@@ -1,9 +1,11 @@
+/**
 class Point {
 	constructor() {
 		this.x = 0;
 		this.y = 0;
 	}
 }
+*/
 
 export default class PopupMenu extends HTMLElement {
 	setFields(title) {
@@ -156,16 +158,6 @@ export default class PopupMenu extends HTMLElement {
 }
 
 window.customElements.define("popup-menu", PopupMenu)
-
-document.body.addEventListener('click', (e) => {
-	if (window.currentMenu != null) {
-		if (e.target.parent == window.currentMenu.owner) {
-			return false;
-		}
-		
-//		window.currentMenu.hide();
-	}
-});
 
 window.currentMenu = null;
 

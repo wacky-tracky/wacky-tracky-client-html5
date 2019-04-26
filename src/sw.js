@@ -1,3 +1,5 @@
+import { notification } from "./firmware/middleware.js"
+
 self.addEventListener("fetch", e => {
 	console.log("SW Fetch: " + e.request.url);
 
@@ -22,7 +24,7 @@ self.addEventListener("message", m => {
 	notification("foo");
 });
 
-self.addEventListener("activate", e => {
+self.addEventListener("activate", () => {
 	console.log("SW Activated");
 });
 
@@ -44,7 +46,7 @@ self.addEventListener("install", e => {
 			])
 		}
 		).then(state => {
-			console.log("Install completed");
+			console.log("Install completed", state);
 		})
 	);
 });
