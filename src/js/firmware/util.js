@@ -129,6 +129,22 @@ export function notification(cls, text, callback = null) {
 		text = cls;
 	}
 
+	if (Notification.permission == "granted") { 
+		createNativeNotification(cls, text, callback)
+	} else {
+		createHtmlNotification(cls, text, callback);
+	} 
+}
+
+function createNativeNotification(cls, text, callback) {
+	var options = {
+		icon: "/wacky-tracky.75aacf35.png"
+	};
+
+	new Notification(text, options)
+}
+
+function createHtmlNotification(cls, text, callback) {
 	let notification = document.createElement("div");
 	notification.classList += cls + " notification";
 	notification.textContent = text;

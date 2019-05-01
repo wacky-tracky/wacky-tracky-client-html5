@@ -20,7 +20,7 @@ export default class UiManager {
 	We have the minimum browser features, core javascript, etc.
 	*/
 	initSuccess(res) {
-		document.querySelector("#bootMessage").remove();
+		document.querySelector("#initMessages").remove();
 
 		if (res.wallpaper !== null) {
 			let img = "url(/wallpapers/" + res.wallpaper + ")";
@@ -29,7 +29,7 @@ export default class UiManager {
 
 		window.loginForm = document.createElement('login-form');
 		window.loginForm.create();
-
+	
 		if (res.username !== null) {
 			this.loginSuccess()
 		} else {
@@ -62,7 +62,9 @@ export default class UiManager {
 	}
 
 	loginSuccess() {
-		window.loginForm.hide();
+		if (window.loginForm != null) {
+			window.loginForm.hide();
+		}
 		
 		window.sidepanel = document.createElement('side-panel')
 		window.sidepanel.setupElements();

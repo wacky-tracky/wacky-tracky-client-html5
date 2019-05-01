@@ -1,5 +1,3 @@
-import { notification } from "./firmware/middleware.js"
-
 self.addEventListener("fetch", e => {
 	console.log("SW Fetch: " + e.request.url);
 
@@ -21,7 +19,6 @@ self.addEventListener("fetch", e => {
 
 self.addEventListener("message", m => {
 	console.log("message!" + m);
-	notification("foo");
 });
 
 self.addEventListener("activate", () => {
@@ -33,16 +30,13 @@ self.addEventListener("install", e => {
 		caches.open("wt-cache").then(cache => {
 			return cache.addAll([
 				'/',
+				'/src.js',
 				'/style.css',
-				'/manifest.json',
-				'/js/firmware/util.js',
-				'/js/firmware/keyboardShortcuts.js',
-				'/js/firmware/middleware.js',
-				'/js/firmware/sw_loader.js',
-				'/dist/index.js',
-				'/resources/images/logos/wacky-tracky.png',
-				'/resources/images/logos/wacky-tracky-192.png',
-				'/resources/images/logos/wacky-tracky-512.png',
+				'/sw.js',
+				'/wacky-tracky-192.0a09cec1.png',
+				'/wacky-tracky-512.36ca84c2.png',
+				'/wacky-tracky.75aacf35.png',
+				'/wt.webmanifest',
 			])
 		}
 		).then(state => {

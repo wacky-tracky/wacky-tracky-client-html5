@@ -17,7 +17,7 @@ if ("serviceWorker" in navigator) {
 							}
 							break;
 						case 'redundant':
-							console.error("The installing SW became redundant");
+							console.log("The installing SW became redundant");
 							break;
 					}
 				}

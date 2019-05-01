@@ -1,7 +1,7 @@
 import { ajaxRequest } from "../../firmware/middleware.js"
 import { 
 	tryRegister, 
-	hashPassword, 
+	hashPassword,
 	generalErrorJson, 
 	highlightValidationFailure, 
 	clearValidationFailures 
@@ -61,15 +61,12 @@ export default class LoginForm extends HTMLElement {
 		document.createElement('input#password').focus();
 		document.createElement('button#login').effect('highlight');
 	}
-
+	
 	tryLogin() {
-		console.log("tryLogin() this = ", this);
-		
-		hashPassword(this.elPassword.value).then(hashedPassword => {
-			let username = this.elUsername.value;
+		let username = this.elUsername.value;
+		let password = this.elPassword.value;
 
-			this.disable();
-
+		hashPassword(password).then(hashedPassword => {
 			ajaxRequest({
 				url: 'authenticate',
 				error: this.loginFail,
@@ -80,6 +77,7 @@ export default class LoginForm extends HTMLElement {
 				}
 			});
 		});
+
 	}
 
 	loginFail(res, dat) {
