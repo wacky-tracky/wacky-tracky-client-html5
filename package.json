@@ -25,6 +25,6 @@
     "yarn": "^1.15.2"
   },
   "browserslist": [
-  	"cover 90% and last 2 years"
+    "since 2017-06"
   ]
 }

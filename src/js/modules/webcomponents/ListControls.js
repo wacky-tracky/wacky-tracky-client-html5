@@ -26,9 +26,9 @@ export default class ListControls extends HTMLElement {
 	}
 
 	setList(list) {
-		this.listId = list.fields.id;
+		this.listId = list.id;
 
-		this.domLabel.innerText = list.fields.title;
+		this.domLabel.innerText = list.title;
 
 		this.domButtonDelete.onclick = () => { list.del() };
 	}

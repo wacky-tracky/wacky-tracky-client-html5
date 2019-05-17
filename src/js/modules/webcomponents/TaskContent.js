@@ -2,7 +2,7 @@ import './PopupMenu.js';
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 
-export default class Task extends HTMLElement {
+export default class TaskContent extends HTMLElement {
 	setFields(taskObject) {
 		this.fields = taskObject;
 	}
@@ -121,7 +121,7 @@ export default class Task extends HTMLElement {
 			url: 'listTasks',
 			data: { 
 				task: this.fields.id,
-				sort: window.content.list.fields.sort
+				sort: window.content.list.list.sort
 			},
 			success: this.renderSubtasks
 		});
@@ -377,4 +377,4 @@ export default class Task extends HTMLElement {
 	}
 }
 
-window.customElements.define("task-item", Task)
+window.customElements.define("task-item", TaskContent)

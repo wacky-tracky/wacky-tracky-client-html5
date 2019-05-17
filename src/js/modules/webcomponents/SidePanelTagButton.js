@@ -1,8 +1,8 @@
 import './TagEditor.js'
 
 export default class SidePanelTagButton extends HTMLElement {
-	setFields(jsonTag) {
-		this.fields = jsonTag
+	setTag(jsonTag) {
+		this.tag = jsonTag
 	}
 
 	setupComponents() {
@@ -19,13 +19,13 @@ export default class SidePanelTagButton extends HTMLElement {
 		link.appendChild(tagTitle);
 
 		let tagCaption = document.createElement("span")
-		tagCaption.innerText = this.fields.textualValue;
+		tagCaption.innerText = this.tag.getTextualValue()
 		tagCaption.classList.add("subtle");
 		link.appendChild(tagCaption);
 
 		let indicator = document.createElement("div")
 		indicator.classList.add("indicator")
-		indicator.style.backgroundColor = this.fields.backgroundColor
+		indicator.style.backgroundColor = this.tag.getBackgroundColor()
 		indicator.innerHTML = "&nbsp;&nbsp;&nbsp;"
 		link.appendChild(indicator)
 
@@ -34,7 +34,7 @@ export default class SidePanelTagButton extends HTMLElement {
 
 	openTagEditDialog() {
 		let tagEditor = document.createElement("tag-editor")
-		tagEditor.setFields(this.fields);
+		tagEditor.setFields(this.tag);
 
 		window.content.setTab(tagEditor);
 	}

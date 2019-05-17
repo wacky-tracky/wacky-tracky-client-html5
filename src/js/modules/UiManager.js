@@ -1,9 +1,12 @@
 import './webcomponents/LoginForm.js';
-import './webcomponents/Task.js';
+import './webcomponents/TaskContent.js';
 import './webcomponents/SidePanel.js';
 import './webcomponents/SidePanelTagButton.js';
-import "./webcomponents/List.js";
+import "./webcomponents/ListContent.js";
 import "./webcomponents/ContentPanel.js";
+
+import Tag from "./model/Tag.js";
+import List from "./model/List.js";
 
 import { setBootMessage, setupDefaultContextMenuAction } from "../firmware/util.js"
 import { ajaxRequest } from "../firmware/middleware.js"
@@ -11,8 +14,6 @@ import { ajaxRequest } from "../firmware/middleware.js"
 export default class UiManager {
 	constructor() {
 		this.init();
-
-		window.lists = {}
 	}
 
 	/**
@@ -63,6 +64,7 @@ export default class UiManager {
 
 	loginSuccess() {
 		if (window.loginForm != null) {
+
 			window.loginForm.hide();
 		}
 		
@@ -98,15 +100,18 @@ export default class UiManager {
 
 	fetchLists() {
 		window.sidepanel.clearLists();
+		window.lists = {}
 
 		ajaxRequest({
 			url: 'listLists',
 			success: (lists) => {
 				lists.forEach((jsonList) => {
-					let list = document.createElement("list-stuff")
-					list.setFields(jsonList)
+					let mdlList = new List(jsonList)
 
-					let menuItem = window.sidepanel.addListMenuItem(list);
+					let list = document.createElement("list-stuff")
+					list.setList(mdlList)
+
+					let menuItem = window.sidepanel.addListMenuItem(mdlList, list);
 					list.setupComponents(menuItem)
 
 					window.lists[jsonList.id] = list;
@@ -119,18 +124,16 @@ export default class UiManager {
 
 	fetchTags() {
 		window.sidepanel.clearTags();
+		window.tags = []
 
 		ajaxRequest({
 			url: 'listTags',
-			success: (tags) => {
-				window.tags = tags;
+			success: (jsonTags) => {
+				jsonTags.forEach(json => {
+					let mdlTag = new Tag(json);
+					window.tags.push(mdlTag)
 
-				tags.forEach((jsonTag) => {
-					let tag = document.createElement("side-panel-tag-button")
-					tag.setFields(jsonTag)
-					tag.setupComponents();
-
-					window.sidepanel.addTag(tag);
+					window.sidepanel.addTag(mdlTag);
 				});
 			}
 		});

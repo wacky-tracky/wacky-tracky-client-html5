@@ -1,17 +1,17 @@
-import "./Task.js"
+import "./TaskContent.js"
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 
-export default class List extends HTMLElement {
-	setFields(fields) {
-		this.fields = fields
+export default class ListContent extends HTMLElement {
+	setList(mdlList) {
+		this.list = mdlList
 	}
 
 	setupComponents(menuItem) {
 		this.sidePanelMenuItem = menuItem;
 /*
 		this.domDialog = $('<p><small>Note: your changes will be automatically saved when you close this dialog.</small></p>');
-		this.domInputTitle = this.domDialog.createAppend('<p>Title:</p>').createAppend('<input />').text(this.fields.title);
+		this.domInputTitle = this.domDialog.createAppend('<p>Title:</p>').createAppend('<input />').text(this.list.title);
 		this.domInputSort = this.domDialog.createAppend('<p>Sort:</p>').createAppend('<select />');
 		this.domInputSort.createAppend('<option value = "title">Title</option>');
 		this.domInputSort.createAppend('<option value = "dueDate">Due Date</option>');
@@ -21,26 +21,25 @@ export default class List extends HTMLElement {
 */
 		this.domList = document.createElement("ul");
 		this.domList.id = "taskList"
-		this.domList.classList.add("foo")
 		this.appendChild(this.domList);
 	}
 
 	getId() {
-		return this.fields.id;
+		return this.list.id;
 	}
 
 	getCountItems() {
-		return this.fields.countItems;
+		return this.list.countItems;
 	}
 
 	getTitle() {
-		return this.fields.title;
+		return this.list.title;
 	}
 
 	openDialog() {
-		this.domInputTitle.val(this.fields.title);
-		this.domInputSort.val(this.fields.sort);
-		this.domShowTimeline.val(this.fields.timeline);
+		this.domInputTitle.val(this.list.title);
+		this.domInputSort.val(this.list.sort);
+		this.domShowTimeline.val(this.list.timeline);
 
 		this.domDialog.dialog({
 			title: "List options",
@@ -48,7 +47,7 @@ export default class List extends HTMLElement {
 				ajaxRequest({
 					url: 'listUpdate',
 					data: {
-						list: this.fields.id,
+						list: this.list.id,
 						title: this.domInputTitle.val(),
 						sort: this.domInputSort.val(),
 						timeline: this.domShowTimeline.val(),
@@ -107,7 +106,7 @@ export default class List extends HTMLElement {
 	del() {	
 		ajaxRequest({
 			url: 'deleteList',
-			data: { id: this.fields.id },
+			data: { id: this.list.id },
 			success: window.uimanager.fetchLists
 		});
 	}
@@ -116,8 +115,8 @@ export default class List extends HTMLElement {
 		ajaxRequest({
 			url: 'listTasks',
 			data: { 
-				list: this.fields.id,
-				sort: this.fields.sort
+				list: this.list.id,
+				sort: this.list.sort
 			},
 			success: this.addAll.bind(this)
 		});
@@ -126,4 +125,4 @@ export default class List extends HTMLElement {
 
 }
 
-window.customElements.define("list-stuff", List)
+window.customElements.define("list-stuff", ListContent)

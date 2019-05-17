@@ -3,7 +3,6 @@ import { isNarrowScreen } from "../../firmware/util.js"
 export default class SidePanelListButton extends HTMLElement {
 	setFields(list) {
 		this.list = list;
-		this.listTitle = list.getTitle()
 	}
 
 	setupComponents() {
@@ -14,7 +13,7 @@ export default class SidePanelListButton extends HTMLElement {
 
 		this.domSidePanelTitleText = document.createElement("span");
 		this.domSidePanelTitleText.classList.add("listTitle")
-		this.domSidePanelTitleText.innerText = this.listTitle
+		this.domSidePanelTitleText.innerText = this.list.getTitle()
 		this.domSidePanelTitle.appendChild(this.domSidePanelTitleText)
 
 		this.domSidePanelTitleSuffix = document.createElement("span");
@@ -27,7 +26,7 @@ export default class SidePanelListButton extends HTMLElement {
 		this.domSidePanelTitleSuffix.innerText = text;
 	}
 
-	setListCallback(list) {
+	setListCallback(mdlList, list) {
 		this.setCallback(() => {
 			if (window.selectedItem != null) {
 				window.selectedItem.deselect();
@@ -37,7 +36,7 @@ export default class SidePanelListButton extends HTMLElement {
 				window.sidepanel.toggle();
 			}
 
-			document.title = list.fields.title;
+			document.title = mdlList.getTitle();
 
 			window.sidepanel.selectedItem = list;
 			list.select();
@@ -45,7 +44,7 @@ export default class SidePanelListButton extends HTMLElement {
 			// We have to set the hash on a menu item click, not on 
 			// content.setList or similar, otherwise the hash gets reset on 
 			// page load, and other events that cause the list to change.
-			window.location.hash = list.getTitle();
+			window.location.hash = mdlList.getTitle();
 		});
 	}
 

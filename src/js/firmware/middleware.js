@@ -43,8 +43,6 @@ export function ajaxRequest(params) {
 		}
 	})
 	.catch(err => {
-		callbackError(err);	
-
 		if (err instanceof Error) {
 			throw err;
 		} else {

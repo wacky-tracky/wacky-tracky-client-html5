@@ -97,21 +97,25 @@ export default class SidePanel extends HTMLElement {
 		}
 	}
 
-	addTag(tag) {
-		if (window.lastTag != tag.fields.id) {
-			window.lastTag = tag.fields.id
+	addTag(mdlTag) {
+		let elTag = document.createElement("side-panel-tag-button")
+		elTag.setTag(mdlTag)
+		elTag.setupComponents();
+
+		if (window.lastTag != mdlTag.getTitle()) {
+			window.lastTag = mdlTag.getTitle()
 			let tagName = document.createElement("div")
-			tagName.innerHTML = "&#128193" + tag.fields.title;
+			tagName.innerHTML = "&#128193" + mdlTag.getTitle();
 			this.domTagContainer.append(tagName);
 
-			this.domTags = document.createElement("ul");
-			this.domTags.classList.add("tagList")
-			this.domTagContainer.append(this.domTags);
+			this.lastDomTags = document.createElement("ul");
+			this.lastDomTags.classList.add("tagList")
+			this.domTagContainer.append(this.lastDomTags);
 		}
 
 		let li = document.createElement("li")
-		li.append(tag);
-		this.domTags.append(li);
+		li.append(elTag);
+		this.lastDomTags.append(li);
 	}
 
 	toDom() {
@@ -147,11 +151,11 @@ export default class SidePanel extends HTMLElement {
 	}
 	*/
 
-	addListMenuItem(list) {
+	addListMenuItem(mdlList, list) {
 		let item = document.createElement("side-panel-list-button");
 		item.setFields(list);
 		item.setupComponents();
-		item.setListCallback(list);
+		item.setListCallback(mdlList, list);
 
 		this.addMenuItem(item);
 

@@ -91,7 +91,7 @@ export function newTask(text) {
 	let data = { content: text };
 
 	if (window.selectedItem === null) {
-		data.parentId = window.content.list.fields.id;
+		data.parentId = window.content.list.list.getId();
 		data.parentType = 'list';
 	} else {
 		data.parentId = window.selectedItem.fields.id;
