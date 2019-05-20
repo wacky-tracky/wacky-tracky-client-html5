@@ -1,9 +1,9 @@
 :root {
-	--selected-bg-color: beige;
+	--selected-bg-color: #c3E6FC;
 	--focus-bg-color: #c0ffbb;
-	--focus-outline: 1px solid red;
-	--focus-border: 1px solid red;
-	--hover-bg-color: #C3E6FC;
+	--focus-outline: 1px solid black;
+	--focus-border: 1px solid black;
+	--hover-bg-color: #defcdb;
 	--hover-border: 1px solid black;
 }
 
@@ -23,6 +23,10 @@ content-panel {
 	min-height: 100vh;
 	overflow: auto;
 	background-color: rgba(239, 239, 239, 0.7);
+}
+
+task-item, side-panel-list-button {
+	display: block;
 }
 
 body, input, button {
