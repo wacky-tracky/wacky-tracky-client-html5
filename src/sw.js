@@ -30,8 +30,8 @@ self.addEventListener("install", e => {
 		caches.open("wt-cache").then(cache => {
 			return cache.addAll([
 				'/',
-				'/src.js',
-				'/style.css',
+				'/src.e31bb0bc.js',
+				'/style.e308ff8e.css',
 				'/sw.js',
 				'/wacky-tracky-192.0a09cec1.png',
 				'/wacky-tracky-512.36ca84c2.png',
