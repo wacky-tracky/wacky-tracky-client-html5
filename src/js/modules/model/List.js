@@ -7,6 +7,10 @@ export default class List {
 		this.timeline = json.timeline;
 	}
 
+	getId() {
+		return this.id;
+	}
+
 	getTitle() {
 		return this.title;
 	}

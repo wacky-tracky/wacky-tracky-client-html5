@@ -26,7 +26,7 @@ export default class ListControls extends HTMLElement {
 	}
 
 	setList(list) {
-		this.listId = list.id;
+		this.listId = list.list.id;
 
 		this.domLabel.innerText = list.title;
 

@@ -1,7 +1,7 @@
 self.addEventListener("fetch", e => {
 	console.log("SW Fetch: " + e.request.url);
 
-	if (e.request.method != "GET") {
+	if (e.request.method != "GET" || e.request.url.includes("#")) {
 		console.log("SW ignoring !GET request");
 	}
 

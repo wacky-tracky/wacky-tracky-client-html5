@@ -1,5 +1,6 @@
 import './SidePanelToggleButton.js';
 import './SidePanelListButton.js';
+import './GlobalSettingsEditor.js';
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 import { logoutRequest, promptChangePassword } from "../../firmware/util.js"
@@ -8,6 +9,9 @@ export default class SidePanel extends HTMLElement {
 	setupElements() {
 		this.dom = document.createElement('aside');
 		this.appendChild(this.dom);
+
+		this.currentSublistTitle = null;
+		this.currentSublistDom = null;
 			
 		this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
 
@@ -16,6 +20,12 @@ export default class SidePanel extends HTMLElement {
 		this.mnu = document.createElement("popup-menu")
 		this.mnu.addTo(this.domMenuButton)
 		this.mnu.addItem("Toggle sidebar", () => { this.toggle() }, "t");
+		this.mnu.addItem("Settings", () => { 
+			var settings = document.createElement("global-settings-editor");
+			settings.setupComponents();
+
+			window.content.setTab(settings);	
+		});
 		this.mnu.addItem("Logout", logoutRequest);
 
 		this.domLists = this.querySelector("#listList")
@@ -88,12 +98,66 @@ export default class SidePanel extends HTMLElement {
 		let li = document.createElement("li")
 		li.appendChild(menuItem);
 
-		this.domLists.append(li);
+		var owner = this.domLists;
+
+		if (menuItem.list.getTitle().includes(">")) {
+			var titleComponents = menuItem.list.getTitle().split(">")
+			titleComponents.length--;
+			titleComponents = titleComponents.join(">")
+
+			var menuListTitleEl = menuItem.querySelector(".listTitle")
+			menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + ">", "");
+
+			if (this.currentSublistTitle != titleComponents){
+				this.currentSublistTitle = titleComponents;
+
+				var sublist = document.createElement("div");
+				sublist.classList.add("sublist")
+				this.domLists.appendChild(sublist);
+	
+				var sublistItems = document.createElement("div");
+				sublistItems.classList.add("subListItems");
+				sublistItems.hidden = true;
+				
+				this.currentSublistDom = sublistItems;
+
+				var title = document.createElement("p");
+				var indicator = document.createElement("span");
+				indicator.innerHTML = "~";
+				title.classList.add("subListTitle");
+				title.onclick = () => { 
+					if (sublistItems.hidden) {
+						sublistItems.hidden = false;
+						indicator.innerHTML = "&darr;"
+					} else {
+						sublistItems.hidden = !sublistItems.hidden; 
+						indicator.innerHTML = "~"
+
+					}
+				}
+				title.innerText = titleComponents;
+				title.appendChild(indicator);
+
+				sublist.appendChild(title);
+				sublist.appendChild(sublistItems);
+
+				owner = sublistItems;
+			} else {
+				owner = this.currentSublistDom;
+			}
+		} else {
+			this.currentSublistTitle = null;
+			this.currentSublistDom = null;
+			
+			owner = this.domLists;
+		}
+
+		owner.append(li);
 	}
 
 	deselectAll() {
-		for (let menuItem of this.domLists.children) {
-			menuItem.firstElementChild.deselect();	
+		for (let menuItem of this.domLists.querySelectorAll("side-panel-list-button")) {
+			menuItem.deselect();	
 		}
 	}
 
