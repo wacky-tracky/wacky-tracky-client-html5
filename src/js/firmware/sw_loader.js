@@ -29,14 +29,10 @@ if ("serviceWorker" in navigator) {
 	);
 }
 
+window.installPrompt = null;
+
 window.addEventListener("beforeinstallprompt", e => {
 	e.preventDefault()
-	window.deferredPrompt = e;
-
-	notification("good", "Would you like to install the app?", (html) => {
-		console.log("OK! Prompting!")
-		html.remove();
-		window.deferredPrompt.prompt();
-	})
+	window.installPrompt = e;
 })
 
