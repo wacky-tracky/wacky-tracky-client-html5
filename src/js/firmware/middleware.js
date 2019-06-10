@@ -1,4 +1,4 @@
-import generalError from "./util.js"
+import { generalError } from "./util.js"
 
 export function ajaxRequest(params) {
 	if (typeof(params.error) != "function") {
@@ -13,7 +13,7 @@ export function ajaxRequest(params) {
 	// promise mangles the "this" context on the callbacks. 
 	let callbackSuccess = (data) => { params.success(data) };
 
-	let callbackError = (data) => { params.error(data) }
+	let callbackError = (data) => { console.log(typeof(params.error), params.error); params.error(data); }
 
 	let isSuccessful = true;
 
@@ -24,7 +24,7 @@ export function ajaxRequest(params) {
 		Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))
 	}
 
-	fetch(url, {
+	var f1 = fetch(url, {
 		method: 'GET',
 		credentials: 'include',
 	})
@@ -41,21 +41,19 @@ export function ajaxRequest(params) {
 		} else {
 			callbackError(json);	
 		}
-	})
-	.catch(err => {
-		if (err instanceof Error) {
-			throw err;
-		} else {
-			throw new Error(err);
-		}
+	}).catch(err => {
+		callbackError(err)
 	});
+
 }
 
+// FIXME move to UiManager
 export function clearValidationFailures() {
 	document.querySelectorAll('p.validationError').forEach(e => e.remove());
 	document.querySelectorAll('input.validationError').forEach(e => e.classList -= 'validationError');
 }
 
+// FIXME move to UiManager
 export function highlightValidationFailure(selector, message) {
 	let element = document.querySelector(selector)
 
@@ -69,5 +67,3 @@ export function highlightValidationFailure(selector, message) {
 	element.parentElement.appendChild(errorMessage);
 
 }
-
-

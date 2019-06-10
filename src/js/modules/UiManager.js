@@ -1,87 +1,18 @@
-import './webcomponents/LoginForm.js';
-import './webcomponents/TaskContent.js';
-import './webcomponents/SidePanel.js';
-import './webcomponents/SidePanelTagButton.js';
-import "./webcomponents/ListContent.js";
-import "./webcomponents/ContentPanel.js";
-
 import Tag from "./model/Tag.js";
-import List from "./model/List.js";
 
-import { setBootMessage, setupDefaultContextMenuAction } from "../firmware/util.js"
+import { setupDefaultContextMenuAction } from "../firmware/util.js"
 import { ajaxRequest } from "../firmware/middleware.js"
 
 export default class UiManager {
 	constructor() {
-		this.init();
-	}
-
-	/**
-	At this stage, the critical "boot" path is complete. 
-	We have the minimum browser features, core javascript, etc.
-	*/
-	initSuccess(res) {
-		document.querySelector("#initMessages").remove();
-
-		if (res.wallpaper !== null) {
-			let img = "url(/wallpapers/" + res.wallpaper + ")";
-			document.body.style.backgroundImage = img;
-		}
-
-		window.loginForm = document.createElement('login-form');
-		window.loginForm.create();
-	
-		if (res.username !== null) {
-			this.loginSuccess()
-		} else {
-			window.loginForm.show();
-		}
-	}
-
-	initFailure(a, b, c) {
-		console.log(a, b, c);
-
-		if (a != null && a.toString().includes("Failed to fetch")) {
-			setBootMessage("Failed to fetch during init, are you offline?");
-		} else {
-			setBootMessage("Unknown init failure.");
-		}
-
-	}
-
-	init() {
-		setBootMessage("UiManager init");
 		window.selectedItem = null;
 
 		setupDefaultContextMenuAction();
-
-		ajaxRequest.bind(this, {
-			url: "init",
-			success: this.initSuccess.bind(this),
-			error: this.initFailure.bind(this)
-		}).call()
-	}
-
-	loginSuccess() {
-		if (window.loginForm != null) {
-
-			window.loginForm.hide();
-		}
-		
-		window.sidepanel = document.createElement('side-panel')
-		window.sidepanel.setupElements();
-		document.body.appendChild(window.sidepanel);
-
-		window.content = document.createElement("content-panel")
-		window.content.setupComponents()
-		document.body.appendChild(window.content);
-
-		// Fetch tags, then lists, because List->Tasks need Tags to be available.
-		this.fetchTags();
-		this.fetchLists();
 	}
 
 	loadListFromHash() {
+		return;
+
 		if (window.location.hash.length > 0) {
 			for (let list of window.lists) {
 				let hashListTitle = window.location.hash.replace("#", "")
@@ -98,6 +29,69 @@ export default class UiManager {
 		}
 	}
 
+	renderTaskCreated(json) {
+		let task = document.createElement("task-item");
+		task.setFields(json);
+		task.setupComponents();
+
+		if (window.selectedItem === null) {
+			window.content.list.add(task);
+		} else {
+			window.selectedItem.addSubtask(task);
+
+			if (!window.selectedItem.isSubtasksVisible()) {
+				window.selectedItem.toggleSubtasks();
+			}
+		}
+	}
+
+	onBootloaderSuccess(res) {
+		document.querySelector("#initMessages").remove();
+
+		if (res.wallpaper !== null) {
+			let img = "url(/wallpapers/" + res.wallpaper + ")";
+			document.body.style.backgroundImage = img;
+		}
+
+		window.loginForm = document.createElement('login-form');
+		window.loginForm.create();
+	
+		if (res.username !== null) {
+			this.loginSuccess()
+		} else {
+			window.loginForm.show();
+		}
+	}
+	
+	onBootloaderOffline() {
+		document.querySelector("#initMessages").remove();
+
+		this.setupMainView();
+	}
+
+	loginSuccess() {
+		if (window.loginForm != null) {
+
+			window.loginForm.hide();
+		}
+
+		this.setupMainView();
+	}
+
+	setupMainView() {	
+		window.sidepanel = document.createElement('side-panel')
+		window.sidepanel.setupElements();
+		document.body.appendChild(window.sidepanel);
+
+		window.content = document.createElement("content-panel")
+		window.content.setupComponents()
+		document.body.appendChild(window.content);
+
+		// Fetch tags, then lists, because List->Tasks need Tags to be available.
+		this.fetchTags();
+		this.fetchLists();
+	}
+
 	fetchLists() {
 		window.sidepanel.clearLists();
 		window.lists = {}
@@ -106,20 +100,26 @@ export default class UiManager {
 			url: 'listLists',
 			success: (lists) => {
 				lists.forEach((jsonList) => {
-					let mdlList = new List(jsonList)
-
-					let list = document.createElement("list-stuff")
-					list.setList(mdlList)
-
-					let menuItem = window.sidepanel.addListMenuItem(mdlList, list);
-					list.setupComponents(menuItem)
-
-					window.lists[jsonList.id] = list;
+					window.dbal.addListFromServer(jsonList)
 				});
 
 				window.uimanager.loadListFromHash() // FIXME using window instead of this
 			}
 		});
+
+		window.dbal.getLists(this.renderLists)
+	}
+
+	renderLists(lists) {
+		lists.forEach((mdlList) => {
+			let list = document.createElement("list-stuff")
+			list.setList(mdlList)
+
+			let menuItem = window.sidepanel.addListMenuItem(mdlList, list);
+			list.setupComponents(menuItem)
+
+			window.lists[mdlList.getId()] = list; // FIXME deprecated
+		});	
 	}
 
 	fetchTags() {
@@ -139,19 +139,4 @@ export default class UiManager {
 		});
 	}
 
-	renderTaskCreated(json) {
-		let task = document.createElement("task-item");
-		task.setFields(json);
-		task.setupComponents();
-
-		if (window.selectedItem === null) {
-			window.content.list.add(task);
-		} else {
-			window.selectedItem.addSubtask(task);
-
-			if (!window.selectedItem.isSubtasksVisible()) {
-				window.selectedItem.toggleSubtasks();
-			}
-		}
-	}
 }

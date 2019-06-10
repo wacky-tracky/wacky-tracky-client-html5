@@ -105,7 +105,7 @@ export function newTask(text) {
 	});
 }
 
-function generalError(error) {
+export function generalError(error) {
 	console.log("generalError() = ", error);
 	console.log("generalError() stack: ", new Error().stack);
 
@@ -144,7 +144,7 @@ function createNativeNotification(cls, text, callback) {
 	new Notification(text, options)
 }
 
-function createHtmlNotification(cls, text, callback) {
+export function createHtmlNotification(cls, text, callback) {
 	let notification = document.createElement("div");
 	notification.classList += cls + " notification";
 	notification.textContent = text;
@@ -207,6 +207,7 @@ export function logoutRequest() {
 	});
 }
 
+// FIXME move to UiManager
 function logoutSuccess(reason) {
 	if (reason == "expired") {
 		window.alert("Your login session has expired. Please login again...")
@@ -242,12 +243,14 @@ function changePassword(password) {
 	});
 }
 
+// FIXME move to UiManager
 function closePopupMenus() {
 	if (window.currentMenu != null) {
 		window.currentMenu.hide();
 	}
 }
 
+// FIXME move to UiManager
 export function setBootMessage(message) {
 	var container = document.querySelector("#bootMessage");
 	

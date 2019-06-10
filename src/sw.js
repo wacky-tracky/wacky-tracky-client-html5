@@ -1,12 +1,20 @@
-self.addEventListener("fetch", e => {
+
+function swFetch(e) {
 	console.log("SW Fetch: " + e.request.url);
 
-	if (e.request.method != "GET" || e.request.url.includes("#")) {
+	if (e.request.method != "GET" || e.request.url.includes("api.") || e.request.url.includes("#")) {
 		console.log("SW ignoring !GET request");
+		return;
+	}
+
+	var cacheOptions = {
+		ignoreSearch: true,
+		ignoreMethod: true,
+		ignoreVary: true
 	}
 
 	e.respondWith(
-		caches.match(e.request).then(cached => {
+		caches.match(e.request, cacheOptions).then(cached => {
 			if (cached) {
 				console.log("Serving from cache: " + e.request.url);
 				return cached;
@@ -15,13 +23,16 @@ self.addEventListener("fetch", e => {
 			}
 		})
 	);
-});
+}
+
+self.addEventListener("fetch", swFetch);
 
 self.addEventListener("message", m => {
 	console.log("message!" + m);
 });
 
 self.addEventListener("activate", () => {
+	self.clients.claim();
 	console.log("SW Activated");
 });
 

@@ -278,6 +278,7 @@ div.notification {
 	position: absolute;
 	float: right;
 	z-index: 99;
+	bottom: 1em;
 }
 
 ul#taskList {
@@ -727,8 +728,14 @@ div.subListItems {
 
 .subListTitle {
 	margin-left: .1em;
-	padding-left: .3em;
+	margin-top: .5em;
+	margin-bottom: .5em;
+	padding: .3em;
 	font-weight: bold;
 	background-color: #efefef;
 	cursor: pointer;
+}
+
+.subListTitle:hover {
+	background-color: var(--hover-bg-color);
 }

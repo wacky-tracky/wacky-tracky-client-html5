@@ -123,20 +123,23 @@ export default class SidePanel extends HTMLElement {
 
 				var title = document.createElement("p");
 				var indicator = document.createElement("span");
-				indicator.innerHTML = "~";
+				indicator.innerHTML = "&#128193;";
 				title.classList.add("subListTitle");
 				title.onclick = () => { 
 					if (sublistItems.hidden) {
 						sublistItems.hidden = false;
-						indicator.innerHTML = "&darr;"
+						indicator.innerHTML = "&#128194;"
 					} else {
 						sublistItems.hidden = !sublistItems.hidden; 
-						indicator.innerHTML = "~"
+						indicator.innerHTML = "&#128193;"
 
 					}
 				}
-				title.innerText = titleComponents;
+				
 				title.appendChild(indicator);
+				var text = document.createElement("span");
+				text.innerText = titleComponents;
+				title.appendChild(text);
 
 				sublist.appendChild(title);
 				sublist.appendChild(sublistItems);
