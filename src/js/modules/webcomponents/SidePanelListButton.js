@@ -6,20 +6,16 @@ export default class SidePanelListButton extends HTMLElement {
 	}
 
 	setupComponents() {
-		this.domSidePanelTitle = document.createElement("a")
-		this.domSidePanelTitle.setAttribute("href", "#");
-		this.domSidePanelTitle.classList.add("listMenuLink");
-		this.appendChild(this.domSidePanelTitle);
+		this.dom = document.querySelector('template#sidePanelListButton').content.cloneNode(true);
+		this.appendChild(this.dom);
 
-		this.domSidePanelTitleText = document.createElement("span");
-		this.domSidePanelTitleText.classList.add("listTitle")
+		this.domLink = this.querySelector("a")
+
+		this.domSidePanelTitleText = this.querySelector("span.listTitle");
 		this.domSidePanelTitleText.innerText = this.list.getTitle()
-		this.domSidePanelTitle.appendChild(this.domSidePanelTitleText)
 
-		this.domSidePanelTitleSuffix = document.createElement("span");
-		this.domSidePanelTitleSuffix.classList.add("subtle")
+		this.domSidePanelTitleSuffix = this.querySelector("span.subtle");
 		this.domSidePanelTitleSuffix.innerText = this.list.getCountItems()
-		this.domSidePanelTitle.appendChild(this.domSidePanelTitleSuffix);
 	}
 
 	setSuffixText(text) {
@@ -51,7 +47,7 @@ export default class SidePanelListButton extends HTMLElement {
 	setCallback(callback) {
 		this.callback = callback;
 
-		this.domSidePanelTitle.addEventListener("click", this.callback);
+		this.domLink.addEventListener("click", this.callback);
 	}
 
 	select() {

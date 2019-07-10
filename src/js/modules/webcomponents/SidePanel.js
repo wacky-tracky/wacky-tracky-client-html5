@@ -132,7 +132,6 @@ export default class SidePanel extends HTMLElement {
 					} else {
 						sublistItems.hidden = !sublistItems.hidden; 
 						indicator.innerHTML = "&#128193;"
-
 					}
 				}
 				
