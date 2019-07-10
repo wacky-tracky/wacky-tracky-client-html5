@@ -1,13 +1,19 @@
 import List from "./model/List.js";
+import Tag from "./model/Tag.js";
+import { generalError } from "../firmware/util.js";
 
 export default class DBAL {
 	constructor() {
-		this.version = 1;
+		this.version = 1;	
+	}
 
+	open(onReadyCallback) {
 		var req = window.indexedDB.open("db", this.version);
 		
 		req.onsuccess = () => {
 			this.db = req.result;
+			console.log("suc");
+			onReadyCallback();
 		}
 
 		req.onerror = (e) => {
@@ -41,9 +47,22 @@ export default class DBAL {
 	addListFromServer(jsonList) {
 		let mdlList = new List(jsonList)
 
-		var [, lists] = this.dbTx("lists");
+		var [, req] = this.dbTx("lists");
 
-		lists.add(mdlList);
+		req.put(mdlList);
+		req.onabort = generalError
+		req.onerror = generalError
+		req.oncomplete = (e) => {
+			console.log("complete", e);
+		}
+	}
+
+	getList(listId, callback) {
+		req = lists.get(listId);
+
+		req.onsuccess = () => {
+			callback(req.result);
+		}
 	}
 
 	getLists(onGetCallback) {
@@ -55,20 +74,49 @@ export default class DBAL {
 			// * recreating 2 new lists for sorting purposes
 			// * rehydrating all values?
 
-			var ret = {};
+			var ret = [];
+			ret = req.result.map(x => new List(x))
+			ret = ret.sort((a, b) => { return a.title.localeCompare(b.title)});
 
-			req.result.forEach((jsonList) => {
-				ret[jsonList.title] = (new List(jsonList));
+			onGetCallback(ret) 
+		}	
+	}
+
+	getTags(onGetCallback) {
+		var [, tags] = this.dbTx("tags")
+
+		var req = tags.getAll();
+		req.onsuccess = () => {
+			var ret = [];
+
+			req.result.forEach((jsonTag) => {
+				ret.push(new Tag(jsonTag));
 			});
 
+/**
 			var orderedRet = [];
 			Object.keys(ret).sort().forEach(k => {
 				orderedRet[k] = ret[k];
 			});
 
-			ret = orderedRet;
+			ret = orderedRet
+*/
 
-			onGetCallback(Object.values(ret)) 
-		}	
+			onGetCallback(ret)
+		}
 	}
+
+	addTagFromServer(jsonTag) {
+		let mdlTag = new Tag(jsonTag)
+
+		var [, req] = this.dbTx("tags");
+
+		req.put(mdlTag);
+		req.onabort = generalError
+		req.onerror = generalError
+		req.oncomplete = (e) => {
+			console.log("complete", e);
+		}
+	}
+
 }

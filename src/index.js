@@ -14,11 +14,8 @@ import "./js/modules/webcomponents/ListContent.js";
 import "./js/modules/webcomponents/ContentPanel.js";
 
 import UiManager from "./js/modules/UiManager.js";
-
 window.uimanager = new UiManager();
 
-
 import Bootloader from "./js/modules/Bootloader.js";
-
 window.bootloader = new Bootloader();
 window.bootloader.init();

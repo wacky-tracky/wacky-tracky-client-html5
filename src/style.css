@@ -196,6 +196,10 @@ aside ul.lists li, aside ul.tagList  {
 	border-bottom: 1px dashed #ccc;
 }
 
+aside ul.lists li:last-child {
+	border: 0;
+}
+
 .listMenuLink, .tagMenuLink {
 	display: flex;
 	font-family: "Overpass", sans-serif;
@@ -740,4 +744,8 @@ div.subListItems {
 
 .subListTitle:hover {
 	background-color: var(--hover-bg-color);
+}
+
+template {
+	visibility: hidden;
 }

@@ -171,7 +171,7 @@ export default class SidePanel extends HTMLElement {
 		if (window.lastTag != mdlTag.getTitle()) {
 			window.lastTag = mdlTag.getTitle()
 			let tagName = document.createElement("div")
-			tagName.innerHTML = "&#128193" + mdlTag.getTitle();
+			tagName.innerHTML = "&nbsp;&#127991;&nbsp;" + mdlTag.getTitle();
 			this.domTagContainer.append(tagName);
 
 			this.lastDomTags = document.createElement("ul");

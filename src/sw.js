@@ -36,6 +36,8 @@ self.addEventListener("activate", () => {
 	console.log("SW Activated");
 });
 
+
+
 self.addEventListener("install", e => {
 	e.waitUntil(
 		caches.open("wt-cache").then(cache => {

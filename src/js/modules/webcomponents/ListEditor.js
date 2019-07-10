@@ -3,7 +3,7 @@ import { notification } from "../../firmware/util.js"
 
 export default class ListEditor extends HTMLElement {
 	setList(listId) {
-		this.listId = listId;
+		this.listId = listId; // FIXME
 
 		this.setupComponents();
 	}
@@ -11,13 +11,13 @@ export default class ListEditor extends HTMLElement {
 	setupComponents() {
 		this.appendChild(document.querySelector('template#listEditor').content.cloneNode(true))
 
-		let list = window.lists[this.listId];
+		let list = window.content.list.list; // FIXME
 
 		this.domTitle = this.querySelector("#listEditorTitle")
-		this.domTitle.value = list.list.title
+		this.domTitle.value = list.getTitle()
 
 		this.domSort = this.querySelector("#listEditorSort")
-		this.domSort.value = list.list.sort
+		this.domSort.value = list.getSort();
 		
 		this.domSave = this.querySelector("#listEditorSave")
 		this.domSave.onclick = () => { this.save(); }
@@ -37,7 +37,7 @@ export default class ListEditor extends HTMLElement {
 			},
 			success: () => {
 				notification("good", "List saved");
-				window.uimanager.fetchLists();
+				window.uimanager.refreshLists();
 			}
 		});
 

@@ -14,8 +14,13 @@ export default class Bootloader {
 	init() {
 		setBootMessage("Bootloader init");
 
+		setBootMessage("Waiting for database");
 		window.dbal = new DBAL();
+		window.dbal.open(() => { this.initAfterDatabase() });
+	} 
 
+	initAfterDatabase() {
+		setBootMessage("Database is OK");
 		try {
 		ajaxRequest.bind(this, {
 			url: "init",
@@ -42,6 +47,7 @@ export default class Bootloader {
 //`			setBootMessage("Failed to fetch during init, are you offline?");
 			window.uimanager.onBootloaderOffline();
 		} else {
+			console.log(a, b, c);
 			setBootMessage("Unknown init failure.");
 		}
 

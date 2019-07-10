@@ -14,7 +14,7 @@ export default class UiManager {
 		return;
 
 		if (window.location.hash.length > 0) {
-			for (let list of window.lists) {
+			for (let list of window.listElements) {
 				let hashListTitle = window.location.hash.replace("#", "")
 
 				if (window.content.list.getTitle() == hashListTitle) {
@@ -71,7 +71,6 @@ export default class UiManager {
 
 	loginSuccess() {
 		if (window.loginForm != null) {
-
 			window.loginForm.hide();
 		}
 
@@ -88,22 +87,17 @@ export default class UiManager {
 		document.body.appendChild(window.content);
 
 		// Fetch tags, then lists, because List->Tasks need Tags to be available.
-		this.fetchTags();
-		this.fetchLists();
+		this.refreshTags();
+		this.refreshLists();
 	}
 
-	fetchLists() {
-		window.sidepanel.clearLists();
-		window.lists = {}
-
+	refreshLists() {
 		ajaxRequest({
 			url: 'listLists',
 			success: (lists) => {
 				lists.forEach((jsonList) => {
 					window.dbal.addListFromServer(jsonList)
 				});
-
-				window.uimanager.loadListFromHash() // FIXME using window instead of this
 			}
 		});
 
@@ -111,6 +105,9 @@ export default class UiManager {
 	}
 
 	renderLists(lists) {
+		window.sidepanel.clearLists();
+		window.listElements = {}
+
 		lists.forEach((mdlList) => {
 			let list = document.createElement("list-stuff")
 			list.setList(mdlList)
@@ -118,25 +115,32 @@ export default class UiManager {
 			let menuItem = window.sidepanel.addListMenuItem(mdlList, list);
 			list.setupComponents(menuItem)
 
-			window.lists[mdlList.getId()] = list; // FIXME deprecated
+			window.listElements[mdlList.getId()] = list; // FIXME deprecated
 		});	
 	}
 
-	fetchTags() {
+	refreshTags() {
 		window.sidepanel.clearTags();
-		window.tags = []
 
 		ajaxRequest({
 			url: 'listTags',
 			success: (jsonTags) => {
 				jsonTags.forEach(json => {
-					let mdlTag = new Tag(json);
-					window.tags.push(mdlTag)
-
-					window.sidepanel.addTag(mdlTag);
+					window.dbal.addTagFromServer(json)
 				});
 			}
 		});
+
+		window.dbal.getTags(this.renderTags);
 	}
 
+	renderTags(tags) {
+		window.tagElements = []
+
+		console.log("rendertags", tags);
+
+		tags.forEach((mdlTag) => {
+			window.sidepanel.addTag(mdlTag);
+		});
+	}
 }

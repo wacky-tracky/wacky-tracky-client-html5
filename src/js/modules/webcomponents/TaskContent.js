@@ -167,7 +167,7 @@ export default class TaskContent extends HTMLElement {
 	}
 
 	addTagMenu() {
-		window.tags.forEach(tag => {
+		window.dbal.getTags(tag => {
 			var i = document.createElement("span");
 			i.innerHTML = "&nbsp;&nbsp;&nbsp;";
 			i.setAttribute("style", "background-color: " + tag.backgroundColor + "; ");

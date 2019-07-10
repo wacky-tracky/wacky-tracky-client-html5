@@ -5,7 +5,6 @@ export default class ListControls extends HTMLElement {
 		this.appendChild(document.querySelector('#listControls').content.cloneNode(true))
 
 		this.domLabel = this.querySelector("h3");
-		this.domButtonDelete = this.querySelector("#delete");
 		this.domButtonSettings = this.querySelector("#settings");
 		this.domButtonSettings.onclick = () => {
 			let ed = document.createElement("list-editor");	
@@ -29,8 +28,6 @@ export default class ListControls extends HTMLElement {
 		this.listId = list.list.id;
 
 		this.domLabel.innerText = list.title;
-
-		this.domButtonDelete.onclick = () => { list.del() };
 	}
 
 	copyAsSpreadsheet() {
