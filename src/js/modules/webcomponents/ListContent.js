@@ -107,7 +107,7 @@ export default class ListContent extends HTMLElement {
 		ajaxRequest({
 			url: 'deleteList',
 			data: { id: this.list.id },
-			success: window.uimanager.fetchLists
+			success: window.uimanager.refreshLists
 		});
 	}
 

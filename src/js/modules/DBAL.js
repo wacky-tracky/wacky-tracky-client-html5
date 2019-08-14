@@ -70,10 +70,6 @@ export default class DBAL {
 
 		var req = lists.getAll()
 		req.onsuccess = () => { 
-			// FIXME performance issues
-			// * recreating 2 new lists for sorting purposes
-			// * rehydrating all values?
-
 			var ret = [];
 			ret = req.result.map(x => new List(x))
 			ret = ret.sort((a, b) => { return a.title.localeCompare(b.title)});

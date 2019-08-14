@@ -17,6 +17,9 @@ export default class SidePanel extends HTMLElement {
 
 		this.domMenuButton = this.dom.querySelector("#sidepanelMenuButton")
 
+		this.subtitle = this.querySelector("#subtitle");
+		this.subtitle.innerText = "-";
+
 		this.mnu = document.createElement("popup-menu")
 		this.mnu.addTo(this.domMenuButton)
 		this.mnu.addItem("Toggle sidebar", () => { this.toggle() }, "t");
@@ -39,7 +42,7 @@ export default class SidePanel extends HTMLElement {
 		this.domButtonNewList.onclick = () => { this.createList() };
 
 		this.domButtonRefresh = this.querySelector("button#refresh");
-		this.domButtonRefresh.onclick = () => { window.uimanager.fetchLists() }
+		this.domButtonRefresh.onclick = () => { window.uimanager.refreshLists() }
 
 		this.domButtonIssue = this.querySelector("button#raiseIssue");
 		this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
@@ -90,7 +93,7 @@ export default class SidePanel extends HTMLElement {
 			data: {
 				title: title
 			},
-			success: window.uimanager.fetchLists
+			success: window.uimanager.refreshLists
 		});
 	}
 

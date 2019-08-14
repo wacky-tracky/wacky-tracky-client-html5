@@ -1,3 +1,4 @@
+const wtSwVersion = 2019071501;
 
 function swFetch(e) {
 	console.log("SW Fetch: " + e.request.url);
@@ -28,7 +29,14 @@ function swFetch(e) {
 self.addEventListener("fetch", swFetch);
 
 self.addEventListener("message", m => {
-	console.log("message!" + m);
+	switch (m.data) { 
+		case "reqGetVersion":
+		default:
+			this.clients.matchAll().then(clients => {
+				  clients.forEach(client => client.postMessage('hello from the other side'));
+			});
+			break;
+	}
 });
 
 self.addEventListener("activate", () => {
