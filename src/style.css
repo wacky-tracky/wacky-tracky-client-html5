@@ -749,3 +749,7 @@ div.subListItems {
 template {
 	visibility: hidden;
 }
+
+#subtitle {
+	font-size: smaller;
+}

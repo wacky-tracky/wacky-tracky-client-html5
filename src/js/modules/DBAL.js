@@ -4,7 +4,7 @@ import { generalError } from "../firmware/util.js";
 
 export default class DBAL {
 	constructor() {
-		this.version = 1;	
+		this.version = 2;	
 	}
 
 	open(onReadyCallback) {
@@ -30,7 +30,7 @@ export default class DBAL {
 
 		db.createObjectStore("lists", {keyPath: "id"});
 		db.createObjectStore("tasks", {keyPath: "id"});
-		db.createObjectStore("tags", {keyPath: "id"});
+		db.createObjectStore("tags", {keyPath: "tagValueId"});
 	}
 
 	dbTx(storeName) {

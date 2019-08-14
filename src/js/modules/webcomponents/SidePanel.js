@@ -20,6 +20,10 @@ export default class SidePanel extends HTMLElement {
 		this.subtitle = this.querySelector("#subtitle");
 		this.subtitle.innerText = "-";
 
+		if (typeof(ENVIRONMENT_NAME) != "undefined") {
+			this.subtitle.innerText = ENVIRONMENT_NAME;
+		}
+
 		this.mnu = document.createElement("popup-menu")
 		this.mnu.addTo(this.domMenuButton)
 		this.mnu.addItem("Toggle sidebar", () => { this.toggle() }, "t");
