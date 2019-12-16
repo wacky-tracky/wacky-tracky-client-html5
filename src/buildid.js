@@ -1,1 +1,1 @@
-window.ENVIRONMENT_NAME = "dev";
+window.ENVIRONMENT_NAME = "Summer '19";
