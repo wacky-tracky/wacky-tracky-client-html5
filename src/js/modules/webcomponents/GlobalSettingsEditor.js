@@ -22,6 +22,8 @@ export default class GlobalSettingsEditor extends HTMLElement {
 		this.setupInstallDetails();
 
 		this.setupServiceWorkerInfo();
+
+		this.setupLocalStorageButtons();
 		
 		window.globalSettings = this;
 	}
@@ -39,6 +41,20 @@ export default class GlobalSettingsEditor extends HTMLElement {
 		this.btnGetVersion.onclick = () => {
 			console.log("req");
 			navigator.serviceWorker.controller.postMessage("reqGetVersion");	
+		};
+	}
+
+	setupLocalStorageButtons() {
+		this.querySelector("#nukeDatabase").onclick = () => {
+			window.dbal.deleteEverything();
+		};
+
+		this.querySelector("#nukeCache").onclick = () => {
+			window.caches.delete("wt-cache").then(() => {
+				console.log("nuke success");
+				window.alert("success");
+				window.location.reload();
+			}); 
 		};
 	}
 

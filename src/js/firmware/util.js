@@ -1,6 +1,6 @@
 window.host = "https://api.wacky-tracky.com/"
 
-import { clearValidationFailures, highlightValidationFailure, ajaxRequest } from "./middleware.js"
+import { highlightValidationFailure, ajaxRequest } from "./middleware.js"
 
 HTMLElement.prototype.onEnter = function(callback) {
 	this.addEventListener("keydown", function(e) {
@@ -75,7 +75,7 @@ function registerFail(req, dat) {
 	generalErrorJson("Register fail. ", req, dat)
 }
 
-function generalErrorJson(msg, res) {
+export function generalErrorJson(msg, res) {
 	msg = "General JSON Error. " + res;
 
 	generalError(msg);

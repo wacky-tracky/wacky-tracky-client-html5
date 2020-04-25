@@ -42,14 +42,14 @@ export default class TaskContent extends HTMLElement {
 		this.domTaskContent.setAttribute("title", "ID:" + this.fields.id);
 		this.domTask.appendChild(this.domTaskContent);
 
-		this.domTaskButtons = document.createElement("div")
-		this.domTaskButtons.classList.add("taskButtons")
-		this.domTask.appendChild(this.domTaskButtons);
-
 		this.domTags = document.createElement("ul");
-		this.domTags.setAttribute("aria-label", "tag list")
+		this.domTags.title = "Task tags"
 		this.domTags.classList.add("taskTags");
-		this.domTaskButtons.appendChild(this.domTags);
+		this.domTask.appendChild(this.domTags);
+
+		this.domTaskButtons = document.createElement("div")
+		this.domTaskButtons.setAttribute("role", "toolbar");
+		this.domTask.appendChild(this.domTaskButtons);
 
 		this.domNumericProduct = document.createElement("span")
 		this.domNumericProduct.innerText = this.fields.tagNumericProduct;

@@ -31,6 +31,7 @@ export function ajaxRequest(params) {
 	.then(resp => {
 		if (!resp.ok) {
 			isSuccessful = false;
+			return "Fetch request is not OK";
 		}
 
 		return resp.json();

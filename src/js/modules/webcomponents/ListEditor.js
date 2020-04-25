@@ -13,6 +13,9 @@ export default class ListEditor extends HTMLElement {
 
 		let list = window.content.list.list; // FIXME
 
+		this.domId = this.querySelector("#listId");
+		this.domId.innerText = list.getId();
+
 		this.domTitle = this.querySelector("#listEditorTitle")
 		this.domTitle.value = list.getTitle()
 

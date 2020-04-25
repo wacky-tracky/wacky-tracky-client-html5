@@ -4,22 +4,30 @@ export default class TaskInputBox extends HTMLElement {
 	setupComponents() {
 		this.label = null;
 
-		this.domLabel = document.createElement('span');
+		this.setAttribute("role", "none");
+
+		this.dom = document.createElement("header");
+		this.dom.title = "Task Input Header";
+		this.appendChild(this.dom);
+
+		this.domLabel = document.createElement('label');
+		this.domLabel.title = "Task type";
+		this.domLabel.setAttribute('style', 'min-width: auto;');
 		this.domLabel.classList.add("taskInputPrefix");
 		this.setPrefix();
-		this.appendChild(this.domLabel)
+		this.dom.appendChild(this.domLabel)
 
 		this.domInput = document.createElement('input');
 		this.domInput.id = "task"
-		this.domInput.setAttribute("aria-label", 'Create new task')
+		this.domInput.setAttribute("title", 'New task contents')
 		this.domInput.setAttribute("accesskey", 'c')
 		this.domInput.setAttribute("tabindex", '0')
 		this.domInput.setAttribute("autofocus", true)
 		this.domInput.value = ""
 		this.domInput.disabled = true;
-		this.appendChild(this.domInput);
+		this.dom.appendChild(this.domInput);
 
-		this.prepend(window.sidepanel.getToggleButton());
+		this.dom.prepend(window.sidepanel.getToggleButton());
 
 		this.domInput.onkeypress = (e) => {
 			var key = e.keyCode ? e.keyCode : e.which;
