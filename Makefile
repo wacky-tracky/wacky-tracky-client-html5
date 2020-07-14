@@ -4,6 +4,11 @@ dist:
 	mkdir -p dist/wallpapers
 	cp wallpapers/*.* dist/wallpapers/
 
+docker: container
+
+contianer: dist
+	buildah bud .
+
 clean:
 	rm -rf dist
 
