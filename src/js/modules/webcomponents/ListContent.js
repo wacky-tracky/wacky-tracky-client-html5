@@ -2,7 +2,7 @@ import "./TaskContent.js"
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 
-export default class ListContent extends HTMLElement {
+export class ListContent extends HTMLElement {
 	setList(mdlList) {
 		this.list = mdlList
 	}

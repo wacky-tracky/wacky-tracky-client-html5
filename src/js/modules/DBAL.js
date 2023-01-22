@@ -1,8 +1,8 @@
-import List from "./model/List.js";
-import Tag from "./model/Tag.js";
+import { List } from "./model/List.js";
+import { Tag } from "./model/Tag.js";
 import { generalError } from "../firmware/util.js";
 
-export default class DBAL {
+export class DBAL {
 	constructor() {
 		this.version = 2;	
 	}
@@ -77,7 +77,7 @@ export default class DBAL {
 	}
 
 	getList(listId, callback) {
-		req = lists.get(listId);
+		let req = lists.get(listId);
 
 		req.onsuccess = () => {
 			callback(req.result);

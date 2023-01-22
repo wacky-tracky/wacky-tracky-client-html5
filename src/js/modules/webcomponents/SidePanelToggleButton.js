@@ -1,4 +1,4 @@
-export default class SidePanelToggleButton extends HTMLElement {
+export class SidePanelToggleButton extends HTMLElement {
 	setupComponents() {
 		this.btn = document.createElement('button')
 		this.btn.classList.add("sidePanelToggleButton")

@@ -1,4 +1,4 @@
-export default class List {
+export class List {
 	constructor(json) {
 		this.id = json.id;
 		this.countItems = json.countItems;

@@ -1,7 +1,7 @@
-import "./TaskInputBox.js"
-import "./ListControls.js"
+import { TaskInputBox} from "./TaskInputBox.js"
+import { ListControls } from "./ListControls.js"
 
-export default class ContentPanel extends HTMLElement {
+export class ContentPanel extends HTMLElement {
 	setupComponents() {
 		this.title = "Content Panel";
 		this.setAttribute("role", "region");

@@ -1,5 +1,3 @@
-window.host = "https://api.wacky-tracky.com/"
-
 import { highlightValidationFailure, ajaxRequest } from "./middleware.js"
 
 HTMLElement.prototype.onEnter = function(callback) {

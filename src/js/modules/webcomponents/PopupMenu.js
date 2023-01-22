@@ -7,7 +7,7 @@ class Point {
 }
 */
 
-export default class PopupMenu extends HTMLElement {
+export class PopupMenu extends HTMLElement {
 	setFields(title) {
 		this.title = title;
 		this.domItems = document.createElement("ul");

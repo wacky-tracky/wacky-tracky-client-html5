@@ -9,7 +9,7 @@ const iconDirectoryClosed = "&#128193;&nbsp;"
 const iconDirectoryOpen = "&#128194;&nbsp;"
 const iconTag = "&nbsp;&nbsp;&#x1F4D1;&nbsp;";
 
-export default class SidePanel extends HTMLElement {
+export class SidePanel extends HTMLElement {
 	setupElements() {
 		this.dom = document.createElement('aside');
 		this.dom.setAttribute('title', 'Side Panel');

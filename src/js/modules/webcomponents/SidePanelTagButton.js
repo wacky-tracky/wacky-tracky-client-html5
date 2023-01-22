@@ -1,6 +1,6 @@
-import './TagEditor.js'
+import { TagEditor } from './TagEditor.js'
 
-export default class SidePanelTagButton extends HTMLElement {
+export class SidePanelTagButton extends HTMLElement {
 	setTag(jsonTag) {
 		this.tag = jsonTag
 	}

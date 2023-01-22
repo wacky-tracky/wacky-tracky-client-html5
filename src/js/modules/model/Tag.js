@@ -1,4 +1,4 @@
-export default class Tag {
+export class Tag {
 	constructor(json) {
 		this.id = json.id;
 		this.tagValueId = json.tagValueId;

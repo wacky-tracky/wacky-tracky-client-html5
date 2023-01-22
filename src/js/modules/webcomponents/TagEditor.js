@@ -1,6 +1,6 @@
-import { ajaxRequest, notification } from "../../firmware/util.js"
+import { notification } from "../../firmware/util.js"
 
-export default class TagEditor extends HTMLElement {
+export class TagEditor extends HTMLElement {
 	setFields(tag) {
 		this.tag = tag;
 		this.setupComponents();
