@@ -1,4 +1,4 @@
-import DBAL from "./DBAL.js";
+import { DBAL } from "./DBAL.js";
 
 import { setBootMessage } from "../firmware/util.js"
 import { ajaxRequest } from "../firmware/middleware.js"
@@ -10,7 +10,7 @@ render either a working UI, or sensible error messages.
 
 The bootloader hands off to the UiManager when complete.
 */
-export default class Bootloader {
+export class Bootloader {
 	init() {
 		setBootMessage("Bootloader init");
 
@@ -23,12 +23,12 @@ export default class Bootloader {
 		setBootMessage("Database is OK");
 		try {
 		ajaxRequest.bind(this, {
-			url: "init",
+			url: "Init",
 			success: this.initSuccess.bind(this),
 			error: this.initFailure.bind(this)
 		}).call()
-		} catch (Exception) {
-			console.log("ex");
+		} catch (e) {
+			console.log("ex", e);
 		}
 	}
 
@@ -41,8 +41,6 @@ export default class Bootloader {
 	}
 
 	initFailure(a, b, c) {
-		console.log("initFailure", a, b, c);
-
 		if (a != null && a.toString().includes("Failed to fetch")) {
 //`			setBootMessage("Failed to fetch during init, are you offline?");
 			window.uimanager.onBootloaderOffline();

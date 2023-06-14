@@ -10,7 +10,7 @@ import {
 	highlightValidationFailure, 
 } from "../../firmware/middleware.js"
 
-export default class LoginForm extends HTMLElement {
+export class LoginForm extends HTMLElement {
 	create() {
 		this.appendChild(document.querySelector('#loginForm').content.cloneNode(true))
 		document.body.appendChild(this);

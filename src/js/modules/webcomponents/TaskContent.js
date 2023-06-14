@@ -1,8 +1,8 @@
-import './PopupMenu.js';
+import { PopupMenu } from './PopupMenu.js';
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 
-export default class TaskContent extends HTMLElement {
+export class TaskContent extends HTMLElement {
 	setFields(taskObject) {
 		this.fields = taskObject;
 	}

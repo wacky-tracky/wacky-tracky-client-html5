@@ -5,6 +5,11 @@ dist:
 	cp wallpapers/* dist/wallpapers/ || :
 	ln -s dist build
 
+docker: container
+
+contianer: dist
+	buildah bud .
+
 clean:
 	rm -rf dist
 

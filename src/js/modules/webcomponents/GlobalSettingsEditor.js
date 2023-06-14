@@ -1,6 +1,6 @@
 import { notification } from "../../firmware/util.js"
 
-export default class GlobalSettingsEditor extends HTMLElement {
+export class GlobalSettingsEditor extends HTMLElement {
 	setupComponents() {
 		this.appendChild(document.querySelector('template#globalSettingsEditor').content.cloneNode(true))
 

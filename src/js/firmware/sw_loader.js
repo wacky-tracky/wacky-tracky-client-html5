@@ -1,8 +1,8 @@
-import notification from "./util.js"
+import { notification } from "./util.js"
 
 if ("serviceWorker" in navigator) {
 
-	navigator.serviceWorker.register("/sw.js").then(
+	navigator.serviceWorker.register(new URL('../../sw.js', import.meta.url)).then(
 		reg => {
 			reg.onupdatefound = () => {
 				var installingWorker = reg.installing;

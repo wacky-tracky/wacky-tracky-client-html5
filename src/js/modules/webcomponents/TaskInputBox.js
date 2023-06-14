@@ -1,6 +1,6 @@
 import { newTask } from "../../firmware/util.js"
 
-export default class TaskInputBox extends HTMLElement {
+export class TaskInputBox extends HTMLElement {
 	setupComponents() {
 		this.label = null;
 

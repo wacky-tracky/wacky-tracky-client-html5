@@ -1,6 +1,6 @@
-import './ListEditor.js'
+import { ListEditor } from './ListEditor.js'
 
-export default class ListControls extends HTMLElement {
+export class ListControls extends HTMLElement {
 	setupComponents() {
 		this.appendChild(document.querySelector('#listControls').content.cloneNode(true))
 

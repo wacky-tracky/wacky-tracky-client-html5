@@ -13,13 +13,13 @@ export function ajaxRequest(params) {
 	// promise mangles the "this" context on the callbacks. 
 	let callbackSuccess = (data) => { params.success(data) };
 
-	let callbackError = (data) => { console.log(typeof(params.error), params.error); params.error(data); }
+	let callbackError = (data) => { params.error(data); }
 
 	let isSuccessful = true;
 
 
-	let url = new URL(window.host + params.url);
-	
+	let url = new URL(window.location.protocol + '//' + window.location.hostname + ":8080/api/" + params.url)
+
 	if (typeof(params.data) !== "undefined") {
 		Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))
 	}
@@ -30,6 +30,8 @@ export function ajaxRequest(params) {
 	})
 	.then(resp => {
 		if (!resp.ok) {
+      Promise.reject(resp)
+
 			isSuccessful = false;
 			return "Fetch request is not OK";
 		}
@@ -43,6 +45,7 @@ export function ajaxRequest(params) {
 			callbackError(json);	
 		}
 	}).catch(err => {
+    Promise.reject(err)
 		callbackError(err)
 	});
 

@@ -1,6 +1,6 @@
 import { isNarrowScreen } from "../../firmware/util.js"
 
-export default class SidePanelListButton extends HTMLElement {
+export class SidePanelListButton extends HTMLElement {
 	setFields(list) {
 		this.list = list;
 	}

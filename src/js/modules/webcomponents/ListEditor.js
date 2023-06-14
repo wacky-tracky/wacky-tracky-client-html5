@@ -1,7 +1,7 @@
 import { ajaxRequest } from "../../firmware/middleware.js"
 import { notification } from "../../firmware/util.js"
 
-export default class ListEditor extends HTMLElement {
+export class ListEditor extends HTMLElement {
 	setList(listId) {
 		this.listId = listId; // FIXME
 

@@ -1,137 +1,140 @@
-import List from "./model/List.js";
-import Tag from "./model/Tag.js";
+import { List } from "./model/List.js";
+import { Tag } from "./model/Tag.js";
 import { generalError } from "../firmware/util.js";
 
-export default class DBAL {
-	constructor() {
-		this.version = 2;	
-	}
+export class DBAL {
+  constructor() {
+    this.version = 2;
+  }
 
-	open(onReadyCallback) {
-		var req = window.indexedDB.open("db", this.version);
-		
-		req.onsuccess = () => {
-			this.db = req.result;
-			console.log("DB Opened Sucessfully");
-			onReadyCallback();
-		}
+  open(onReadyCallback) {
+    var req = window.indexedDB.open("db", this.version);
 
-		req.onerror = (e) => {
-			throw Error(e);
-		}
-		
-		req.onupgradeneeded = (e) => {
-			this.upgrade(e);
-		}
-	}
+    req.onsuccess = () => {
+      this.db = req.result;
+      console.log("DB Opened Sucessfully");
+      onReadyCallback();
+    }
 
-	upgrade(e) {
-		var db = e.target.result;
+    req.onerror = (e) => {
+      throw Error(e);
+    }
 
-		this.createStoreIfNotExists(db, "lists", "id");
-		this.createStoreIfNotExists(db, "tasks", "id");
-		this.createStoreIfNotExists(db, "tags", "tagValueId");
-	}
+    req.onupgradeneeded = (e) => {
+      this.upgrade(e);
+    }
+  }
 
-	deleteEverything() {
-		var req = window.indexedDB.deleteDatabase("db")
+  upgrade(e) {
+    var db = e.target.result;
 
-		req.onerror = () => {
-			console.log("errored");
-		}
+    this.createStoreIfNotExists(db, "lists", "id");
+    this.createStoreIfNotExists(db, "tasks", "id");
+    this.createStoreIfNotExists(db, "tags", "id");
+  }
 
-		req.onsuccess = () => {
-			console.log("db deleted");
-			window.location.reload();
-		}
-	}
+  deleteEverything() {
+    var req = window.indexedDB.deleteDatabase("db")
 
-	createStoreIfNotExists(db, storeName, path) {
-		if (!db.objectStoreNames.contains(storeName)) {
-			db.createObjectStore(storeName, {keyPath: path});
-		}
-	}
+    req.onerror = () => {
+      console.log("errored");
+    }
 
-	dbTx(storeName) {
-		if (this.db == null) {
-			throw new Error("Cannot run transaction, no database connection");
-		}
+    req.onsuccess = () => {
+      console.log("db deleted");
+      window.location.reload();
+    }
+  }
 
-		var tx = this.db.transaction(storeName, "readwrite")
-		var st = tx.objectStore(storeName);
+  createStoreIfNotExists(db, storeName, path) {
+    if (!db.objectStoreNames.contains(storeName)) {
+      db.createObjectStore(storeName, {keyPath: path});
+    }
+  }
 
-		return [tx, st]
-	}
+  dbTx(storeName) {
+    if (this.db == null) {
+      throw new Error("Cannot run transaction, no database connection");
+    }
 
-	addListFromServer(jsonList) {
-		let mdlList = new List(jsonList)
+    var tx = this.db.transaction(storeName, "readwrite")
+    var st = tx.objectStore(storeName);
 
-		var [, req] = this.dbTx("lists");
+    return [tx, st]
+  }
 
-		req.put(mdlList);
-		req.onabort = generalError
-		req.onerror = generalError
-		req.oncomplete = (e) => {
-			console.log("complete", e);
-		}
-	}
+  addListFromServer(jsonList) {
+    let mdlList = new List(jsonList)
 
-	getList(listId, callback) {
-		req = lists.get(listId);
+    var [, req] = this.dbTx("lists");
 
-		req.onsuccess = () => {
-			callback(req.result);
-		}
-	}
+    req.put(mdlList);
+    req.onabort = generalError
+    req.onerror = generalError
+    req.oncomplete = (e) => {
+      console.log("complete", e);
+    }
+  }
 
-	getLists(onGetCallback) {
-		var [, lists] = this.dbTx("lists")
+  getList(listId, callback) {
+    let req = this.dbTx("lists").get(listId);
 
-		var req = lists.getAll()
-		req.onsuccess = () => { 
-			var ret = [];
-			ret = req.result.map(x => new List(x))
-			ret = ret.sort((a, b) => { return a.title.localeCompare(b.title)});
+    req.onsuccess = () => {
+      callback(req.result);
+    }
+  }
 
-			onGetCallback(ret) 
-		}	
-	}
+  getLists(onGetCallback) {
+    var [, lists] = this.dbTx("lists")
 
-	getTags(onGetCallback) {
-		var [, tags] = this.dbTx("tags")
+    var req = lists.getAll()
+    req.onsuccess = () => {
+      var ret = [];
+      req.result.map(x => ret.push(x))
 
-		var req = tags.getAll();
-		req.onsuccess = () => {
-			var ret = [];
+      //ret = ret.sort((a, b) => { return a.title.localeCompare(b.title)});
 
-			req.result.forEach((jsonTag) => {
-				ret.push(new Tag(jsonTag));
-			});
+      console.log("getLists", ret)
+      onGetCallback(ret)
+    }
+  }
 
-/**
-			var orderedRet = [];
-			Object.keys(ret).sort().forEach(k => {
-				orderedRet[k] = ret[k];
-			});
+  getTags(onGetCallback) {
+    var [, tags] = this.dbTx("tags")
 
-			ret = orderedRet
-*/
+    var req = tags.getAll();
+    req.onsuccess = () => {
+      var ret = [];
 
-			onGetCallback(ret)
-		}
-	}
+      req.result.forEach((jsonTag) => {
+        ret.push(new Tag(jsonTag));
+      });
 
-	addTagFromServer(jsonTag) {
-		let mdlTag = new Tag(jsonTag)
+      /**
+      var orderedRet = [];
+      Object.keys(ret).sort().forEach(k => {
+        orderedRet[k] = ret[k];
+      });
 
-		var [, req] = this.dbTx("tags");
+      ret = orderedRet
+      */
 
-		req.put(mdlTag);
-		req.onabort = generalError
-		req.onerror = generalError
-		req.oncomplete = (e) => {
-			console.log("complete", e);
-		}
-	}
+      onGetCallback(ret)
+    }
+  }
+
+  addTagFromServer(jsonTag) {
+    let mdlTag = new Tag(jsonTag)
+    console.log("add tag", jsonTag)
+
+    var [, req] = this.dbTx("tags");
+
+    req.onabort = generalError
+    req.onerror = generalError
+    req.oncomplete = (e) => {
+      console.log("complete", e);
+    }
+    req.put(mdlTag);
+  }
 
 }

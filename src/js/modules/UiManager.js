@@ -1,9 +1,9 @@
-import Tag from "./model/Tag.js";
+import { Tag } from "./model/Tag.js";
 
 import { setupDefaultContextMenuAction } from "../firmware/util.js"
 import { ajaxRequest } from "../firmware/middleware.js"
 
-export default class UiManager {
+export class UiManager {
 	constructor() {
 		window.selectedItem = null;
 
@@ -49,7 +49,7 @@ export default class UiManager {
 		document.querySelector("#initMessages").remove();
 
 		if (res.wallpaper !== null) {
-			let img = "url(/wallpapers/" + res.wallpaper + ")";
+			let img = "url(/wallpapers/" + res.Wallpaper + ")";
 			document.body.style.backgroundImage = img;
 		}
 
@@ -93,9 +93,9 @@ export default class UiManager {
 
 	refreshLists() {
 		ajaxRequest({
-			url: 'listLists',
+			url: 'ListLists',
 			success: (lists) => {
-				lists.forEach((jsonList) => {
+				lists.Lists.forEach((jsonList) => {
 					window.dbal.addListFromServer(jsonList)
 				});
 			}
@@ -123,9 +123,9 @@ export default class UiManager {
 		window.sidepanel.clearTags();
 
 		ajaxRequest({
-			url: 'listTags',
+			url: 'ListTags',
 			success: (jsonTags) => {
-				jsonTags.forEach(json => {
+				jsonTags.Tags.forEach(json => {
 					window.dbal.addTagFromServer(json)
 				});
 			}
