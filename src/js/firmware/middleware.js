@@ -18,7 +18,7 @@ export function ajaxRequest(params) {
 	let isSuccessful = true;
 
 
-	let url = '//' + window.location.host + "/api/" + params.url;
+	let url = new URL(window.location.protocol + '//' + window.location.hostname + ":8080/api/" + params.url)
 
 	if (typeof(params.data) !== "undefined") {
 		Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))

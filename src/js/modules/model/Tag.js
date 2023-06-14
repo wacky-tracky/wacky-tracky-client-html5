@@ -1,7 +1,6 @@
 export class Tag {
 	constructor(json) {
 		this.id = json.id;
-		this.tagValueId = json.tagValueId;
 		this.title = json.title;
 		this.textualValue = json.textualValue;
 		this.numericValue = json.numericValue;
