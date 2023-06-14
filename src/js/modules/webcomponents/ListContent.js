@@ -21,7 +21,15 @@ export default class ListContent extends HTMLElement {
 */
 		this.domList = document.createElement("ul");
 		this.domList.id = "taskList"
+		this.domList.setAttribute("title", "Tasks");
 		this.appendChild(this.domList);
+
+		this.domListMessage = document.createElement("div");
+		this.domListMessage.classList.add("centeredMessage");
+		this.domListMessage.setAttribute("role", "note");
+		this.domListMessage.title = "Currently selectect list description";
+		this.domListMessage.hidden = true;
+		this.appendChild(this.domListMessage);
 	}
 
 	getId() {
@@ -61,6 +69,14 @@ export default class ListContent extends HTMLElement {
 		let newCount = this.domList.children.length;
 
 		this.sidePanelMenuItem.setSuffixText(newCount)
+		
+		if (newCount > 0) {
+			this.domListMessage.hidden = true;
+			this.domListMessage.innerText = "";
+		} else {
+			this.domListMessage.hidden = false;
+			this.domListMessage.innerText = "This list is empty.";
+		}
 	}
 
 	select() {
@@ -107,7 +123,7 @@ export default class ListContent extends HTMLElement {
 		ajaxRequest({
 			url: 'deleteList',
 			data: { id: this.list.id },
-			success: window.uimanager.fetchLists
+			success: window.uimanager.refreshLists
 		});
 	}
 

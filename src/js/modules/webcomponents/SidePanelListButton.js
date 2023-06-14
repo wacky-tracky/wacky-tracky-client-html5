@@ -6,10 +6,14 @@ export default class SidePanelListButton extends HTMLElement {
 	}
 
 	setupComponents() {
+		this.setAttribute("role", "none");
+
 		this.dom = document.querySelector('template#sidePanelListButton').content.cloneNode(true);
+		this.dom.title = "Open sublist";
 		this.appendChild(this.dom);
 
 		this.domLink = this.querySelector("a")
+		this.domLink.title = "List: " + this.list.getTitle();
 
 		this.domSidePanelTitleText = this.querySelector("span.listTitle");
 		this.domSidePanelTitleText.innerText = this.list.getTitle()

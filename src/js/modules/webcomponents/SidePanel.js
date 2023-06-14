@@ -5,9 +5,14 @@ import './GlobalSettingsEditor.js';
 import { ajaxRequest } from "../../firmware/middleware.js"
 import { logoutRequest, promptChangePassword } from "../../firmware/util.js"
 
+const iconDirectoryClosed = "&#128193;&nbsp;"
+const iconDirectoryOpen = "&#128194;&nbsp;"
+const iconTag = "&nbsp;&nbsp;&#x1F4D1;&nbsp;";
+
 export default class SidePanel extends HTMLElement {
 	setupElements() {
 		this.dom = document.createElement('aside');
+		this.dom.setAttribute('title', 'Side Panel');
 		this.appendChild(this.dom);
 
 		this.currentSublistTitle = null;
@@ -16,6 +21,13 @@ export default class SidePanel extends HTMLElement {
 		this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
 
 		this.domMenuButton = this.dom.querySelector("#sidepanelMenuButton")
+
+		this.subtitle = this.querySelector("#subtitle");
+		this.subtitle.innerText = "-";
+
+		if (typeof(ENVIRONMENT_NAME) != "undefined") {
+			this.subtitle.innerText = ENVIRONMENT_NAME;
+		}
 
 		this.mnu = document.createElement("popup-menu")
 		this.mnu.addTo(this.domMenuButton)
@@ -30,7 +42,8 @@ export default class SidePanel extends HTMLElement {
 
 		this.domLists = this.querySelector("#listList")
 
-		this.domTagContainer = this.querySelector("div#tagList")
+		this.domTagContainer = this.querySelector("#tagList")
+		this.domTagContainer.title = 'Tags';
 
 		this.domButtonNewTag = this.querySelector("button#newTag")
 		this.domButtonNewTag.onclick = () => { this.createTag() };
@@ -39,7 +52,7 @@ export default class SidePanel extends HTMLElement {
 		this.domButtonNewList.onclick = () => { this.createList() };
 
 		this.domButtonRefresh = this.querySelector("button#refresh");
-		this.domButtonRefresh.onclick = () => { window.uimanager.fetchLists() }
+		this.domButtonRefresh.onclick = () => { window.uimanager.refreshLists() }
 
 		this.domButtonIssue = this.querySelector("button#raiseIssue");
 		this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
@@ -90,29 +103,32 @@ export default class SidePanel extends HTMLElement {
 			data: {
 				title: title
 			},
-			success: window.uimanager.fetchLists
+			success: window.uimanager.refreshLists
 		});
 	}
 
 	addMenuItem(menuItem) {
 		let li = document.createElement("li")
+		li.title = menuItem.list.getTitle()
 		li.appendChild(menuItem);
 
 		var owner = this.domLists;
 
-		if (menuItem.list.getTitle().includes(">")) {
-			var titleComponents = menuItem.list.getTitle().split(">")
+		const listSeparator = ">";
+		if (menuItem.list.getTitle().includes(listSeparator)) {
+			var titleComponents = menuItem.list.getTitle().split(listSeparator)
 			titleComponents.length--;
-			titleComponents = titleComponents.join(">")
+			titleComponents = titleComponents.join(listSeparator)
 
 			var menuListTitleEl = menuItem.querySelector(".listTitle")
-			menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + ">", "");
+			menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + listSeparator, "");
 
 			if (this.currentSublistTitle != titleComponents){
 				this.currentSublistTitle = titleComponents;
 
-				var sublist = document.createElement("div");
+				var sublist = document.createElement("ul");
 				sublist.classList.add("sublist")
+				sublist.title = "Sub list called " + this.currentSublistTitle
 				this.domLists.appendChild(sublist);
 	
 				var sublistItems = document.createElement("div");
@@ -121,23 +137,26 @@ export default class SidePanel extends HTMLElement {
 				
 				this.currentSublistDom = sublistItems;
 
-				var title = document.createElement("p");
+				var title = document.createElement("a");
 				var indicator = document.createElement("span");
-				indicator.innerHTML = "&#128193;";
+				indicator.innerHTML = iconDirectoryClosed;
 				title.classList.add("subListTitle");
+				title.classList.add("listMenuLink");
+				title.setAttribute("role", "button");
 				title.onclick = () => { 
 					if (sublistItems.hidden) {
 						sublistItems.hidden = false;
-						indicator.innerHTML = "&#128194;"
+						indicator.innerHTML = iconDirectoryOpen;
 					} else {
 						sublistItems.hidden = !sublistItems.hidden; 
-						indicator.innerHTML = "&#128193;"
+						indicator.innerHTML = iconDirectoryClosed;
 					}
 				}
 				
 				title.appendChild(indicator);
 				var text = document.createElement("span");
 				text.innerText = titleComponents;
+				title.title = "Open sublist";
 				title.appendChild(text);
 
 				sublist.appendChild(title);
@@ -170,8 +189,8 @@ export default class SidePanel extends HTMLElement {
 
 		if (window.lastTag != mdlTag.getTitle()) {
 			window.lastTag = mdlTag.getTitle()
-			let tagName = document.createElement("div")
-			tagName.innerHTML = "&nbsp;&#127991;&nbsp;" + mdlTag.getTitle();
+			let tagName = document.createElement("h4")
+			tagName.innerHTML = iconTag + mdlTag.getTitle();
 			this.domTagContainer.append(tagName);
 
 			this.lastDomTags = document.createElement("ul");
@@ -195,7 +214,7 @@ export default class SidePanel extends HTMLElement {
 	}
 
 	clearTags() {
-		let tags = this.querySelector("div#tagList")
+		let tags = this.querySelector("#tagList")
 
 		while (tags.hasChildNodes()) {
 			tags.firstChild.remove();

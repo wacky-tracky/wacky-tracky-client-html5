@@ -137,7 +137,7 @@ export default class UiManager {
 	renderTags(tags) {
 		window.tagElements = []
 
-		console.log("rendertags", tags);
+		console.log("rendering tags: ", tags);
 
 		tags.forEach((mdlTag) => {
 			window.sidepanel.addTag(mdlTag);

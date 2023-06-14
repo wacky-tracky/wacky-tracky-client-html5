@@ -23,12 +23,8 @@ export default class TaskContent extends HTMLElement {
 		this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.toggleSubtasks(); });
 		this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
 		this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
-		this.domTaskButtons = this.domTaskControls.createAppend('<div class = "taskButtons" />');
-		this.domButtonDueDate = this.domTaskButtons.createAppend('<input />').disable();
-		this.domButtonDelete = this.domTaskButtons.createAppend('<button>delete</button>');
 		this.domButtonDelete.click(function() { self.del(); });
 		this.domButtonDelete.css('display', 'none');
-		this.domButtonTags = this.domTaskButtons.createAppend('<button>Tag </button>');
 		*/
 		
 		this.domEditDialog = null;
@@ -46,14 +42,14 @@ export default class TaskContent extends HTMLElement {
 		this.domTaskContent.setAttribute("title", "ID:" + this.fields.id);
 		this.domTask.appendChild(this.domTaskContent);
 
-		this.domTaskButtons = document.createElement("div")
-		this.domTaskButtons.classList.add("taskButtons")
-		this.domTask.appendChild(this.domTaskButtons);
-
 		this.domTags = document.createElement("ul");
-		this.domTags.setAttribute("aria-label", "tag list")
+		this.domTags.title = "Task tags"
 		this.domTags.classList.add("taskTags");
-		this.domTaskButtons.appendChild(this.domTags);
+		this.domTask.appendChild(this.domTags);
+
+		this.domTaskButtons = document.createElement("div")
+		this.domTaskButtons.setAttribute("role", "toolbar");
+		this.domTask.appendChild(this.domTaskButtons);
 
 		this.domNumericProduct = document.createElement("span")
 		this.domNumericProduct.innerText = this.fields.tagNumericProduct;
@@ -167,14 +163,16 @@ export default class TaskContent extends HTMLElement {
 	}
 
 	addTagMenu() {
-		window.dbal.getTags(tag => {
-			var i = document.createElement("span");
-			i.innerHTML = "&nbsp;&nbsp;&nbsp;";
-			i.setAttribute("style", "background-color: " + tag.backgroundColor + "; ");
+		window.dbal.getTags(tags => {
+			for (let tag of tags) {
+				var i = document.createElement("span");
+				i.innerHTML = "&nbsp;&nbsp;&nbsp;";
+				i.setAttribute("style", "background-color: " + tag.backgroundColor + "; ");
 
-			this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
-				this.requestTagItem(tag);	
-			}, null, i)
+				this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
+					this.requestTagItem(tag);	
+				}, null, i)
+			}
 		});
 	}
 

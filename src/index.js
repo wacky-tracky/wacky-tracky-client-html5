@@ -1,3 +1,5 @@
+import "./buildid.js";
+
 // "firmware" is essential non-modularized code.
 import "./js/firmware/middleware.js"
 import "./js/firmware/keyboardShortcuts.js";
@@ -12,6 +14,12 @@ import './js/modules/webcomponents/SidePanel.js';
 import './js/modules/webcomponents/SidePanelTagButton.js';
 import "./js/modules/webcomponents/ListContent.js";
 import "./js/modules/webcomponents/ContentPanel.js";
+
+function onMessage(evt) {
+//	console.log("onMessage", evt);
+}
+
+window.addEventListener('message', event => {onMessage(event); }, false);
 
 import UiManager from "./js/modules/UiManager.js";
 window.uimanager = new UiManager();

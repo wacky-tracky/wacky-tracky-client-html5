@@ -21,7 +21,41 @@ export default class GlobalSettingsEditor extends HTMLElement {
 		this.txtInstallDetails = this.querySelector("#installDetails");
 		this.setupInstallDetails();
 
+		this.setupServiceWorkerInfo();
+
+		this.setupLocalStorageButtons();
+		
 		window.globalSettings = this;
+	}
+
+	setupServiceWorkerInfo() {
+		this.txtSwInfo = this.querySelector("#swInfo");
+
+		if (navigator.serviceWorker.controller == null) {
+			this.txtSwInfo.innerText = " Service worker controller is null :(";
+		} else {
+			this.txtSwInfo.innerText = " Service worker controller is setup. ";
+		}
+
+		this.btnGetVersion = this.querySelector("#getSwVersion");
+		this.btnGetVersion.onclick = () => {
+			console.log("req");
+			navigator.serviceWorker.controller.postMessage("reqGetVersion");	
+		};
+	}
+
+	setupLocalStorageButtons() {
+		this.querySelector("#nukeDatabase").onclick = () => {
+			window.dbal.deleteEverything();
+		};
+
+		this.querySelector("#nukeCache").onclick = () => {
+			window.caches.delete("wt-cache").then(() => {
+				console.log("nuke success");
+				window.alert("success");
+				window.location.reload();
+			}); 
+		};
 	}
 
 	setupInstallDetails() {

@@ -4,7 +4,6 @@ export default class ListControls extends HTMLElement {
 	setupComponents() {
 		this.appendChild(document.querySelector('#listControls').content.cloneNode(true))
 
-		this.domLabel = this.querySelector("h3");
 		this.domButtonSettings = this.querySelector("#settings");
 		this.domButtonSettings.onclick = () => {
 			let ed = document.createElement("list-editor");	
@@ -26,8 +25,6 @@ export default class ListControls extends HTMLElement {
 
 	setList(list) {
 		this.listId = list.list.id;
-
-		this.domLabel.innerText = list.title;
 	}
 
 	copyAsSpreadsheet() {

@@ -42,7 +42,7 @@
 				<input id = "email" type = "email" />
 			</p>
 
-			<p id = "loginButtons" class = "buttonToolbar">
+			<p id = "loginButtons" role = "toolbar" title = "Login Buttons">
 				<button id = "login">Login</button>
 				<button id = "register" disabled>Register</button>
 				<button id = "forgotPassword">Forgot Password</button>
@@ -51,31 +51,30 @@
 	</template>
 
 	<template id = "sidePanelListButton">
-		<a href = "#" class = "listMenuLink">
-			<span class = "indicator">&nbsp;&#128441;&nbsp;</span>
-			<span class = "listTitle">Untitled Button</span>
-			<span class = "subtle">&nbsp;</span>
+		<a href = "#" class = "listMenuLink" title = "?">
+			<span class = "indicator" role = "img" title = "List icon">&#x1f4c4;&nbsp;</span>
+			<span class = "listTitle" title = "List name">???</span>
+			<span class = "subtle" role = "note" title = "Number of items in list">&nbsp;</span>
 		</a>
 	</template>
 
 	<template id = "listControls"> 
-		<div class = "listControls">
-			<div class = "buttonToolbar">
-				<h3>title</h3>
-				<button id = "settings" aria-label = "List Settings">Settings</button>
-				<button id = "more" aria-label = "More List Options">&#9776;</button>
-			</div>
+		<div class = "listControls" title = "List Controls" role = "toolbar">
+			<button id = "settings" aria-label = "List Settings">Settings</button>
+			<button id = "more" aria-label = "More List Options">&#9776;</button>
 		</div>
 	</template>
 
 	<template id = "sidePanel">
-		<button id = "sidepanelMenuButton" aria-label = "Main Sidebar Menu" accesskey = "m">&#9776; wacky-tracky</button>
+		<button id = "sidepanelMenuButton" aria-label = "Main Side Panel Menu" accesskey = "m">&#9776; wacky-tracky <span id = "subtitle">&nbsp;<span></button>
 
-		<ul class = "lists" id = "listList" accesskey = "l"></ul>
+		<h3>Lists</h3>
+		<ul id = "listList" class = "lists" accesskey = "l" title = "Lists"></ul>
 
-		<div id = "tagList"></div>
+		<h3>Tags</h3>
+		<ul id = "tagList" title = "Tags"></ul>
 
-		<div class = "buttonToolbar">
+		<div role = "toolbar" title = "Primary action buttons">
 			<button id = "newList">New List</button>
 			<button id = "newTag">New Tag</button>
 			<button id = "refresh" title = "Refresh" aria-label = "Refresh lists">&#128472;</button>
@@ -97,12 +96,24 @@
 			<h4>Native application</h4>
 
 			<p id = "installDetails">Install details...</p>
+
+			<h4>Service Worker</h4>
+			<span id = "swInfo">Waiting for SW info...</span>
+			<button id = "getSwVersion">Get Version</button> 
+
+			<h4>Local Storage</h4>
+			<button id = "nukeDatabase">Nuke Database</button>
+			<button id = "nukeCache">Nuke Cache</button>
 		</div>
 	</template>
 
 	<template id = "listEditor">
 		<div class = "contentTab">
 			<h3>List Editor</h3>
+
+			<p>
+				<label>ID: <span id = "listId">??</span></label>
+			</p>
 
 			<p>
 				<label>Title <input id = "listEditorTitle"></input></label>
@@ -115,7 +126,7 @@
 				</select>
 			</label>
 
-			<div class = "buttonToolbar">
+			<div role = "toolbar" title = "Editor controls">
 				<button id = "listEditorSave">Save</button>
 			</div>
 		</div>
@@ -161,7 +172,7 @@
 				<button id = "tagEditorNewValue">New Value</button>
 			</div>
 
-			<div class = "buttonToolbar">
+			<div role = "toolbar" title = "Tag editor controls">
 				<button id = "tagEditorSave">Save</button>
 				<button id = "tagEditorDelete">Delete</button>
 			</div>

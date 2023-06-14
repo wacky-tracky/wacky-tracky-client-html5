@@ -4,7 +4,7 @@ import { generalError } from "../firmware/util.js";
 
 export default class DBAL {
 	constructor() {
-		this.version = 1;	
+		this.version = 2;	
 	}
 
 	open(onReadyCallback) {
@@ -12,7 +12,7 @@ export default class DBAL {
 		
 		req.onsuccess = () => {
 			this.db = req.result;
-			console.log("suc");
+			console.log("DB Opened Sucessfully");
 			onReadyCallback();
 		}
 
@@ -28,9 +28,28 @@ export default class DBAL {
 	upgrade(e) {
 		var db = e.target.result;
 
-		db.createObjectStore("lists", {keyPath: "id"});
-		db.createObjectStore("tasks", {keyPath: "id"});
-		db.createObjectStore("tags", {keyPath: "id"});
+		this.createStoreIfNotExists(db, "lists", "id");
+		this.createStoreIfNotExists(db, "tasks", "id");
+		this.createStoreIfNotExists(db, "tags", "tagValueId");
+	}
+
+	deleteEverything() {
+		var req = window.indexedDB.deleteDatabase("db")
+
+		req.onerror = () => {
+			console.log("errored");
+		}
+
+		req.onsuccess = () => {
+			console.log("db deleted");
+			window.location.reload();
+		}
+	}
+
+	createStoreIfNotExists(db, storeName, path) {
+		if (!db.objectStoreNames.contains(storeName)) {
+			db.createObjectStore(storeName, {keyPath: path});
+		}
 	}
 
 	dbTx(storeName) {
@@ -70,10 +89,6 @@ export default class DBAL {
 
 		var req = lists.getAll()
 		req.onsuccess = () => { 
-			// FIXME performance issues
-			// * recreating 2 new lists for sorting purposes
-			// * rehydrating all values?
-
 			var ret = [];
 			ret = req.result.map(x => new List(x))
 			ret = ret.sort((a, b) => { return a.title.localeCompare(b.title)});

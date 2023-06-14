@@ -2,6 +2,7 @@ export default class SidePanelToggleButton extends HTMLElement {
 	setupComponents() {
 		this.btn = document.createElement('button')
 		this.btn.classList.add("sidePanelToggleButton")
+		this.btn.title = "Toggle sidebar"
 		this.btn.innerText = "wt"
 		this.hidden = true;
 		this.appendChild(this.btn);

@@ -3,9 +3,12 @@ import {
 	tryRegister, 
 	hashPassword,
 	generalErrorJson, 
-	highlightValidationFailure, 
-	clearValidationFailures 
 } from "../../firmware/util.js"
+
+import { 
+	clearValidationFailures,
+	highlightValidationFailure, 
+} from "../../firmware/middleware.js"
 
 export default class LoginForm extends HTMLElement {
 	create() {
@@ -69,7 +72,7 @@ export default class LoginForm extends HTMLElement {
 		hashPassword(password).then(hashedPassword => {
 			ajaxRequest({
 				url: 'authenticate',
-				error: this.loginFail,
+				error: (val) => { this.loginFail(val); },
 				success: this.loginSuccess,
 				data: {
 					username: username,
@@ -81,19 +84,27 @@ export default class LoginForm extends HTMLElement {
 	}
 
 	loginFail(res, dat) {
-		console.log("loginFail this() = ", this, res, dat);
-		this.enable();
+		console.log("loginFail this() = ", this, ":", res, dat);
 
 		clearValidationFailures();
 
-		switch (res.uniqueType) {
-			case "user-not-found":
-				highlightValidationFailure("#username", "Username not found");
-				return
-			case "user-wrong-password":
-				highlightValidationFailure("#password", "Incorrect pasword.");
-				return
+		this.displayLoginFailError(res)		
+		this.enable();
+	}
+
+	displayLoginFailError(res) {
+		if (typeof res == "object" && res.hasOwnProperty("uniqueType")) {
+			switch (res.uniqueType) {
+				case "user-not-found":
+					highlightValidationFailure("#username", "Username not found");
+					return;
+
+				case "user-wrong-password":
+					highlightValidationFailure("#password", "Incorrect pasword.");
+					return
+			}
 		}
+
 		generalErrorJson("Login Failure. ", res);
 	}
 
