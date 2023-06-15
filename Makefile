@@ -1,5 +1,5 @@
 dist:
-	parcel build src/index.html --target=browser --no-content-hash
+	parcel build src/index.html --no-content-hash
 	cp src/robots.txt dist/robots.txt
 	mkdir -p dist/wallpapers
 	cp wallpapers/* dist/wallpapers/ || :
