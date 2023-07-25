@@ -1,5 +1,6 @@
 export class Task {
-	constructor(json) {
-		console.log("task", json);
+	constructor(json) { // From DB
+    this.id = json.ID
+    this.content = json.Content
 	}
 }

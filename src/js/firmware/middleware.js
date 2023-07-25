@@ -1,6 +1,8 @@
 import { generalError } from "./util.js"
 
 export function ajaxRequest(params) {
+  var method = "GET"
+
 	if (typeof(params.error) != "function") {
 		params.error = generalError
 	}
@@ -22,10 +24,11 @@ export function ajaxRequest(params) {
 
 	if (typeof(params.data) !== "undefined") {
 		Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))
+    method = "POST"
 	}
 
-	var f1 = fetch(url, {
-		method: 'GET',
+	fetch(url, {
+		method: method,
 		credentials: 'include',
 	})
 	.then(resp => {
@@ -42,7 +45,7 @@ export function ajaxRequest(params) {
 		if (isSuccessful) {
 			callbackSuccess(json)
 		} else {
-			callbackError(json);	
+			callbackError(json)
 		}
 	}).catch(err => {
     Promise.reject(err)

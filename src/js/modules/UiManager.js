@@ -30,7 +30,7 @@ export class UiManager {
 	}
 
 	renderTaskCreated(json) {
-		let task = document.createElement("task-item");
+		let task = document.createElement("task-content");
 		task.setFields(json);
 		task.setupComponents();
 
@@ -87,60 +87,30 @@ export class UiManager {
 		document.body.appendChild(window.content);
 
 		// Fetch tags, then lists, because List->Tasks need Tags to be available.
-		this.refreshTags();
-		this.refreshLists();
-	}
-
-	refreshLists() {
-		ajaxRequest({
-			url: 'ListLists',
-			success: (lists) => {
-				lists.Lists.forEach((jsonList) => {
-					window.dbal.addListFromServer(jsonList)
-				});
-			}
-		});
-
-		window.dbal.getLists(this.renderLists)
+		window.dbal.local.getTags(this.renderTags);
+    window.dbal.local.getLists(this.renderLists);
 	}
 
 	renderLists(lists) {
 		window.sidepanel.clearLists();
 		window.listElements = {}
 
-		lists.forEach((mdlList) => {
-			let list = document.createElement("list-stuff")
+    for (const mdlList of lists) {
+			let list = document.createElement("list-content")
 			list.setList(mdlList)
 
 			let menuItem = window.sidepanel.addListMenuItem(mdlList, list);
 			list.setupComponents(menuItem)
 
 			window.listElements[mdlList.getId()] = list; // FIXME deprecated
-		});	
-	}
-
-	refreshTags() {
-		window.sidepanel.clearTags();
-
-		ajaxRequest({
-			url: 'ListTags',
-			success: (jsonTags) => {
-				jsonTags.Tags.forEach(json => {
-					window.dbal.addTagFromServer(json)
-				});
-			}
-		});
-
-		window.dbal.getTags(this.renderTags);
+		}
 	}
 
 	renderTags(tags) {
 		window.tagElements = []
 
-		console.log("rendering tags: ", tags);
-
-		tags.forEach((mdlTag) => {
+    for (const mdlTag of tags) {
 			window.sidepanel.addTag(mdlTag);
-		});
+		}
 	}
 }

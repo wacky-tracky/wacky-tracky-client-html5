@@ -22,6 +22,25 @@
 		</div>
 	</div>
 
+	<template id = "taskContent">
+		<div class = "task">
+			<button aria-label = "expand task", class = "expand" disabled></button>
+
+			<span class = "content"></span>
+
+			<ul class = "taskTags" title = "task tags">
+			</ul>
+
+			<div role = "toolbar">
+				<span class = "numeric" title = "numeric product"></span>
+				<button class = "tag">Tag</button>
+			</div>
+
+			<div class = "subTasks" hidden>
+			</div>
+		</div>
+	</template>
+
 
 	<template id = "loginForm">
 		<div id = "loginFormContainer">

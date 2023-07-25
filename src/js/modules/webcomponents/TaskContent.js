@@ -8,66 +8,38 @@ export class TaskContent extends HTMLElement {
 	}
 
 	setupComponents() {
-		this.dom = document.createElement("div")
-		this.dom.classList.add("taskWrapper");
-		this.appendChild(this.dom);
-		
-		this.domTask = document.createElement("div")
-		this.domTask.classList.add("task");
-		this.dom.appendChild(this.domTask)
+    this.appendChild(document.querySelector('template#taskContent').content.cloneNode(true))
 
-		this.domTask.addEventListener("click", () => { this.select() });
+		this.querySelector(".task").addEventListener("click", () => { this.select() });
 
 		/*
 		this.domTask.dblclick(function() { self.openEditDialog(); });
-		this.domButtonExpand = this.domTask.createAppend('<button class = "expand" disabled = "disabled">&nbsp;</button>').click(function() { self.toggleSubtasks(); });
 		this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
 		this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
 		this.domButtonDelete.click(function() { self.del(); });
 		this.domButtonDelete.css('display', 'none');
 		*/
-		
+
 		this.domEditDialog = null;
-		
-		this.domButtonExpand = document.createElement("button");
-		this.domButtonExpand.setAttribute("aria-label", "expand task")
-		this.domButtonExpand.classList.add("expand")
-		this.domButtonExpand.disabled = true;
-		this.domButtonExpand.onclick = () => { this.toggleSubtasks() }
-		this.domTask.appendChild(this.domButtonExpand);
 
-		this.domTaskContent = document.createElement("span")
-		this.domTaskContent.classList.add("content");
-		this.domTaskContent.innerText = this.fields.content;
-		this.domTaskContent.setAttribute("title", "ID:" + this.fields.id);
-		this.domTask.appendChild(this.domTaskContent);
+    this.domButtonExpand = this.querySelector('button.expand')
+    this.domButtonExpand.onclick = () => { this.toggleSubtasks() }
 
-		this.domTags = document.createElement("ul");
-		this.domTags.title = "Task tags"
-		this.domTags.classList.add("taskTags");
-		this.domTask.appendChild(this.domTags);
 
-		this.domTaskButtons = document.createElement("div")
-		this.domTaskButtons.setAttribute("role", "toolbar");
-		this.domTask.appendChild(this.domTaskButtons);
+    let spanContent = this.querySelector('span.content')
+    spanContent.innerText = this.fields.content;
+    spanContent.setAttribute("title", "ID:" + this.fields.id);
 
-		this.domNumericProduct = document.createElement("span")
-		this.domNumericProduct.innerText = this.fields.tagNumericProduct;
-		this.domTaskButtons.appendChild(this.domNumericProduct)
+		this.domNumericProduct = this.querySelector('span.numeric')
 
-		this.domButtonTags = document.createElement("button")
-		this.domButtonTags.innerText = "Tag"
-		this.domTaskButtons.appendChild(this.domButtonTags);
+    this.domButtonTags = this.querySelector('button.tag')
 
 		this.menuTags = document.createElement("popup-menu")
 		this.menuTags.setFields("task menu");
 		this.menuTags.domItems.classList.add('tagsMenu');
 		this.menuTags.addTo(this.domButtonTags);
 	
-		this.domSubTasks = document.createElement("div");
-		this.domSubTasks.classList.add("subTasks");
-		this.domSubTasks.hidden = true;
-		this.dom.appendChild(this.domSubTasks);
+		this.domSubTasks = this.querySelector('.subTasks')
 
 		this.subtasks = [];
 
@@ -110,22 +82,15 @@ export class TaskContent extends HTMLElement {
 
 	refreshSubtasks() {
 		for (let child of this.domSubTasks.children) {
-			child.remove();	
+			child.remove();
 		}
 
-		ajaxRequest({
-			url: 'listTasks',
-			data: { 
-				task: this.fields.id,
-				sort: window.content.list.list.sort
-			},
-			success: this.renderSubtasks
-		});
+    window.dbal.local.getTasks((x) => { this.renderSubtasks(x) })
 	}
 
 	renderSubtasks(subtasks) {
 		for (let subtask of subtasks) {
-			let t = document.createElement("task-item");
+			let t = document.createElement("task-content");
 			t.setFields(subtask)
 			t.setupComponents()
 
@@ -158,12 +123,12 @@ export class TaskContent extends HTMLElement {
 		this.domEditDialog.classList.add("editDialog");
 		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
 	
-		this.dom.append(this.domEditDialog).fadeIn();
+		this.append(this.domEditDialog).fadeIn();
 		this.domEditDialog.slideDown();
 	}
 
 	addTagMenu() {
-		window.dbal.getTags(tags => {
+		window.dbal.local.getTags(tags => {
 			for (let tag of tags) {
 				var i = document.createElement("span");
 				i.innerHTML = "&nbsp;&nbsp;&nbsp;";
@@ -191,9 +156,11 @@ export class TaskContent extends HTMLElement {
 	}
 
 	addExistingTags() {
-		this.fields.tags.forEach(tag => {
+    return;
+
+    for (const tag of this.fields.tags) {
 			this.setTag(tag);
-		});
+		}
 	}
 
 	setTag(tag) {
@@ -287,7 +254,7 @@ export class TaskContent extends HTMLElement {
 		window.content.taskInput.setLabel(this.fields.content);
 
 		window.selectedItem = this;
-		this.dom.classList.add('selected');
+		this.classList.add('selected');
 	}
 
 	requestUpdateDueDate(newDate) {
@@ -309,7 +276,7 @@ export class TaskContent extends HTMLElement {
 		this.closeEditDialog();
 
 		window.selectedItem = null;
-		this.dom.classList.remove('selected');
+		this.classList.remove('selected');
 
 		//this.domButtonDueDate.attr('disabled', 'disabled');
 
@@ -375,4 +342,4 @@ export class TaskContent extends HTMLElement {
 	}
 }
 
-window.customElements.define("task-item", TaskContent)
+window.customElements.define("task-content", TaskContent)

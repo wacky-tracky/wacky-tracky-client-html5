@@ -36,8 +36,8 @@ export class ListContent extends HTMLElement {
 		return this.list.id;
 	}
 
-	getCountItems() {
-		return this.list.countItems;
+	getCountTasks() {
+		return this.list.countTasks;
 	}
 
 	getTitle() {
@@ -69,7 +69,7 @@ export class ListContent extends HTMLElement {
 		let newCount = this.domList.children.length;
 
 		this.sidePanelMenuItem.setSuffixText(newCount)
-		
+
 		if (newCount > 0) {
 			this.domListMessage.hidden = true;
 			this.domListMessage.innerText = "";
@@ -80,7 +80,12 @@ export class ListContent extends HTMLElement {
 	}
 
 	select() {
-		this.requestTasks(this);
+    window.dbal.remote.getTasks(this.list.id)
+
+    window.dbal.local.getTasks((tasks) => {
+      this.addAll(tasks)
+    }, this.list.id);
+
 		window.content.setList(this);
 
 		window.sidepanel.deselectAll();
@@ -90,14 +95,14 @@ export class ListContent extends HTMLElement {
 	addAll(tasks) {
 		this.clear();
 
-		tasks.forEach((item) => {	
-			let task = document.createElement("task-item")
+		for (const item of tasks) {
+			let task = document.createElement("task-content")
 			task.setFields(item);
 			task.setupComponents();
 
 			this.add(task);
-		});
-		
+		}
+
 		this.updateTaskCount();
 	}
 
@@ -126,19 +131,6 @@ export class ListContent extends HTMLElement {
 			success: window.uimanager.refreshLists
 		});
 	}
-
-	requestTasks() {
-		ajaxRequest({
-			url: 'listTasks',
-			data: { 
-				list: this.list.id,
-				sort: this.list.sort
-			},
-			success: this.addAll.bind(this)
-		});
-	}
-
-
 }
 
-window.customElements.define("list-stuff", ListContent)
+window.customElements.define("list-content", ListContent)

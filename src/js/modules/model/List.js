@@ -1,7 +1,7 @@
 export class List {
-	constructor(json) {
-		this.id = json.ID;
-		this.countItems = json.countItems;
+	constructor(json) { // From DB
+		this.id = json.ID
+		this.countItems = json.CountItems;
 		this.title = json.Title;
 		this.sort = json.sort;
 		this.timeline = json.timeline;
