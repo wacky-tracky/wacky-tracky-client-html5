@@ -27,7 +27,7 @@ content-panel {
 	background-color: rgba(239, 239, 239, 0.7);
 }
 
-task-item, side-panel-list-button {
+task-content, side-panel-list-button {
 	display: block;
 }
 
@@ -504,7 +504,7 @@ div.taskButtons input {
 	text-align: right;
 }
 
-div.taskWrapper.selected div.task input.hasDatePicker {
+task-content.selected div.task input.hasDatePicker {
 	border-bottom: 1px dashed gray;
 }
 

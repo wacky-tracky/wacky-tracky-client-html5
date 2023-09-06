@@ -1,8 +1,7 @@
 export class Tag {
-	constructor(json) {
-		this.id = json.id;
-		this.tagValueId = json.tagValueId;
-		this.title = json.title;
+	constructor(json) { // From DB
+		this.id = json.ID;
+		this.title = json.Title;
 		this.textualValue = json.textualValue;
 		this.numericValue = json.numericValue;
 		this.backgroundColor = json.backgroundColor;
@@ -29,6 +28,10 @@ export class Tag {
 	}
 
 	getId() {
+    if (this.id === undefined) {
+      console.error("tag ID is undefined", this.id)
+    }
+
 		return this.id;
 	}
 }

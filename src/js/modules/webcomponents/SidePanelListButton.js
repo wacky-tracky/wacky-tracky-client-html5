@@ -19,7 +19,7 @@ export class SidePanelListButton extends HTMLElement {
 		this.domSidePanelTitleText.innerText = this.list.getTitle()
 
 		this.domSidePanelTitleSuffix = this.querySelector("span.subtle");
-		this.domSidePanelTitleSuffix.innerText = this.list.getCountItems()
+		this.domSidePanelTitleSuffix.innerText = this.list.getCountTasks()
 	}
 
 	setSuffixText(text) {

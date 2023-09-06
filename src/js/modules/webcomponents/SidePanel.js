@@ -99,7 +99,7 @@ export class SidePanel extends HTMLElement {
 		}
 
 		ajaxRequest({
-			url: 'createList',
+			url: 'CreateList',
 			data: {
 				title: title
 			},
@@ -115,8 +115,8 @@ export class SidePanel extends HTMLElement {
 		var owner = this.domLists;
 
 		const listSeparator = ">";
-		if (menuItem.list.getTitle().includes(listSeparator)) {
-			var titleComponents = menuItem.list.getTitle().split(listSeparator)
+		if (menuItem.list.title.includes(listSeparator)) {
+			var titleComponents = menuItem.list.title.split(listSeparator)
 			titleComponents.length--;
 			titleComponents = titleComponents.join(listSeparator)
 
@@ -200,7 +200,7 @@ export class SidePanel extends HTMLElement {
 
 		let li = document.createElement("li")
 		li.append(elTag);
-		this.lastDomTags.append(li);
+//		this.lastDomTags.append(li);
 	}
 
 	toDom() {

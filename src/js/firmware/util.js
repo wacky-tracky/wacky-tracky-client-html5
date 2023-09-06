@@ -97,7 +97,7 @@ export function newTask(text) {
 	}
 
 	ajaxRequest({
-		url: 'createTask',
+		url: 'Task/Create',
 		success: window.uimanager.renderTaskCreated,
 		data: data
 	});
