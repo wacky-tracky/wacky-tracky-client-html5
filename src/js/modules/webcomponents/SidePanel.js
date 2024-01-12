@@ -1,263 +1,263 @@
-import './SidePanelToggleButton.js';
-import './SidePanelListButton.js';
-import './GlobalSettingsEditor.js';
+import './SidePanelToggleButton.js'
+import './SidePanelListButton.js'
+import './GlobalSettingsEditor.js'
 
-import { ajaxRequest } from "../../firmware/middleware.js"
-import { logoutRequest, promptChangePassword } from "../../firmware/util.js"
+import { ajaxRequest } from '../../firmware/middleware.js'
+import { logoutRequest, promptChangePassword } from '../../firmware/util.js'
 
-const iconDirectoryClosed = "&#128193;&nbsp;"
-const iconDirectoryOpen = "&#128194;&nbsp;"
-const iconTag = "&nbsp;&nbsp;&#x1F4D1;&nbsp;";
+const iconDirectoryClosed = '&#128193&nbsp'
+const iconDirectoryOpen = '&#128194&nbsp'
+const iconTag = '&nbsp&nbsp&#x1F4D1&nbsp'
 
 export class SidePanel extends HTMLElement {
-	setupElements() {
-		this.dom = document.createElement('aside');
-		this.dom.setAttribute('title', 'Side Panel');
-		this.appendChild(this.dom);
+  setupElements() {
+    this.dom = document.createElement('aside')
+    this.dom.setAttribute('title', 'Side Panel')
+    this.appendChild(this.dom)
 
-		this.currentSublistTitle = null;
-		this.currentSublistDom = null;
-			
-		this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
+    this.currentSublistTitle = null
+    this.currentSublistDom = null
 
-		this.domMenuButton = this.dom.querySelector("#sidepanelMenuButton")
+    this.dom.appendChild(document.querySelector('template#sidePanel').content.cloneNode(true))
 
-		this.subtitle = this.querySelector("#subtitle");
-		this.subtitle.innerText = "-";
+    this.domMenuButton = this.dom.querySelector('#sidepanelMenuButton')
 
-		if (typeof(ENVIRONMENT_NAME) != "undefined") {
-			this.subtitle.innerText = ENVIRONMENT_NAME;
-		}
+    this.subtitle = this.querySelector('#subtitle')
+    this.subtitle.innerText = '-'
 
-		this.mnu = document.createElement("popup-menu")
-		this.mnu.addTo(this.domMenuButton)
-		this.mnu.addItem("Toggle sidebar", () => { this.toggle() }, "t");
-		this.mnu.addItem("Settings", () => { 
-			var settings = document.createElement("global-settings-editor");
-			settings.setupComponents();
+    if (typeof (ENVIRONMENT_NAME) !== 'undefined') {
+      this.subtitle.innerText = ENVIRONMENT_NAME
+    }
 
-			window.content.setTab(settings);	
-		});
-		this.mnu.addItem("Logout", logoutRequest);
+    this.mnu = document.createElement('popup-menu')
+    this.mnu.addTo(this.domMenuButton)
+    this.mnu.addItem('Toggle sidebar', () => { this.toggle() }, "t")
+    this.mnu.addItem('Settings', () => {
+      var settings = document.createElement("global-settings-editor")
+      settings.setupComponents()
 
-		this.domLists = this.querySelector("#listList")
+      window.content.setTab(settings)
+    })
+    this.mnu.addItem('Logout', logoutRequest)
 
-		this.domTagContainer = this.querySelector("#tagList")
-		this.domTagContainer.title = 'Tags';
+    this.domLists = this.querySelector('#listList')
 
-		this.domButtonNewTag = this.querySelector("button#newTag")
-		this.domButtonNewTag.onclick = () => { this.createTag() };
+    this.domTagContainer = this.querySelector('#tagList')
+    this.domTagContainer.title = 'Tags'
 
-		this.domButtonNewList = this.querySelector("button#newList")
-		this.domButtonNewList.onclick = () => { this.createList() };
+    this.domButtonNewTag = this.querySelector('button#newTag')
+    this.domButtonNewTag.onclick = () => { this.createTag() }
 
-		this.domButtonRefresh = this.querySelector("button#refresh");
-		this.domButtonRefresh.onclick = () => { window.uimanager.refreshLists() }
+    this.domButtonNewList = this.querySelector('button#newList')
+    this.domButtonNewList.onclick = () => { this.createList() }
 
-		this.domButtonIssue = this.querySelector("button#raiseIssue");
-		this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
+    this.domButtonRefresh = this.querySelector('button#refresh')
+    this.domButtonRefresh.onclick = () => { window.uimanager.refreshLists(true) }
 
-		this.toggleIcon = document.createElement("side-panel-toggle-button")
-		this.toggleIcon.setupComponents();
-	}
+    this.domButtonIssue = this.querySelector("button#raiseIssue")
+    this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
 
-	getToggleButton() {
-		return this.toggleIcon;
-	}
+    this.toggleIcon = document.createElement("side-panel-toggle-button")
+    this.toggleIcon.setupComponents()
+  }
 
-	toggle() {
-		if (this.dom.hidden) {
-			this.dom.hidden = false;
-			this.toggleIcon.hidden = true;
-		} else {
-			this.dom.hidden = true;
-			this.toggleIcon.hidden = false;
-		}
-	}
+  getToggleButton () {
+    return this.toggleIcon
+  }
 
-	createTag() {
-		var title = window.prompt("Tag name?");
+  toggle () {
+    if (this.dom.hidden) {
+      this.dom.hidden = false
+      this.toggleIcon.hidden = true
+    } else {
+      this.dom.hidden = true
+      this.toggleIcon.hidden = false
+    }
+  }
 
-		if (title == "") {
-			return;
-		}
+  createTag () {
+    var title = window.prompt('Tag name?')
 
-		ajaxRequest({
-			url: 'createTag',
-			data: {
-				title: title
-			},
-			success: window.uimanager.fetchTags
-		});
-	}
+    if (title === '') {
+      return
+    }
 
-	createList() {
-		var title = window.prompt("List name?");
+    ajaxRequest({
+      url: 'createTag',
+      data: {
+        title: title
+      },
+      success: window.dbal.remote.fetchTags
+    })
+  }
 
-		if (title == "") {
-			return;
-		}
+  createList () {
+    const title = window.prompt('List name?')
 
-		ajaxRequest({
-			url: 'CreateList',
-			data: {
-				title: title
-			},
-			success: window.uimanager.refreshLists
-		});
-	}
+    if (title === '') {
+      return
+    }
 
-	addMenuItem(menuItem) {
-		let li = document.createElement("li")
-		li.title = menuItem.list.getTitle()
-		li.appendChild(menuItem);
+    ajaxRequest({
+      url: 'CreateList',
+      data: {
+        title: title
+      },
+      success: window.uimanager.refreshLists
+    })
+  }
 
-		var owner = this.domLists;
+  addMenuItem(menuItem) {
+    let li = document.createElement("li")
+    li.title = menuItem.list.getTitle()
+    li.appendChild(menuItem)
 
-		const listSeparator = ">";
-		if (menuItem.list.title.includes(listSeparator)) {
-			var titleComponents = menuItem.list.title.split(listSeparator)
-			titleComponents.length--;
-			titleComponents = titleComponents.join(listSeparator)
+    var owner = this.domLists
 
-			var menuListTitleEl = menuItem.querySelector(".listTitle")
-			menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + listSeparator, "");
+    const listSeparator = ">"
+    if (menuItem.list.title.includes(listSeparator)) {
+      var titleComponents = menuItem.list.title.split(listSeparator)
+      titleComponents.length--
+      titleComponents = titleComponents.join(listSeparator)
 
-			if (this.currentSublistTitle != titleComponents){
-				this.currentSublistTitle = titleComponents;
+      var menuListTitleEl = menuItem.querySelector(".listTitle")
+      menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + listSeparator, "")
 
-				var sublist = document.createElement("ul");
-				sublist.classList.add("sublist")
-				sublist.title = "Sub list called " + this.currentSublistTitle
-				this.domLists.appendChild(sublist);
-	
-				var sublistItems = document.createElement("div");
-				sublistItems.classList.add("subListItems");
-				sublistItems.hidden = true;
-				
-				this.currentSublistDom = sublistItems;
+      if (this.currentSublistTitle != titleComponents){
+        this.currentSublistTitle = titleComponents
 
-				var title = document.createElement("a");
-				var indicator = document.createElement("span");
-				indicator.innerHTML = iconDirectoryClosed;
-				title.classList.add("subListTitle");
-				title.classList.add("listMenuLink");
-				title.setAttribute("role", "button");
-				title.onclick = () => { 
-					if (sublistItems.hidden) {
-						sublistItems.hidden = false;
-						indicator.innerHTML = iconDirectoryOpen;
-					} else {
-						sublistItems.hidden = !sublistItems.hidden; 
-						indicator.innerHTML = iconDirectoryClosed;
-					}
-				}
-				
-				title.appendChild(indicator);
-				var text = document.createElement("span");
-				text.innerText = titleComponents;
-				title.title = "Open sublist";
-				title.appendChild(text);
+        var sublist = document.createElement("ul")
+        sublist.classList.add("sublist")
+        sublist.title = "Sub list called " + this.currentSublistTitle
+        this.domLists.appendChild(sublist)
 
-				sublist.appendChild(title);
-				sublist.appendChild(sublistItems);
+        var sublistItems = document.createElement("div")
+        sublistItems.classList.add("subListItems")
+        sublistItems.hidden = true
 
-				owner = sublistItems;
-			} else {
-				owner = this.currentSublistDom;
-			}
-		} else {
-			this.currentSublistTitle = null;
-			this.currentSublistDom = null;
-			
-			owner = this.domLists;
-		}
+        this.currentSublistDom = sublistItems
 
-		owner.append(li);
-	}
+        var title = document.createElement("a")
+        var indicator = document.createElement("span")
+        indicator.innerHTML = iconDirectoryClosed
+        title.classList.add("subListTitle")
+        title.classList.add("listMenuLink")
+        title.setAttribute("role", "button")
+        title.onclick = () => { 
+          if (sublistItems.hidden) {
+            sublistItems.hidden = false
+            indicator.innerHTML = iconDirectoryOpen
+          } else {
+            sublistItems.hidden = !sublistItems.hidden 
+            indicator.innerHTML = iconDirectoryClosed
+          }
+        }
 
-	deselectAll() {
-		for (let menuItem of this.domLists.querySelectorAll("side-panel-list-button")) {
-			menuItem.deselect();	
-		}
-	}
+        title.appendChild(indicator)
+        var text = document.createElement("span")
+        text.innerText = titleComponents
+        title.title = "Open sublist"
+        title.appendChild(text)
 
-	addTag(mdlTag) {
-		let elTag = document.createElement("side-panel-tag-button")
-		elTag.setTag(mdlTag)
-		elTag.setupComponents();
+        sublist.appendChild(title)
+        sublist.appendChild(sublistItems)
 
-		if (window.lastTag != mdlTag.getTitle()) {
-			window.lastTag = mdlTag.getTitle()
-			let tagName = document.createElement("h4")
-			tagName.innerHTML = iconTag + mdlTag.getTitle();
-			this.domTagContainer.append(tagName);
+        owner = sublistItems
+      } else {
+        owner = this.currentSublistDom
+      }
+    } else {
+      this.currentSublistTitle = null
+      this.currentSublistDom = null
 
-			this.lastDomTags = document.createElement("ul");
-			this.lastDomTags.classList.add("tagList")
-			this.domTagContainer.append(this.lastDomTags);
-		}
+      owner = this.domLists
+    }
 
-		let li = document.createElement("li")
-		li.append(elTag);
-//		this.lastDomTags.append(li);
-	}
+    owner.append(li)
+  }
 
-	toDom() {
-		return this.dom;
-	}
+  deselectAll() {
+    for (let menuItem of this.domLists.querySelectorAll("side-panel-list-button")) {
+      menuItem.deselect()	
+    }
+  }
 
-	clearLists() {
-		while (this.domLists.hasChildNodes()) {
-			this.domLists.firstChild.remove();
-		}
-	}
+  addTag(mdlTag) {
+    let elTag = document.createElement("side-panel-tag-button")
+    elTag.setTag(mdlTag)
+    elTag.setupComponents()
 
-	clearTags() {
-		let tags = this.querySelector("#tagList")
+    if (window.lastTag != mdlTag.getTitle()) {
+      window.lastTag = mdlTag.getTitle()
+      let tagName = document.createElement("h4")
+      tagName.innerHTML = iconTag + mdlTag.getTitle()
+      this.domTagContainer.append(tagName)
 
-		while (tags.hasChildNodes()) {
-			tags.firstChild.remove();
-		}
-	}
+      this.lastDomTags = document.createElement("ul")
+      this.lastDomTags.classList.add("tagList")
+      this.domTagContainer.append(this.lastDomTags)
+    }
 
-		/**
-	renderTags(tags) {
-		let ret = "";
+    let li = document.createElement("li")
+    li.append(elTag)
+    //		this.lastDomTags.append(li)
+  }
 
-		tags.forEach(tag => {
-			ret += '.tag' + tag.id + '.tagTitle { border-left: 4px solid ' + tag.backgroundColor + ' !important }' + "\n";
-			ret += '.tag' + tag.id + '.indicator { background-color:' + tag.backgroundColor + ' !important }' + "\n";
-			this.addTag(new Tag(tag));
-		});
+  toDom() {
+    return this.dom
+  }
 
-		//$('body').append($('<style type = "text/css">' + ret + '</style>'));
-		
-	}
-	*/
+  clearLists() {
+    while (this.domLists.hasChildNodes()) {
+      this.domLists.firstChild.remove()
+    }
+  }
 
-	addListMenuItem(mdlList, list) {
-		let item = document.createElement("side-panel-list-button");
-		item.setFields(list);
-		item.setupComponents();
-		item.setListCallback(mdlList, list);
+  clearTags() {
+    let tags = this.querySelector("#tagList")
 
-		this.addMenuItem(item);
+    while (tags.hasChildNodes()) {
+      tags.firstChild.remove()
+    }
+  }
 
-		return item;
-	}
+  /**
+  renderTags(tags) {
+    let ret = ""
 
-	hide() {
-		this.dom.hide();
-	}
+    tags.forEach(tag => {
+      ret += '.tag' + tag.id + '.tagTitle { border-left: 4px solid ' + tag.backgroundColor + ' !important }' + "\n"
+      ret += '.tag' + tag.id + '.indicator { background-color:' + tag.backgroundColor + ' !important }' + "\n"
+      this.addTag(new Tag(tag))
+    })
 
-	setupMenu() {
-		let menuUser = document.createElement("popup-menu");
-		menuUser.addItem('Toggle', this.toggle);
-		menuUser.addItem('Change password', promptChangePassword);
-		menuUser.addItem('Logout', logoutRequest);
-		menuUser.addTo(this.domTitle);
-	}
+    //$('body').append($('<style type = "text/css">' + ret + '</style>'))
+
+  }
+  */
+
+    addListMenuItem(mdlList, list) {
+      let item = document.createElement("side-panel-list-button")
+      item.setFields(list)
+      item.setupComponents()
+      item.setListCallback(mdlList, list)
+
+      this.addMenuItem(item)
+
+      return item
+    }
+
+  hide() {
+    this.dom.hide()
+  }
+
+  setupMenu() {
+    let menuUser = document.createElement("popup-menu")
+    menuUser.addItem('Toggle', this.toggle)
+    menuUser.addItem('Change password', promptChangePassword)
+    menuUser.addItem('Logout', logoutRequest)
+    menuUser.addTo(this.domTitle)
+  }
 }
 
 window.customElements.define("side-panel", SidePanel)

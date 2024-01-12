@@ -1,40 +1,39 @@
 import { ajaxRequest } from "../firmware/middleware.js"
 
 export class DatabaseRemoteServer {
-  getTasks() {
+  getTasks () {
     ajaxRequest({
       url: 'Task/List',
       success: (jsonTasks) => {
         jsonTasks.Tasks.map((x) => window.dbal.local.addTaskFromServer(x))
       },
       params: {
-        "listId": 123,
+        'listId': 123,
       },
     })
   }
 
-	fetchTags() {
-		window.sidepanel.clearTags(); // FIXME
+  fetchTags () {
+    window.sidepanel.clearTags() // FIXME
 
-		ajaxRequest({
-			url: 'ListTags',
-			success: (jsonTags) => {
+    ajaxRequest({
+      url: 'ListTags',
+      success: (jsonTags) => {
         for (const json of jsonTags.Tags) {
-					window.dbal.addTagFromServer(json)
-				}
-			}
-		});
-	}
+          window.dbal.local.addTagFromServer(json)
+        }
+      }
+    })
+  }
 
-  fetchLists() {
-		ajaxRequest({
-			url: 'ListLists',
-			success: (res) => {
+  fetchLists () {
+    ajaxRequest({
+      url: 'ListLists',
+      success: (res) => {
         for (const jsonList of res.Lists) {
-					window.dbal.addListFromServer(jsonList)
-				}
-			}
-		});
-	}
-
+          window.dbal.local.addListFromServer(jsonList)
+        }
+      }
+    })
+  }
 }
