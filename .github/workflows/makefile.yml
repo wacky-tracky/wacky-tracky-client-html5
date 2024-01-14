@@ -1,0 +1,31 @@
+name: Make Package
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          
+    - run: npm update
+
+    - name: configure
+      run: ./configure
+
+    - name: make
+      run: make
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: wt-webui
+        path: dist/
