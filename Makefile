@@ -1,9 +1,11 @@
 dist:
+	rm -rf dist
 	parcel build src/index.html --no-content-hash
 	cp src/robots.txt dist/robots.txt
 	mkdir -p dist/wallpapers
 	cp wallpapers/* dist/wallpapers/ || :
-	ln -s dist build
+	ln -sf dist build
+	cd dist && tar cavf ../webui.tgz .
 
 docker: container
 
