@@ -1,66 +1,66 @@
-import { isNarrowScreen } from "../../firmware/util.js"
+import { isNarrowScreen } from '../../firmware/util.js'
 
-export class SidePanelListButton extends HTMLElement {
-	setFields(list) {
-		this.list = list;
-	}
+export class SidePanelListButton extends window.HTMLElement {
+  setFields (list) {
+    this.list = list
+  }
 
-	setupComponents() {
-		this.setAttribute("role", "none");
+  setupComponents () {
+    this.setAttribute('role', 'none')
 
-		this.dom = document.querySelector('template#sidePanelListButton').content.cloneNode(true);
-		this.dom.title = "Open sublist";
-		this.appendChild(this.dom);
+    this.dom = document.querySelector('template#sidePanelListButton').content.cloneNode(true)
+    this.dom.title = 'Open sublist'
+    this.appendChild(this.dom)
 
-		this.domLink = this.querySelector("a")
-		this.domLink.title = "List: " + this.list.getTitle();
+    this.domLink = this.querySelector('a')
+    this.domLink.title = 'List: ' + this.list.getTitle()
 
-		this.domSidePanelTitleText = this.querySelector("span.listTitle");
-		this.domSidePanelTitleText.innerText = this.list.getTitle()
+    this.domSidePanelTitleText = this.querySelector('span.listTitle')
+    this.domSidePanelTitleText.innerText = this.list.getTitle()
 
-		this.domSidePanelTitleSuffix = this.querySelector("span.subtle");
-		this.domSidePanelTitleSuffix.innerText = this.list.getCountTasks()
-	}
+    this.domSidePanelTitleSuffix = this.querySelector('span.subtle')
+    this.domSidePanelTitleSuffix.innerText = this.list.getCountItems()
+  }
 
-	setSuffixText(text) {
-		this.domSidePanelTitleSuffix.innerText = text;
-	}
+  setSuffixText (text) {
+    this.domSidePanelTitleSuffix.innerText = text
+  }
 
-	setListCallback(mdlList, list) {
-		this.setCallback(() => {
-			if (window.selectedItem != null) {
-				window.selectedItem.deselect();
-			}
+  setListCallback (mdlList, list) {
+    this.setCallback(() => {
+      if (window.selectedItem != null) {
+        window.selectedItem.deselect()
+      }
 
-			if (isNarrowScreen()) {
-				window.sidepanel.toggle();
-			}
+      if (isNarrowScreen()) {
+        window.sidepanel.toggle()
+      }
 
-			document.title = mdlList.getTitle();
+      document.title = mdlList.getTitle()
 
-			window.sidepanel.selectedItem = list;
-			list.select();
+      window.sidepanel.selectedItem = list
+      list.select()
 
-			// We have to set the hash on a menu item click, not on 
-			// content.setList or similar, otherwise the hash gets reset on 
-			// page load, and other events that cause the list to change.
-			window.location.hash = mdlList.getTitle();
-		});
-	}
+      // We have to set the hash on a menu item click, not on 
+      // content.setList or similar, otherwise the hash gets reset on 
+      // page load, and other events that cause the list to change.
+      window.location.hash = mdlList.getTitle()
+    })
+  }
 
-	setCallback(callback) {
-		this.callback = callback;
+  setCallback (callback) {
+    this.callback = callback
 
-		this.domLink.addEventListener("click", this.callback);
-	}
+    this.domLink.addEventListener('click', this.callback)
+  }
 
-	select() {
-		this.classList.add("selected");
-	}
+  select () {
+    this.classList.add('selected')
+  }
 
-	deselect() {
-		this.classList.remove("selected");
-	}
+  deselect () {
+    this.classList.remove('selected')
+  }
 }
 
-window.customElements.define("side-panel-list-button", SidePanelListButton)
+window.customElements.define('side-panel-list-button', SidePanelListButton)

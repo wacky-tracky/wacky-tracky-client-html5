@@ -28,7 +28,7 @@ export class Bootloader {
         error: this.initFailure.bind(this)
       }).call()
     } catch (e) {
-      console.log('ex', e)
+      throw new Error(e)
     }
   }
 
@@ -45,7 +45,6 @@ export class Bootloader {
       // setBootMessage("Failed to fetch during init, are you offline?")
       window.uimanager.onBootloaderOffline()
     } else {
-      console.log(a, b, c)
       setBootMessage('Unknown init failure.')
     }
   }

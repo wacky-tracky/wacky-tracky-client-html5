@@ -10,7 +10,7 @@ const iconDirectoryOpen = '&#128194&nbsp'
 const iconTag = '&nbsp&nbsp&#x1F4D1&nbsp'
 
 export class SidePanel extends HTMLElement {
-  setupElements() {
+  setupElements () {
     this.dom = document.createElement('aside')
     this.dom.setAttribute('title', 'Side Panel')
     this.appendChild(this.dom)
@@ -31,9 +31,9 @@ export class SidePanel extends HTMLElement {
 
     this.mnu = document.createElement('popup-menu')
     this.mnu.addTo(this.domMenuButton)
-    this.mnu.addItem('Toggle sidebar', () => { this.toggle() }, "t")
+    this.mnu.addItem('Toggle sidebar', () => { this.toggle() }, 't')
     this.mnu.addItem('Settings', () => {
-      var settings = document.createElement("global-settings-editor")
+      const settings = document.createElement('global-settings-editor')
       settings.setupComponents()
 
       window.content.setTab(settings)
@@ -54,10 +54,10 @@ export class SidePanel extends HTMLElement {
     this.domButtonRefresh = this.querySelector('button#refresh')
     this.domButtonRefresh.onclick = () => { window.uimanager.refreshLists(true) }
 
-    this.domButtonIssue = this.querySelector("button#raiseIssue")
-    this.domButtonIssue.onclick = () => { window.open("http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new") }
+    this.domButtonIssue = this.querySelector('button#raiseIssue')
+    this.domButtonIssue.onclick = () => { window.open('http://github.com/wacky-tracky/wacky-tracky-client-html5/issues/new') }
 
-    this.toggleIcon = document.createElement("side-panel-toggle-button")
+    this.toggleIcon = document.createElement('side-panel-toggle-button')
     this.toggleIcon.setupComponents()
   }
 
@@ -107,56 +107,57 @@ export class SidePanel extends HTMLElement {
     })
   }
 
-  addMenuItem(menuItem) {
-    let li = document.createElement("li")
+  addMenuItem (menuItem) {
+    const li = document.createElement('li')
     li.title = menuItem.list.getTitle()
     li.appendChild(menuItem)
 
-    var owner = this.domLists
+    let owner = this.domLists
 
-    const listSeparator = ">"
+    const listSeparator = '>'
     if (menuItem.list.title.includes(listSeparator)) {
-      var titleComponents = menuItem.list.title.split(listSeparator)
+      let titleComponents = menuItem.list.title.split(listSeparator)
       titleComponents.length--
       titleComponents = titleComponents.join(listSeparator)
 
-      var menuListTitleEl = menuItem.querySelector(".listTitle")
-      menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + listSeparator, "")
+      const menuListTitleEl = menuItem.querySelector('.listTitle')
+      menuListTitleEl.innerText = menuListTitleEl.innerText.replace(titleComponents + listSeparator, '')
 
-      if (this.currentSublistTitle != titleComponents){
+      if (this.currentSublistTitle !== titleComponents) {
         this.currentSublistTitle = titleComponents
 
-        var sublist = document.createElement("ul")
-        sublist.classList.add("sublist")
-        sublist.title = "Sub list called " + this.currentSublistTitle
+        const sublist = document.createElement('ul')
+        sublist.classList.add('sublist')
+        sublist.title = 'Sub list called ' + this.currentSublistTitle
         this.domLists.appendChild(sublist)
 
-        var sublistItems = document.createElement("div")
-        sublistItems.classList.add("subListItems")
+        const sublistItems = document.createElement('div')
+        sublistItems.classList.add('subListItems')
         sublistItems.hidden = true
 
         this.currentSublistDom = sublistItems
 
-        var title = document.createElement("a")
-        var indicator = document.createElement("span")
+        const title = document.createElement('a')
+        const indicator = document.createElement('span')
         indicator.innerHTML = iconDirectoryClosed
-        title.classList.add("subListTitle")
-        title.classList.add("listMenuLink")
-        title.setAttribute("role", "button")
-        title.onclick = () => { 
+        title.classList.add('subListTitle')
+        title.classList.add('listMenuLink')
+        title.setAttribute('role', 'button')
+        title.onclick = () => {
           if (sublistItems.hidden) {
             sublistItems.hidden = false
             indicator.innerHTML = iconDirectoryOpen
           } else {
-            sublistItems.hidden = !sublistItems.hidden 
+            sublistItems.hidden = !sublistItems.hidden
             indicator.innerHTML = iconDirectoryClosed
           }
         }
 
         title.appendChild(indicator)
-        var text = document.createElement("span")
+
+        const text = document.createElement('span')
         text.innerText = titleComponents
-        title.title = "Open sublist"
+        title.title = 'Open sublist'
         title.appendChild(text)
 
         sublist.appendChild(title)
@@ -176,45 +177,46 @@ export class SidePanel extends HTMLElement {
     owner.append(li)
   }
 
-  deselectAll() {
-    for (let menuItem of this.domLists.querySelectorAll("side-panel-list-button")) {
-      menuItem.deselect()	
+  deselectAll () {
+    for (const menuItem of this.domLists.querySelectorAll('side-panel-list-button')) {
+      menuItem.deselect()
     }
   }
 
-  addTag(mdlTag) {
-    let elTag = document.createElement("side-panel-tag-button")
+  addTag (mdlTag) {
+    const elTag = document.createElement('side-panel-tag-button')
     elTag.setTag(mdlTag)
     elTag.setupComponents()
 
-    if (window.lastTag != mdlTag.getTitle()) {
+    if (window.lastTag !== mdlTag.getTitle()) {
       window.lastTag = mdlTag.getTitle()
-      let tagName = document.createElement("h4")
+
+      const tagName = document.createElement('h4')
       tagName.innerHTML = iconTag + mdlTag.getTitle()
       this.domTagContainer.append(tagName)
 
-      this.lastDomTags = document.createElement("ul")
-      this.lastDomTags.classList.add("tagList")
+      this.lastDomTags = document.createElement('ul')
+      this.lastDomTags.classList.add('tagList')
       this.domTagContainer.append(this.lastDomTags)
     }
 
-    let li = document.createElement("li")
+    const li = document.createElement('li')
     li.append(elTag)
-    //		this.lastDomTags.append(li)
+    // this.lastDomTags.append(li)
   }
 
-  toDom() {
+  toDom () {
     return this.dom
   }
 
-  clearLists() {
+  clearLists () {
     while (this.domLists.hasChildNodes()) {
       this.domLists.firstChild.remove()
     }
   }
 
-  clearTags() {
-    let tags = this.querySelector("#tagList")
+  clearTags () {
+    const tags = this.querySelector('#tagList')
 
     while (tags.hasChildNodes()) {
       tags.firstChild.remove()
@@ -236,23 +238,23 @@ export class SidePanel extends HTMLElement {
   }
   */
 
-    addListMenuItem(mdlList, list) {
-      let item = document.createElement("side-panel-list-button")
-      item.setFields(list)
-      item.setupComponents()
-      item.setListCallback(mdlList, list)
+  addListMenuItem (mdlList, list) {
+    const item = document.createElement('side-panel-list-button')
+    item.setFields(list)
+    item.setupComponents()
+    item.setListCallback(mdlList, list)
 
-      this.addMenuItem(item)
+    this.addMenuItem(item)
 
-      return item
-    }
+    return item
+  }
 
-  hide() {
+  hide () {
     this.dom.hide()
   }
 
-  setupMenu() {
-    let menuUser = document.createElement("popup-menu")
+  setupMenu () {
+    const menuUser = document.createElement('popup-menu')
     menuUser.addItem('Toggle', this.toggle)
     menuUser.addItem('Change password', promptChangePassword)
     menuUser.addItem('Logout', logoutRequest)
@@ -260,4 +262,4 @@ export class SidePanel extends HTMLElement {
   }
 }
 
-window.customElements.define("side-panel", SidePanel)
+window.customElements.define('side-panel', SidePanel)

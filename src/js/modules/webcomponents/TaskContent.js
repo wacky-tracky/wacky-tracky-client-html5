@@ -1,345 +1,344 @@
-import { PopupMenu } from './PopupMenu.js';
+import { PopupMenu } from './PopupMenu.js'
 
 import { ajaxRequest } from "../../firmware/middleware.js"
 
 export class TaskContent extends HTMLElement {
-	setFields(taskObject) {
-		this.fields = taskObject;
-	}
+  setFields(taskObject) {
+    this.fields = taskObject
+  }
 
-	setupComponents() {
+  setupComponents() {
     this.appendChild(document.querySelector('template#taskContent').content.cloneNode(true))
 
-		this.querySelector(".task").addEventListener("click", () => { this.select() });
+    this.querySelector(".task").addEventListener("click", () => { this.select() })
 
-		/*
-		this.domTask.dblclick(function() { self.openEditDialog(); });
-		this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content);
-		this.domTaskControls = this.domTask.createAppend('<div class = "controls" />');
-		this.domButtonDelete.click(function() { self.del(); });
-		this.domButtonDelete.css('display', 'none');
-		*/
+    /*
+    this.domTask.dblclick(function() { self.openEditDialog() })
+    this.domTaskContent = this.domTask.createAppend('<span class = "content" />').text(this.fields.content)
+    this.domTaskControls = this.domTask.createAppend('<div class = "controls" />')
+    this.domButtonDelete.click(function() { self.del() })
+    this.domButtonDelete.css('display', 'none')
+    */
 
-		this.domEditDialog = null;
+    this.domEditDialog = null
 
     this.domButtonExpand = this.querySelector('button.expand')
     this.domButtonExpand.onclick = () => { this.toggleSubtasks() }
 
-
     let spanContent = this.querySelector('span.content')
-    spanContent.innerText = this.fields.content;
-    spanContent.setAttribute("title", "ID:" + this.fields.id);
+    spanContent.innerText = this.fields.content
+    spanContent.setAttribute("title", "ID:" + this.fields.id)
 
-		this.domNumericProduct = this.querySelector('span.numeric')
+    this.domNumericProduct = this.querySelector('span.numeric')
 
     this.domButtonTags = this.querySelector('button.tag')
 
-		this.menuTags = document.createElement("popup-menu")
-		this.menuTags.setFields("task menu");
-		this.menuTags.domItems.classList.add('tagsMenu');
-		this.menuTags.addTo(this.domButtonTags);
-	
-		this.domSubTasks = this.querySelector('.subTasks')
+    this.menuTags = document.createElement("popup-menu")
+    this.menuTags.setFields("task menu")
+    this.menuTags.domItems.classList.add('tagsMenu')
+    this.menuTags.addTo(this.domButtonTags)
 
-		this.subtasks = [];
+    this.domSubTasks = this.querySelector('.subTasks')
 
-		this.setup2();
-	}
+    this.subtasks = []
 
-	isSubtasksVisible() {
-		return !this.domSubTasks.hidden
-	}
+    this.setup2()
+  }
 
-	setSubtasksVisible(visible) {
-		if (visible) {
-			this.refreshSubtasks();
-			this.domSubTasks.hidden = false;
-		} else {
-			this.domSubTasks.hidden = true;
-		}
+  isSubtasksVisible() {
+    return !this.domSubTasks.hidden
+  }
 
-		this.refreshExpandButton();
-	}
+  setSubtasksVisible(visible) {
+    if (visible) {
+      this.refreshSubtasks()
+      this.domSubTasks.hidden = false
+    } else {
+      this.domSubTasks.hidden = true
+    }
 
-	toggleSubtasks() {
-		this.setSubtasksVisible(!this.isSubtasksVisible());
-	}
+    this.refreshExpandButton()
+  }
 
-	refreshExpandButton(forceEnabled) {
-		if (forceEnabled || this.subtasks.length > 0) {
-			if (this.isSubtasksVisible()) {
-				this.domButtonExpand.innerText = '-';
-			} else {
-				this.domButtonExpand.innerText = '+';
-			}
+  toggleSubtasks() {
+    this.setSubtasksVisible(!this.isSubtasksVisible())
+  }
 
-			this.domButtonExpand.disabled = false;
-		} else {
-			this.domButtonExpand.disabled = true;
-			this.domButtonExpand.innerHTML = '&nbsp;';
-		}
-	}
+  refreshExpandButton(forceEnabled) {
+    if (forceEnabled || this.subtasks.length > 0) {
+      if (this.isSubtasksVisible()) {
+        this.domButtonExpand.innerText = '-'
+      } else {
+        this.domButtonExpand.innerText = '+'
+      }
 
-	refreshSubtasks() {
-		for (let child of this.domSubTasks.children) {
-			child.remove();
-		}
+      this.domButtonExpand.disabled = false
+    } else {
+      this.domButtonExpand.disabled = true
+      this.domButtonExpand.innerHTML = '&nbsp'
+    }
+  }
+
+  refreshSubtasks() {
+    for (let child of this.domSubTasks.children) {
+      child.remove()
+    }
 
     window.dbal.local.getTasks((x) => { this.renderSubtasks(x) })
-	}
+  }
 
-	renderSubtasks(subtasks) {
-		for (let subtask of subtasks) {
-			let t = document.createElement("task-content");
-			t.setFields(subtask)
-			t.setupComponents()
+  renderSubtasks(subtasks) {
+    for (let subtask of subtasks) {
+      let t = document.createElement("task-content")
+      t.setFields(subtask)
+      t.setupComponents()
 
-			window.selectedItem.addSubtask(t);
-		}
-	}
+      window.selectedItem.addSubtask(t)
+    }
+  }
 
-	setDueDate(newDate) {
-		if (newDate == null) {
-			//newDate = self.fields.dueDate;
-		}
+  setDueDate(newDate) {
+    if (newDate == null) {
+      //newDate = self.fields.dueDate
+    }
 
-		if (newDate == null) {
-			newDate = "";
-		}
+    if (newDate == null) {
+      newDate = ""
+    }
 
-		if (newDate != "") {
-			newDate = "Due: " + newDate;
-		} else {
-			newDate = "no due date"
-		}
+    if (newDate != "") {
+      newDate = "Due: " + newDate
+    } else {
+      newDate = "no due date"
+    }
 
-		//self.domButtonDueDate.val(newDate);
-	}
+    //self.domButtonDueDate.val(newDate)
+  }
 
-	openEditDialog() {
-		this.closeEditDialog();
+  openEditDialog() {
+    this.closeEditDialog()
 
-		this.domEditDialog = document.createElement("div");
-		this.domEditDialog.classList.add("editDialog");
-		this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id);
-	
-		this.append(this.domEditDialog).fadeIn();
-		this.domEditDialog.slideDown();
-	}
+    this.domEditDialog = document.createElement("div")
+    this.domEditDialog.classList.add("editDialog")
+    this.domEditId = this.domEditDialog.createAppend('<span />').text('ID:' + this.fields.id)
 
-	addTagMenu() {
-		window.dbal.local.getTags(tags => {
-			for (let tag of tags) {
-				var i = document.createElement("span");
-				i.innerHTML = "&nbsp;&nbsp;&nbsp;";
-				i.setAttribute("style", "background-color: " + tag.backgroundColor + "; ");
+    this.append(this.domEditDialog).fadeIn()
+    this.domEditDialog.slideDown()
+  }
 
-				this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
-					this.requestTagItem(tag);	
-				}, null, i)
-			}
-		});
-	}
+  addTagMenu() {
+    window.dbal.local.getTags(tags => {
+      for (let tag of tags) {
+        var i = document.createElement("span")
+        i.innerHTML = "&nbsp&nbsp&nbsp"
+        i.setAttribute("style", "background-color: " + tag.backgroundColor + " ")
 
-	requestTagItem(tag) {
-		ajaxRequest({
-			url: 'tag',
-			success: console.log,
-			data: {
-				item: this.fields.id,
-				tag: tag.id,
-				tagValueId: tag.tagValueId
-			}
-		});
+        this.menuTags.addItem(tag.title + " (" + tag.textualValue + ")", () => {
+          this.requestTagItem(tag)	
+        }, null, i)
+      }
+    })
+  }
 
-		this.toggleTag(tag);
-	}
+  requestTagItem(tag) {
+    ajaxRequest({
+      url: 'tag',
+      success: console.log,
+      data: {
+        item: this.fields.id,
+        tag: tag.id,
+        tagValueId: tag.tagValueId
+      }
+    })
 
-	addExistingTags() {
-    return;
+    this.toggleTag(tag)
+  }
+
+  addExistingTags() {
+    return
 
     for (const tag of this.fields.tags) {
-			this.setTag(tag);
-		}
-	}
+      this.setTag(tag)
+    }
+  }
 
-	setTag(tag) {
-		let tagEl = document.createElement("li");
-		tagEl.classList.add("tag")
-		tagEl.classList.add("tag" + tag.id)
-		tagEl.classList.add("tagValue" + tag.tagValueId)
-		tagEl.style.backgroundColor = tag.backgroundColor;
-		tagEl.innerHTML = tag.title + " (" + tag.textualValue + ")";
+  setTag(tag) {
+    let tagEl = document.createElement("li")
+    tagEl.classList.add("tag")
+    tagEl.classList.add("tag" + tag.id)
+    tagEl.classList.add("tagValue" + tag.tagValueId)
+    tagEl.style.backgroundColor = tag.backgroundColor
+    tagEl.innerHTML = tag.title + " (" + tag.textualValue + ")"
 
-		this.domTags.appendChild(tagEl);
-	}
+    this.domTags.appendChild(tagEl)
+  }
 
-	toggleTag(tag) {
-		let tv = this.domTags.querySelector(".tagValue" + tag.tagValueId)
+  toggleTag(tag) {
+    let tv = this.domTags.querySelector(".tagValue" + tag.tagValueId)
 
-		if (tv == null) {
-			let tagEl = this.domTags.querySelector('.tag' + tag.id);
-			
-			if (tagEl != null) {
-				tagEl.remove()
-			}
+    if (tv == null) {
+      let tagEl = this.domTags.querySelector('.tag' + tag.id)
 
-			this.setTag(tag);
-		} else {
-			tv.remove();
-		}
-	}
+      if (tagEl != null) {
+        tagEl.remove()
+      }
 
-	closeEditDialog() {
-		/**
-		this.dom.children('.editDialog').remove();
-		this.domEditDialog = null;
-		*/
-	}
+      this.setTag(tag)
+    } else {
+      tv.remove()
+    }
+  }
 
-	addSubtask(t) {
-		this.domSubTasks.append(t);
-		this.subtasks.push(t);
-		this.refreshExpandButton();
-	}
+  closeEditDialog() {
+    /**
+    this.dom.children('.editDialog').remove()
+    this.domEditDialog = null
+    */
+  }
 
-	rename() {
-		if (this.domTask.children('.renamer').length > 0) {
-			this.domTask.children('.renamer').focus();
-		} else {
-			this.isBeingRenamed = true;
-			this.domTaskContent.text('');
+  addSubtask(t) {
+    this.domSubTasks.append(t)
+    this.subtasks.push(t)
+    this.refreshExpandButton()
+  }
 
-			let renamer = document.createElement('input');
-			renamer.classList.add("renamer");
-			renamer.val(this.fields.content);
-			renamer.onEnter(function(el) {
-				self.renameTo(el.val());
-				el.remove();
-			});
+  rename() {
+    if (this.domTask.children('.renamer').length > 0) {
+      this.domTask.children('.renamer').focus()
+    } else {
+      this.isBeingRenamed = true
+      this.domTaskContent.text('')
 
-			this.domTask.append(renamer)
-			renamer.focus();
-		}
-	}
+      let renamer = document.createElement('input')
+      renamer.classList.add("renamer")
+      renamer.val(this.fields.content)
+      renamer.onEnter(function(el) {
+        self.renameTo(el.val())
+        el.remove()
+      })
 
-	renameTo(newContent) {
-		this.isBeingRenamed = false;
-		this.fields.content = newContent;
-		this.domTaskContent.text(newContent);
+      this.domTask.append(renamer)
+      renamer.focus()
+    }
+  }
 
-		ajaxRequest({
-			url: 'renameItem',
-			data: {
-				'id': this.fields.id,
-				'content': newContent,
-			}
-		});
-	}
+  renameTo(newContent) {
+    this.isBeingRenamed = false
+    this.fields.content = newContent
+    this.domTaskContent.text(newContent)
 
-	select() {
-		if (window.selectedItem == this || window.toDelete == this) {
-			return;
-		}
+    ajaxRequest({
+      url: 'renameItem',
+      data: {
+        'id': this.fields.id,
+        'content': newContent,
+      }
+    })
+  }
 
-		if (window.selectedItem !== null) {
-			window.selectedItem.deselect();
-		}
+  select() {
+    if (window.selectedItem == this || window.toDelete == this) {
+      return
+    }
 
-//		this.domButtonDelete.css('display', 'inline-block');
-//		this.domButtonDueDate.model(this);
-//		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate});
-//		this.domButtonDueDate.removeAttr('disabled');
+    if (window.selectedItem !== null) {
+      window.selectedItem.deselect()
+    }
 
-		window.content.taskInput.setLabel(this.fields.content);
+    //		this.domButtonDelete.css('display', 'inline-block')
+    //		this.domButtonDueDate.model(this)
+    //		this.domButtonDueDate.datepicker({dateFormat: 'yy-mm-dd', onSelect: self.requestUpdateDueDate})
+    //		this.domButtonDueDate.removeAttr('disabled')
 
-		window.selectedItem = this;
-		this.classList.add('selected');
-	}
+    window.content.taskInput.setLabel(this.fields.content)
 
-	requestUpdateDueDate(newDate) {
-		ajaxRequest({
-			url: 'setDueDate',
-			data: {
-				"item": window.selectedItem.fields.id,
-				"dueDate": newDate
-			}
-		});
-	}
+    window.selectedItem = this
+    this.classList.add('selected')
+  }
 
-	deselect() {
-		if (window.selectedItem.isBeingRenamed) {
-			window.selectedItem.domTask.children('.renamer').focus().effect('highlight');
-			return false;
-		}
+  requestUpdateDueDate(newDate) {
+    ajaxRequest({
+      url: 'setDueDate',
+      data: {
+        "item": window.selectedItem.fields.id,
+        "dueDate": newDate
+      }
+    })
+  }
 
-		this.closeEditDialog();
+  deselect() {
+    if (window.selectedItem.isBeingRenamed) {
+      window.selectedItem.domTask.children('.renamer').focus().effect('highlight')
+      return false
+    }
 
-		window.selectedItem = null;
-		this.classList.remove('selected');
+    this.closeEditDialog()
 
-		//this.domButtonDueDate.attr('disabled', 'disabled');
+    window.selectedItem = null
+    this.classList.remove('selected')
 
-		//this.domButtonDelete.css('display', 'none');
+    //this.domButtonDueDate.attr('disabled', 'disabled')
 
-		if (!this.hasTags()) {
-			this.domButtonTags.display = 'none';
-		}
+    //this.domButtonDelete.css('display', 'none')
 
-		window.content.taskInput.setLabel('');
+    if (!this.hasTags()) {
+      this.domButtonTags.display = 'none'
+    }
 
-		//this.domTask.children.querySelectorAll('.renamer').remove();
-		//this.menuTags.hide();
-	}
+    window.content.taskInput.setLabel('')
 
-	del() {
-		if (window.selectedItem.isBeingRenamed) {
-			return;
-		}
+    //this.domTask.children.querySelectorAll('.renamer').remove()
+    //this.menuTags.hide()
+  }
 
-		window.selectedItem.deselect();
+  del() {
+    if (window.selectedItem.isBeingRenamed) {
+      return
+    }
 
-		window.toDelete = this;
+    window.selectedItem.deselect()
 
-		ajaxRequest({
-			url: 'deleteTask',
-			data: { id: this.fields.id },
-			success: this.renderDelete
-		});
-	}
+    window.toDelete = this
 
-	renderDelete() {
-		window.toDelete.remove();
-		window.content.list.updateTaskCount();
+    ajaxRequest({
+      url: 'deleteTask',
+      data: { id: this.fields.id },
+      success: this.renderDelete
+    })
+  }
 
-		/**
-		if (window.toDelete.parent != null) {
-			if (window.toDelete instanceof Task) {
-				parent = window.toDelete.parent;
+  renderDelete() {
+    window.toDelete.remove()
+    window.content.list.updateTaskCount()
 
-				parent.subtasks.pop(window.toDelete);
-				parent.refreshExpandButton();
-			}
-		}
-		*/
+    /**
+    if (window.toDelete.parent != null) {
+      if (window.toDelete instanceof Task) {
+        parent = window.toDelete.parent
 
-		window.toDelete = null;
-	}
+        parent.subtasks.pop(window.toDelete)
+        parent.refreshExpandButton()
+      }
+    }
+    */
 
-	hasTags() {
-		// this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
-		return this.domButtonTags.children.length > 0; 
-	}
+    window.toDelete = null
+  }
 
-	setup2() {
-		if (this.fields.hasChildren) {
-			this.refreshExpandButton(true);
-		}
+  hasTags() {
+    // this should not rely on the dom, but when you toggleTag() we don't have the tag object to update this.tags with.
+    return this.domButtonTags.children.length > 0 
+  }
 
-		this.setDueDate();
-		this.addTagMenu()
-		this.addExistingTags();
-	}
+  setup2() {
+    if (this.fields.countSubtasks > 0) {
+      this.refreshExpandButton(true)
+    }
+
+    this.setDueDate()
+    this.addTagMenu()
+    this.addExistingTags()
+  }
 }
 
 window.customElements.define("task-content", TaskContent)

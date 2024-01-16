@@ -1,10 +1,10 @@
 export class List {
   constructor (json) { // From DB
-    this.id = json.ID
-    this.countItems = json.CountItems
-    this.title = json.Title
-    this.sort = json.Sort
-    this.timeline = json.Timeline
+    this.id = json.id
+    this.countItems = json.countItems
+    this.title = json.title
+    this.sort = json.sort
+    this.timeline = json.timeline
   }
 
   getSort () {

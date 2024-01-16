@@ -2,19 +2,18 @@ import { List } from './model/List.js'
 import { Tag } from './model/Tag.js'
 import { Task } from './model/Task.js'
 
-import { generalError } from "../firmware/util.js";
+import { generalError } from '../firmware/util.js'
 
 export class DatabaseIndexedDB {
-  constructor() {
+  constructor () {
     this.version = 2
   }
 
-  open(onReadyCallback) {
-    var req = window.indexedDB.open('db', this.version);
+  open (onReadyCallback) {
+    const req = window.indexedDB.open('db', this.version)
 
     req.onsuccess = () => {
       this.db = req.result
-      console.log("DB Opened Sucessfully");
       onReadyCallback()
     }
 
@@ -30,10 +29,10 @@ export class DatabaseIndexedDB {
   upgrade (e) {
     const db = e.target.result
 
-    this.createStoreIfNotExists(db, 'lists', 'ID')
-    this.createStoreIfNotExists(db, 'tags', 'ID')
+    this.createStoreIfNotExists(db, 'lists', 'id')
+    this.createStoreIfNotExists(db, 'tags', 'id')
 
-    const tblTasks = this.createStoreIfNotExists(db, 'tasks', 'ID')
+    const tblTasks = this.createStoreIfNotExists(db, 'tasks', 'id')
 
     if (tblTasks != null) {
       tblTasks.createIndex('listId', ['parentId', 'parentType'], { unique: false })
@@ -44,12 +43,11 @@ export class DatabaseIndexedDB {
   deleteEverything () {
     const req = window.indexedDB.deleteDatabase('db')
 
-    req.onerror = () => {
-      console.log('errored')
+    req.onerror = (err) => {
+      throw new Error(err)
     }
 
     req.onsuccess = () => {
-      console.log('db deleted')
       window.location.reload()
     }
   }
@@ -62,37 +60,38 @@ export class DatabaseIndexedDB {
 
   dbTx (storeName) {
     if (this.db == null) {
-      throw new Error('Cannot run transaction, no database connection');
+      throw new Error('Cannot run transaction, no database connection')
     }
 
-    var tx = this.db.transaction(storeName, "readwrite")
-    var st = tx.objectStore(storeName);
+    const tx = this.db.transaction(storeName, 'readwrite')
+    const st = tx.objectStore(storeName)
 
     return [tx, st]
   }
 
-  addTaskFromServer(jsonTask) {
-    var[, req] = this.dbTx("tasks")
+  addTasksFromServer (res) {
+    res.tasks.map(x => this.addTaskFromServer(x))
+  }
+
+  addTaskFromServer (jsonTask) {
+    const [, req] = this.dbTx('tasks')
 
     req.onabort = generalError
     req.onerror = generalError
     req.put(jsonTask)
   }
 
-  addListFromServer(jsonList) {
-    var [, req] = this.dbTx("lists");
+  addListFromServer (jsonList) {
+    const [, req] = this.dbTx('lists')
 
     req.onabort = generalError
     req.onerror = generalError
-    req.oncomplete = (e) => {
-      console.log("complete", e);
-    }
 
-    req.put(jsonList);
+    req.put(jsonList)
   }
 
-  addTagFromServer(jsonTag) {
-    var [, req] = this.dbTx('tags')
+  addTagFromServer (jsonTag) {
+    const [, req] = this.dbTx('tags')
 
     req.onabort = generalError
     req.onerror = generalError
@@ -100,23 +99,22 @@ export class DatabaseIndexedDB {
     req.put(jsonTag)
   }
 
-  getList(listId, callback) {
-    let req = this.dbTx("lists").get(listId);
+  getList (listId, callback) {
+    const req = this.dbTx('lists').get(listId)
 
     req.onsuccess = () => {
-      callback(req.result);
+      callback(req.result)
     }
   }
 
-  getLists(onGetCallback) {
-    var [, lists] = this.dbTx("lists")
+  getLists (onGetCallback) {
+    const [, lists] = this.dbTx('lists')
 
-    var req = lists.getAll()
+    const req = lists.getAll()
     req.onsuccess = () => {
-      var ret = [];
+      let ret = []
       req.result.map(x => ret.push(new List(x)))
-
-      //ret = ret.sort((a, b) => { return a.getTitle().localeCompare(b.getTitle())});
+      ret = ret.sort((a, b) => { return a.getTitle().localeCompare(b.getTitle()) })
 
       onGetCallback(ret)
     }
@@ -125,7 +123,7 @@ export class DatabaseIndexedDB {
   getTasks (onGetCallback, listId) {
     const [, tasks] = this.dbTx('tasks')
 
-    const req = tasks.getAll()
+    const req = tasks.index('listId').getAll([listId, 'list'])
 
     req.onerror = generalError
     req.onabort = generalError
@@ -151,10 +149,10 @@ export class DatabaseIndexedDB {
       })
 
       /**
-      var orderedRet = [];
+      var orderedRet = []
       Object.keys(ret).sort().forEach(k => {
-        orderedRet[k] = ret[k];
-      });
+        orderedRet[k] = ret[k]
+      })
 
       ret = orderedRet
       */

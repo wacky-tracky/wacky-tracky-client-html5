@@ -1,15 +1,15 @@
-import { ajaxRequest } from "../firmware/middleware.js"
+import { ajaxRequest } from '../firmware/middleware.js'
 
 export class DatabaseRemoteServer {
-  getTasks () {
+  getTasks (theListId) {
     ajaxRequest({
       url: 'Task/List',
       success: (jsonTasks) => {
-        jsonTasks.Tasks.map((x) => window.dbal.local.addTaskFromServer(x))
+        window.dbal.local.addTasksFromServer(jsonTasks)
       },
-      params: {
-        'listId': 123,
-      },
+      data: {
+        listId: theListId
+      }
     })
   }
 
@@ -19,7 +19,7 @@ export class DatabaseRemoteServer {
     ajaxRequest({
       url: 'ListTags',
       success: (jsonTags) => {
-        for (const json of jsonTags.Tags) {
+        for (const json of jsonTags.tags) {
           window.dbal.local.addTagFromServer(json)
         }
       }
@@ -30,7 +30,7 @@ export class DatabaseRemoteServer {
     ajaxRequest({
       url: 'ListLists',
       success: (res) => {
-        for (const jsonList of res.Lists) {
+        for (const jsonList of res.lists) {
           window.dbal.local.addListFromServer(jsonList)
         }
       }
