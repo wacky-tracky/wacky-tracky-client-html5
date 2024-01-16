@@ -1,0 +1,36 @@
+name: Make Package
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: npm update
+
+      - name: make
+        run: make
+
+      - name: get date
+        run: |
+          echo "DATE=$(date +'%Y.%m.%d')" >> "$GITHUB_ENV"
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ env.DATE }}-${{ github.sha }}"
+          prerelease: true
+          title: "${{ env.DATE }}-${{ github.sha }}"
+          files: |
+            webui.tgz
