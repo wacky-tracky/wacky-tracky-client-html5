@@ -3,12 +3,9 @@ import { ajaxRequest } from '../firmware/middleware.js'
 export class DatabaseRemoteServer {
   getTasks (theListId) {
     ajaxRequest({
-      url: 'Task/List',
+      url: 'Task/List/' + theListId,
       success: (jsonTasks) => {
         window.dbal.local.addTasksFromServer(jsonTasks)
-      },
-      data: {
-        listId: theListId
       }
     })
   }

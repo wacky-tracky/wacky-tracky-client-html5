@@ -1,6 +1,10 @@
 import { generalError } from './util.js'
 
 export function ajaxRequest (params) {
+  let fetchParams = {
+    'credentials': 'include'
+  }
+
   if (typeof (params.error) !== 'function') {
     params.error = generalError
   }
@@ -18,14 +22,22 @@ export function ajaxRequest (params) {
 
   const url = new URL(window.location.protocol + '//' + window.location.hostname + ":8080/api/" + params.url)
 
-  if (typeof (params.data) !== 'undefined') {
-    Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))
+  if (typeof (params.method) !== 'undefined') {
+    fetchParams.method = params.method
+  } else {
+    fetchParams.method == 'GET'
   }
 
-  window.fetch(url, {
-    method: 'GET',
-    credentials: 'include'
-  })
+  if (typeof (params.data) !== 'undefined') {
+    if (fetchParams.method == 'GET') {
+      Object.keys(params.data).forEach(key => url.searchParams.append(key, params.data[key]))
+    } else {
+      fetchParams.body = JSON.stringify(params.data)
+      fetchParams.method = 'POST'
+    }
+  }
+
+  window.fetch(url, fetchParams)
     .then(resp => {
       if (!resp.ok) {
         Promise.reject(resp)

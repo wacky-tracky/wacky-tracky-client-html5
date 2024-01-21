@@ -99,7 +99,8 @@ export class SidePanel extends HTMLElement {
     }
 
     ajaxRequest({
-      url: 'CreateList',
+      url: 'List/Create',
+      method: 'POST',
       data: {
         title: title
       },
