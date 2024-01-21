@@ -46,18 +46,18 @@ export class UiManager {
     }
   }
 
-  onBootloaderSuccess (res) {
+  onBootloaderSuccess (init) {
     document.querySelector('#initMessages').remove()
 
-    if (res.wallpaper !== null) {
-      const img = 'url(/wallpapers/' + res.Wallpaper + ')'
+    if (init.wallpaper !== null) {
+      const img = 'url(/wallpapers/' + init.wallpaper + ')'
       document.body.style.backgroundImage = img
     }
 
     window.loginForm = document.createElement('login-form')
     window.loginForm.create()
 
-    if (res.username !== null) {
+    if (init.username !== null) {
       this.loginSuccess()
     } else {
       window.loginForm.show()
