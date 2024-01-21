@@ -116,8 +116,8 @@ export class SidePanel extends HTMLElement {
     let owner = this.domLists
 
     const listSeparator = '>'
-    if (menuItem.list.title.includes(listSeparator)) {
-      let titleComponents = menuItem.list.title.split(listSeparator)
+    if (menuItem.list.getTitle().includes(listSeparator)) {
+      let titleComponents = menuItem.list.getTitle().split(listSeparator)
       titleComponents.length--
       titleComponents = titleComponents.join(listSeparator)
 
