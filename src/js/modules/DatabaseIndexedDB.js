@@ -12,6 +12,8 @@ export class DatabaseIndexedDB {
   open (onReadyCallback) {
     const req = window.indexedDB.open('db', this.version)
 
+    window.dbreq = req
+
     req.onsuccess = () => {
       this.db = req.result
       onReadyCallback()

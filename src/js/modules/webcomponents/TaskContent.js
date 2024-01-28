@@ -79,12 +79,13 @@ export class TaskContent extends HTMLElement {
     }
   }
 
-  refreshSubtasks() {
-    for (let child of this.domSubTasks.children) {
+  refreshSubtasks () {
+    for (const child of this.domSubTasks.children) {
       child.remove()
     }
 
-    window.dbal.local.getTasks((x) => { this.renderSubtasks(x) })
+    window.dbal.remote.getTasks(this.fields.id)
+    window.dbal.local.getTasks((x) => { this.renderSubtasks(x) }, this.fields.id)
   }
 
   renderSubtasks(subtasks) {

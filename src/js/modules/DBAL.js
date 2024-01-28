@@ -7,7 +7,8 @@ export class DBAL {
     this.remote = new DatabaseRemoteServer()
   }
 
-  open (readyCallback) {
-    this.local.open(readyCallback)
+  open (readyCallback, errorCallback) {
+    const req = this.local.open(readyCallback)
+
   }
 }
