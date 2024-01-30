@@ -320,12 +320,12 @@ ul#taskList {
 	margin: 1em;
 }
 
-.notification.good {
+.good {
 	border: 2px solid green;
 	background-color: lightgreen;
 }
 
-.notification.error {
+.error {
 	border: 2px solid red;
 	background-color: salmon;
 }

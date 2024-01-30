@@ -31,15 +31,22 @@ export class GlobalSettingsEditor extends HTMLElement {
   setupServiceWorkerInfo() {
     this.txtSwInfo = this.querySelector("#swInfo")
 
-    if (navigator.serviceWorker.controller === null) {
-      this.txtSwInfo.innerText = " Service worker controller is null :("
+    this.btnGetVersion = this.querySelector("#getSwVersion")
+
+    if (!("serviceWorker" in navigator)) {
+      this.txtSwInfo.innerText = " Service workers are not supported in your browser. "
+      this.txtSwInfo.classList += "error"
+      this.btnGetVersion.disabled = true
     } else {
-      this.txtSwInfo.innerText = " Service worker controller is setup. "
+      if (navigator.serviceWorker.controller === null) {
+        this.txtSwInfo.innerText = " Service worker controller is null :("
+        this.btnGetVersion.disabled = true
+      } else {
+        this.txtSwInfo.innerText = " Service worker controller is setup. "
+      }
     }
 
-    this.btnGetVersion = this.querySelector("#getSwVersion")
     this.btnGetVersion.onclick = () => {
-      console.log("req")
       navigator.serviceWorker.controller.postMessage("reqGetVersion")	
     }
   }

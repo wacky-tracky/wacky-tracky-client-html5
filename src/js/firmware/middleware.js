@@ -20,7 +20,7 @@ export function ajaxRequest (params) {
 
   let isSuccessful = true
 
-  const url = new URL(window.location.protocol + '//' + window.location.hostname + ":8080/api/" + params.url)
+  const url = new URL(window.location.protocol + '//' + window.location.hostname + ":" + window.location.port +  "/api/" + params.url)
 
   if (typeof (params.method) !== 'undefined') {
     fetchParams.method = params.method
