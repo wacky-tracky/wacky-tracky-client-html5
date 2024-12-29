@@ -26,7 +26,7 @@
     "@parcel/packager-raw-url": "^2.13.3",
     "@parcel/transformer-webmanifest": "^2.13.3",
     "eslint": "^9.17.0",
-    "parcel": "latest",
+    "parcel": "^2.13.3",
     "yarn": "^1.22.22"
   },
   "browserslist": [
