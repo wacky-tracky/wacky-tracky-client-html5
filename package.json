@@ -34,6 +34,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.26.0",
+    "@parcel/reporter-dev-server": "^2.13.3",
     "acorn": "^8.14.0",
     "babel-polyfill": "^6.26.0"
   }
