@@ -658,7 +658,6 @@ p.validationError {
 }
 
 button#sidepanelIcon {
-	background-color: red;
 	display: inline-block;
 	flex: 0 1 auto;
 	margin-right: 1em;
