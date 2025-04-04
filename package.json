@@ -21,21 +21,21 @@
   },
   "homepage": "https://github.com/wacky-tracky/wacky-tracky-client-html5#readme",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/plugin-transform-runtime": "^7.25.9",
-    "@parcel/packager-raw-url": "^2.13.3",
-    "@parcel/transformer-webmanifest": "^2.13.3",
-    "eslint": "^9.17.0",
-    "parcel": "^2.13.3",
+    "@babel/core": "^7.26.10",
+    "@babel/plugin-transform-runtime": "^7.26.10",
+    "@parcel/packager-raw-url": "^2.14.4",
+    "@parcel/transformer-webmanifest": "^2.14.4",
+    "eslint": "^9.24.0",
+    "parcel": "^2.14.4",
     "yarn": "^1.22.22"
   },
   "browserslist": [
     "since 2019-01"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.26.0",
-    "@parcel/reporter-dev-server": "^2.13.3",
-    "acorn": "^8.14.0",
+    "@babel/runtime": "^7.27.0",
+    "@parcel/reporter-dev-server": "^2.14.4",
+    "acorn": "^8.14.1",
     "babel-polyfill": "^6.26.0"
   }
 }
